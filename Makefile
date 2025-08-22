@@ -1,11 +1,10 @@
-SRCS = test.c
 CC = gcc
-OPTS = -Wall -g
+CFLAGS = -W -Wall
+TARGET = test
 
-TARG = test
+all : $(TARGET)
+$(TARGET) : test.c
+	$(CC) $(CFLAGS) -o $(TARGET) test.c
 
-make: $(TARG)
-$(TARG) :
-	$(CC) -o $(TARG) $(SRCS) -lm
 clean:
-	rm -f $(TARG)
+	rm -f *.o test
