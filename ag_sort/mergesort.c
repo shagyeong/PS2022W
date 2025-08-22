@@ -1,14 +1,5 @@
-#include<stdio.h>
-void mergesort(int arr[], int l, int r);
-void merge(int arr[], int l, int m, int r);
+#include "sort.h"
 
-int main(void){
-    int arr[10] = {3, 2, 7, 0, 1, 9, 8, 6, 4, 5};
-    mergesort(arr, 0, 9);
-    for(int i = 0; i < 10; i++){
-        printf("%d ", arr[i]);
-    }printf("\n");
-}
 void mergesort(int arr[], int l, int r){
     if(l < r){
         int m = (l + r) / 2;

@@ -1,14 +1,5 @@
-#include<stdio.h>
-void quicksort(int arr[], int l, int r);
-int partition(int arr[], int l, int r, int x);
+#include "sort.h"
 
-int main(void){
-    int arr[10] = {3, 2, 7, 0, 1, 9, 8, 6, 4, 5};
-    quicksort(arr, 0, 9);
-    for(int i = 0; i < 10; i++){
-        printf("%d ", arr[i]);
-    }printf("\n");
-}
 void quicksort(int arr[], int l, int r){
     if(l < r){
         int pivot = arr[r];   //랜덤
