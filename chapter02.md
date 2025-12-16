@@ -166,8 +166,8 @@ int main(void){
     ll->n=0;
     ll->head=(struct node*)malloc(sizeof(struct node));
     ll->head->v=255;
-    ll->head->next=NULL;
-    ll->tail=ll->head;
+    ll->head->next=NULL; // 헤드: 더미
+    ll->tail=ll->head;   // 테일: 포인팅
 
     // 연결리스트 초기화: append()
     for(i=0;i<5;i++){
@@ -453,4 +453,190 @@ pop: 2, printstack: 1 0
 
 
 
-<!-- ## 2.4 큐 -->
+## 2.4 큐
+### 2.4절 구현체 요약
+||구현체|기능|
+|---|---|---|
+|2.4.1 순차 큐|||
+|2.4.2 연결 큐|원형 연결리스트|enqueue()<br>dequeue()|
+|2.4.3 데크|양방향 연결리스트|enqueue_front()<br>dequeue_front()<br>enqueue_rear()<br>dequeue_rear()|
+<!-- ### 2.4.1 순차 큐
+#### 순차 큐
+```C
+``` -->
+### 2.4.2 연결 큐
+#### 연결 큐
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    unsigned char v;
+    struct node* next;
+};
+
+struct queue{
+    unsigned char n; //노드 개수
+    struct node* head;
+    struct node* tail;
+};
+
+void enqueue(struct queue* q, struct node* new);
+struct node* dequeue(struct queue* q);
+void printqueue(struct queue* q);
+
+int main(void){
+    unsigned char i;
+    struct node* new;
+    // 큐 생성
+    struct queue* q=(struct queue*)malloc(sizeof(struct queue));
+    q->n=0;
+    q->head=(struct node*)malloc(sizeof(struct node));
+    q->head->v=255;
+    q->head->next=NULL;
+    q->tail=q->head;
+
+    // 큐 초기화
+    for(i=0;i<5;i++){
+        new=(struct node*)malloc(sizeof(struct node));
+        new->v=i;
+        new->next=NULL;
+        enqueue(q,new);
+    }
+    printqueue(q);
+    printf("dequeue: %hhu, printqueue: ",dequeue(q)->v); printqueue(q);
+    printf("dequeue: %hhu, printqueue: ",dequeue(q)->v); printqueue(q);
+    printf("dequeue: %hhu, printqueue: ",dequeue(q)->v); printqueue(q);
+}
+
+void enqueue(struct queue* q, struct node* new){
+    struct node* buf=(struct node*)malloc(sizeof(struct node));
+    buf=q->tail;
+    buf->next=new;
+    q->tail=new;
+    q->n+=1;
+}
+struct node* dequeue(struct queue* q){
+    struct node* buf=(struct node*)malloc(sizeof(struct node));
+    buf=q->head->next;
+    q->head->next=q->head->next->next;
+    q->n-=1;
+    return buf;
+}
+void printqueue(struct queue* q){
+    unsigned char i;
+    struct node* buf=(struct node*)malloc(sizeof(struct node));
+    buf=q->head->next;
+    for(i=0;i<q->n;i++){printf("%hhu ",buf->v);buf=buf->next;}
+    printf("\n");
+}
+```
+```
+$ ./test
+0 1 2 3 4 # 초기 큐
+dequeue: 0, printquueue: 1 2 3 4 
+dequeue: 1, printquueue: 2 3 4 
+dequeue: 2, printquueue: 3 4 
+```
+### 2.4.3 데크
+#### 데크
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    unsigned char v;
+    struct node* prev;
+    struct node* next;
+};
+
+struct deque{
+    unsigned char n; //노드 개수
+    struct node* head;
+};
+
+void enqueue_front(struct deque* d,struct node* new);
+void enqueue_rear (struct deque* d,struct node* new);
+struct node* dequeue_front(struct deque* d);
+struct node* dequeue_rear (struct deque* d);
+void printdeque(struct deque* d);
+
+int main(void){
+    unsigned char i;
+    struct node* new;
+    // 데크 생성
+    struct deque* d=(struct deque*)malloc(sizeof(struct deque));
+    d->n=0;
+    d->head=(struct node*)malloc(sizeof(malloc));
+    d->head->v=255;
+    d->head->prev=d->head;
+    d->head->next=d->head;
+
+    // 데크 초기화: enqueue_rear
+    for(i=3;i<6;i++){
+        new=(struct node*)malloc(sizeof(struct node));
+        new->v=i; new->prev=NULL; new->next=NULL;
+        enqueue_rear(d,new);
+    }
+    printdeque(d);
+    // 데크 초기화: enqueue_front
+    for(i=2;i!=255;i--){ // 부호 없는 자료형: 2, 1, 0 enqueue
+        new=(struct node*)malloc(sizeof(struct node));
+        new->v=i; new->prev=NULL; new->next=NULL;
+        enqueue_front(d,new);
+    }
+    printdeque(d);
+    // dequeue_front(), dequeue_rear()
+    printf("dequeue_front: %hhu ,printdeque: ",dequeue_front(d)->v); printdeque(d);
+    printf("dequeue_rear:  %hhu ,printdeque: ",dequeue_rear(d)->v);  printdeque(d);
+}
+
+void enqueue_front(struct deque* d,struct node* new){
+    struct node* buf=(struct node*)malloc(sizeof(struct node));
+    buf=d->head;
+    new->prev=buf;
+    new->next=buf->next;
+    buf->next->prev=new;
+    buf->next=new;
+    d->n+=1;
+}
+void enqueue_rear (struct deque* d,struct node* new){
+    struct node* buf=(struct node*)malloc(sizeof(struct node));
+    buf=d->head->prev;
+    new->prev=buf;
+    new->next=buf->next;
+    buf->next->prev=new;
+    buf->next=new;
+    d->n+=1;
+}
+struct node* dequeue_front(struct deque* d){
+    struct node* buf=(struct node*)malloc(sizeof(struct node));
+    buf=d->head->next;
+    buf->prev->next=buf->next;
+    buf->next->prev=buf->prev;
+    d->n-=1;
+    return buf;
+}
+struct node* dequeue_rear (struct deque* d){
+    struct node* buf=(struct node*)malloc(sizeof(struct node));
+    buf=d->head->prev;
+    buf->prev->next=buf->next;
+    buf->next->prev=buf->prev;
+    d->n-=1;
+    return buf;
+}
+void printdeque(struct deque* d){
+    unsigned char i;
+    struct node* buf=(struct node*)malloc(sizeof(struct node));
+    buf=d->head->next;
+    for(i=0;i<d->n;i++){printf("%hhu ",buf->v);buf=buf->next;}
+    printf("\n");
+}
+```
+```
+$ ./test
+3 4 5 
+0 1 2 3 4 5 
+dequeue_front: 0 ,printdeque: 1 2 3 4 5 
+dequeue_rear:  5 ,printdeque: 1 2 3 4 
+```
