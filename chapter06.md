@@ -1,11 +1,53 @@
 # 6장 그래프
 ## 6.1 그래프
-<!-- ### 6.1.1 인접행렬
+### 6.1.1 인접행렬
 #### 그래프 구현: 인접행렬
 ```C
+#include<stdio.h>
+#include<stdlib.h>
+
+# define N 10 // 노드 최대 개수
+
+struct graph{
+    unsigned char adjs[N][N];
+};
+
+void printgraph(struct graph* g);
+void insert(struct graph* g,unsigned char u,unsigned char v,unsigned char w); // u->v
+
+int main(void){
+    struct graph* g=(struct graph*)malloc(sizeof(struct graph));
+    insert(g,0,4,255);insert(g,4,0,255);
+    insert(g,0,1,255);insert(g,1,0,255);
+    insert(g,0,2,255);insert(g,2,0,255);
+    printgraph(g);
+}
+void printgraph(struct graph* g){
+    unsigned char j;
+    unsigned char k;
+    for(j=0;j<N;j++){
+        printf("node %u's adjs: ",j);
+        for(k=0;k<N;k++){if(g->adjs[j][k]!=0){printf("%u ",k);}}
+        printf("\n");
+    }
+}
+void insert(struct graph* g,unsigned char u,unsigned char v,unsigned char w){
+    g->adjs[u][v]=w;
+}
 ```
 ```
-``` -->
+$ ./test
+node 0's adjs: 1 2 4 
+node 1's adjs: 0 
+node 2's adjs: 0 
+node 3's adjs: 
+node 4's adjs: 0 
+node 5's adjs: 
+node 6's adjs: 
+node 7's adjs: 
+node 8's adjs: 
+node 9's adjs: 
+```
 ### 6.1.2 인접리스트
 #### 그래프 구현: 인접리스트
 ```C
