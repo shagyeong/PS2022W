@@ -52,6 +52,8 @@ $\vdots$
 $\begin{bmatrix}F_{n-1}&F_{n-2}\\F_{n-2}&F_{n-3}\end{bmatrix}\begin{bmatrix}1&1\\1&0\end{bmatrix}=\begin{bmatrix}F_{n-1}+F_{n-2}&F_{n-1}\\F_{n-3}+F_{n-2}&F_{n-2}\end{bmatrix}=\begin{bmatrix}F_n&F_{n-1}\\F_{n-1}&F_{n-2}\end{bmatrix}$  
 $\therefore \begin{bmatrix}F_n&F_{n-1}\\F_{n-1}&F_{n-2}\end{bmatrix}=\begin{bmatrix}1&1\\1&0\end{bmatrix}^{n-1}$  
 행렬 계산 횟수: $\log_2 n$회(분할 정복 거듭제곱 적용)  
+#### 구간합
+$F_a+\cdots+F_b=F_{b+2}-F_{a+1}$  
 #### 피보나치 수
 ```C
 #include<stdio.h>
