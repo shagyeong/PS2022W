@@ -115,6 +115,116 @@ fib(10)=55  fib(11)=89  fib(12)=144 fib(13)=233 fib(14)=377
 
 
 
-<!-- ## 7.3 DP -->
+## 7.3 DP
+### 7.3.1 피보나치 수: DP
+#### 피보나치 수: DP
+연산 횟수: $n$회  
+```C
+#include<stdio.h>
+
+unsigned int fib(unsigned int n);
+
+int main(void){
+    unsigned int n=0;
+    for(n=0;n<15;n++){printf("fib(%u)=%u\n",n,fib(n));}
+}
+
+unsigned int fib(unsigned int n){
+    unsigned int j; // loop variable
+    unsigned int t[20];
+    t[0]=0;
+    t[1]=1;
+    if(n==0||n==1){return t[n];}
+    for(j=0;j<n-1;j++){t[j+2]=t[j]+t[j+1];}return t[n];
+}
+```
+```
+$ ./test
+fib(0)=0    fib(1)=1    fib(2)=1    fib(3)=2    fib(4)=3
+fib(5)=5    fib(6)=8    fib(7)=13   fib(8)=21   fib(9)=34
+fib(10)=55  fib(11)=89  fib(12)=144 fib(13)=233 fib(14)=377
+```
+### 7.3.2 LCS
+#### LCS
+LCS: longest common subsequence  
+$X=x_1,x_2,\cdots,x_m$  
+$Y=y_1,y_2,\cdots,y_n$  
+$\mathbf{M}_{ij}=\begin{cases}\mathbf{M}_{i-1,j-1}+1\qquad\qquad\cdots x_i=y_j\\\max(\mathbf{M}_{i,j-1},\mathbf{M}_{i-1,j})\quad\cdots x_i\neq y_j\end{cases}$  
+|||A|B|C|D|
+|---|---|---|---|---|---|
+| |0|0|0|0|0|
+|B|0|0|**1**|1|1|
+|D|0|0|1|1|**2**|
+|E|0|0|1|1|2|
+
+X: "BDE"  
+Y: "ABCD"  
+LCS: "BD"  
+#### LCS
+```C
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+
+// lcs 길이 리턴, lcs 역추적 결과 char* p 저장
+int lcs(char* x,char* y,char* p,int m,int n);
+
+int main(void){
+    char* x="GOOD_MORNING."; int m=strlen(x);
+    char* y="GUTEN_MORGEN."; int n=strlen(y);
+    char a[50]; // 최대 길이: 50
+    char* p=&a[0];
+    int   l; // length
+
+    l=lcs(x,y,p,m,n);
+    printf("lcs: %s\n",p);
+    printf("length: %d\n",l);
+}
+
+int lcs(char* x,char* y,char* p,int m,int n){
+    int j; // loop variable
+    int k; // loop variable
+    int d; // table value dummy
+    int t[m+1][n+1];
+    for(j=0;j<=m;j++){t[j][0]=0;}
+    for(j=0;j<=n;j++){t[0][j]=0;}
+
+    // 테이블 작성
+    for(j=1;j<=m;j++){
+        for(k=1;k<=n;k++){
+            if(x[j-1]==y[k-1]){
+                t[j][k]=t[j-1][k-1]+1;
+            }
+            else{
+                if(t[j][k-1]>t[j-1][k]){t[j][k]=t[j][k-1];}
+                else{                   t[j][k]=t[j-1][k];}
+            }
+        }
+    }
+
+    // 역추적 결과 저장: char* p
+    for(j=0;j<t[m][n];j++){p++;}
+    *p='\0'; p--;
+    
+    j=m; k=n;
+    while((j>=1)&&(k>=1)){
+        d=t[j][k];
+        if((d>t[j-1][k-1])&&(d>t[j-1][k])&&(d>t[j][k-1])){*p=x[j-1]; p--; j--; k--;}
+        else if((d==t[j][k-1])&&(d>t[j-1][k])){                                k--;}
+        else{                                                             j--;     }
+    }
+
+    // lcs 길이 리턴
+    return t[m][n];
+}
+```
+```
+$ ./test
+lcs: G_MORN.
+length: 7
+```
+
+
+
 <!-- ## 7.4 그리디 -->
 <!-- ## 7.5 백트래킹 -->
