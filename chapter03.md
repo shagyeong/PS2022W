@@ -1,10 +1,6 @@
 # 3장 탐색
-<!-- ## 3.1 탐색 -->
-
-
-
-## 3.2 순차 탐색
-### 3.2.1 정렬되어있지 않은 자료 탐색
+## 3.1 정렬되어있지 않은 자료 탐색
+### 3.1.1 순차 탐색
 #### 순차 탐색
 ```C
 #include<stdio.h>
@@ -34,7 +30,11 @@ $ ./test
 24: SUCCESS
 99: NOTFOUND
 ```
-### 3.2.2 정렬된 자료 탐색
+
+
+
+## 3.2 정렬된 자료 탐색
+### 3.2.1 순차 탐색
 #### 순차 탐색
 ```C
 #include<stdio.h>
@@ -64,6 +64,7 @@ iteration: 7    32: SUCCESS
 iteration: 4    18: NOTFOUND
 iteration: 10   99: NOTFOUND
 ```
+### 3.2.2 색인 순차 탐색
 #### 색인 순차 탐색
 ```C
 #include<stdio.h>
@@ -140,9 +141,43 @@ search 15, [0,3]        10~21   NOTFOUND
 search 22, [3,6]        21~32   SUCCESS
 search 53, [6,9]        32~53   SUCCESS
 ```
+## 3.2.3 이진 탐색
+#### 이진 탐색
+```C
+#include<stdio.h>
+
+#define SUCCESS  0
+#define NOTFOUND 1
+unsigned char search(unsigned char a[],unsigned char n,unsigned char q);
+
+int main(void){
+    unsigned char N=10;
+    unsigned char a[10]={10,14,16,21,22,24,32,42,45,53};
+    if(search(a,N,32)==SUCCESS){printf("32: SUCCESS\n");}else{printf("32: NOTFOUND\n");}
+    if(search(a,N,18)==SUCCESS){printf("18: SUCCESS\n");}else{printf("18: NOTFOUND\n");}
+    if(search(a,N,99)==SUCCESS){printf("99: SUCCESS\n");}else{printf("99: NOTFOUND\n");}
+}
+unsigned char search(unsigned char a[],unsigned char n,unsigned char q){
+    unsigned char s=0;   // start
+    unsigned char e=n-1; // end
+    unsigned char m;     // middle
+    while(s<=e){
+        m=s+(e-s)/2;
+        if(a[m]==q){return SUCCESS;}
+        else if(a[m]>q){e=m-1;}
+        else           {s=m+1;}
+    }
+    return NOTFOUND;
+}
+```
+```
+$ ./test
+32: SUCCESS
+18: NOTFOUND
+99: NOTFOUND
+```
+<!-- ### 3.2.4 이진 트리 탐색 -->
 
 
 
-<!-- ## 3.3 이진 탐색 -->
-<!-- ## 3.4 이진 트리 탐색 -->
-<!-- ## 3.5 해싱 -->
+<!-- ## 3.3 해싱 -->
