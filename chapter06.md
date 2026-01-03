@@ -313,8 +313,7 @@ bfs: 0 1 2 3 4 6 5
 
 
 ## 6.3 최단 경로
-<!-- ### 6.3.1 최소 신장 트리 -->
-### 6.3.2 다이크스트라
+### 6.3.1 다이크스트라
 #### 예제: 다이크스트라
 <img src="./static/PS622-dijkstra.png">
 
@@ -446,7 +445,296 @@ expanded: 4, distance: 0 8 5 13 7
 expanded: 1, distance: 0 8 5 9 7 
 expanded: 3, distance: 0 8 5 9 7
 ```
+<!-- ### 6.3.2 플로이드-워셜 -->
 
 
 
-<!-- ### 6.3.3 플로이드-워셜 -->
+## 6.4 신장 트리
+### 6.4.1 신장 트리
+<!-- #### DFS 신장 트리 -->
+<!-- #### BFS 신장 트리 -->
+#### MST
+MST 예제 그래프: Kruskal I, Kruskal II, Prim  
+<img src="./static/PS632-MST.png">
+
+### 6.4.2 Kruskal
+#### Kruskal I
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+#define N 10 // 노드 최대 개수
+
+struct node{
+    unsigned char v;
+    unsigned char w;
+    struct node* next;
+};
+
+struct graph{
+    unsigned char n;       // 노드 개수
+    struct node*  adjs[N]; // 인접리스트
+    unsigned char vist[N]; // 방문 상태
+};
+
+struct edge{
+    unsigned char u;
+    unsigned char v;
+    unsigned char w;
+};
+
+void init_graph(struct graph* g, unsigned char n);
+void insert(struct graph* g,unsigned char u,unsigned char v,unsigned char w); // u->v
+void cut(struct graph* g,unsigned char u,unsigned char v); // 간선 삭제
+void dfs(struct graph* g,unsigned char u); // 연결성 확인
+void kruskal(struct graph* g);
+
+int main(void){
+    struct graph* g=(struct graph*)malloc(sizeof(struct graph));
+    init_graph(g,7);
+    insert(g,0,1,3); insert(g,1,0,3);
+    insert(g,0,2,17);insert(g,2,0,17);
+    insert(g,0,3,6); insert(g,3,0,6);
+    insert(g,1,3,5); insert(g,3,1,5);
+    insert(g,1,6,12);insert(g,6,1,12);
+    insert(g,2,4,10);insert(g,4,2,10);
+    insert(g,2,5,8); insert(g,5,2,8);
+    insert(g,3,4,9); insert(g,4,3,9);
+    insert(g,4,5,4); insert(g,5,4,4);
+    insert(g,4,6,2); insert(g,6,4,2);
+    insert(g,5,6,14);insert(g,6,5,14);
+    kruskal(g);
+    return 0;
+}
+
+void init_graph(struct graph* g,unsigned char n){
+    unsigned char j;
+    struct node* new;
+    for(j=0;j<n;j++){
+        new=(struct node*)malloc(sizeof(struct node));
+        new->v=j;
+        new->w=0;
+        new->next=NULL;
+        g->adjs[j]=new;
+        g->vist[j]=0;
+    }
+    g->n=n;
+}
+void insert(struct graph* g,unsigned char u,unsigned char v,unsigned char w){
+    struct node* B; // 버퍼
+    struct node* V=(struct node*)malloc(sizeof(struct node));
+    V->v=v;
+    V->w=w;
+    V->next=NULL;
+    B=g->adjs[u];
+    while((B->next!=NULL)&&(v>B->next->v)){B=B->next;}
+    V->next=B->next;
+    B->next=V;
+}
+void dfs(struct graph* g,unsigned char u){
+    unsigned char j;
+    struct node* B;
+    g->vist[u]=1;
+    B=g->adjs[u];
+    while((B=B->next)!=NULL){
+        j=B->v;
+        if(g->vist[j]==0){dfs(g,j);}
+    }
+    g->vist[u]=1;
+}
+void cut(struct graph* g,unsigned char u,unsigned char v){
+    struct node* B;
+    B=g->adjs[u];
+    while((B->next!=NULL)&&((B->next->v)!=v)){B=B->next;}
+    if(B->next!=NULL){B->next=B->next->next;}
+}
+void kruskal(struct graph* g){
+    unsigned char j; // loop variable
+    unsigned char k; // loop variable
+    struct edge e[N*N];
+    struct node* B;
+    struct edge t; // swap buffer
+    unsigned char c=0; // number of edge
+    unsigned char s;   // status: 연결 상태 플래그
+
+    // 간선 배열
+    for(j=0;j<g->n;j++){
+        B=g->adjs[j];
+        while((B=B->next)!=NULL){
+            if(j<B->v){ // 무향 그래프: u->v, v->u 간선 중 한 개를 취함
+                e[c].u=     j;
+                e[c].v=  B->v;
+                e[c++].w=B->w;
+            }
+        }
+    }
+    // 간선 배열 정렬(내림차순)
+    for(j=0;j<c-1;j++){
+        for(k=j+1;k<c;k++){
+            if(e[j].w<e[k].w){
+                t=e[j];
+                e[j]=e[k];
+                e[k]=t;
+            }
+        }
+    }
+    // kruskal: 간선 삭제 - 연결성 확인 - forest일 때 재삽입
+    for(j=0;j<c;j++){
+        // 간선 삭제
+        cut(g,e[j].u,e[j].v);
+        cut(g,e[j].v,e[j].u);
+        // 연결성 확인
+        s=0;
+        for(k=0;k<g->n;k++){g->vist[k]=0;}
+        dfs(g,0);
+        for(k=0;k<g->n;k++){if(g->vist[k]==0){s=1;break;}} // s==1: forest
+        // forest일 때 재삽입
+        if(s==1){
+            insert(g,e[j].u,e[j].v,e[j].w);
+            insert(g,e[j].v,e[j].u,e[j].w);
+        }
+        else{printf("removed: %u - %u, weight: %u\n",e[j].u,e[j].v,e[j].w);}
+    }
+}
+```
+```
+$ ./test
+removed: 0 - 2, weight: 17
+removed: 5 - 6, weight: 14
+removed: 1 - 6, weight: 12
+removed: 2 - 4, weight: 10
+removed: 0 - 3, weight: 6
+```
+#### Kruskal II
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+#define N 10 // 노드 최대 개수
+
+struct node{
+    unsigned char v;
+    unsigned char w;
+    struct node* next;
+};
+
+struct graph{
+    unsigned char n;       // 노드 개수
+    struct node*  adjs[N]; // 인접리스트
+    unsigned char vist[N]; // 방문 상태
+    unsigned char pare[N]; // parent: 분리 집합 루트
+};
+
+struct edge{
+    unsigned char u;
+    unsigned char v;
+    unsigned char w;
+};
+
+void init_graph(struct graph* g, unsigned char n);
+void insert(struct graph* g,unsigned char u,unsigned char v,unsigned char w); // u->v
+unsigned char getroot(struct graph* g,unsigned char u);     // 분리 집합 조작: 루트 리턴
+void unify(struct graph* g,unsigned char u,unsigned char v);// 분리 집합 조작: 합집합
+void kruskal(struct graph* g);
+
+int main(void){
+    struct graph* g=(struct graph*)malloc(sizeof(struct graph));
+    init_graph(g,7);
+    insert(g,0,1,3); insert(g,1,0,3);
+    insert(g,0,2,17);insert(g,2,0,17);
+    insert(g,0,3,6); insert(g,3,0,6);
+    insert(g,1,3,5); insert(g,3,1,5);
+    insert(g,1,6,12);insert(g,6,1,12);
+    insert(g,2,4,10);insert(g,4,2,10);
+    insert(g,2,5,8); insert(g,5,2,8);
+    insert(g,3,4,9); insert(g,4,3,9);
+    insert(g,4,5,4); insert(g,5,4,4);
+    insert(g,4,6,2); insert(g,6,4,2);
+    insert(g,5,6,14);insert(g,6,5,14);
+    kruskal(g);
+    return 0;
+}
+
+void init_graph(struct graph* g,unsigned char n){
+    unsigned char j;
+    struct node* new;
+    for(j=0;j<n;j++){
+        new=(struct node*)malloc(sizeof(struct node));
+        new->v=j;
+        new->w=0;
+        new->next=NULL;
+        g->adjs[j]=new;
+        g->vist[j]=0;
+        g->pare[j]=j; // 자신을 부모로
+    }
+    g->n=n;
+}
+void insert(struct graph* g,unsigned char u,unsigned char v,unsigned char w){
+    struct node* B; // 버퍼
+    struct node* V=(struct node*)malloc(sizeof(struct node));
+    V->v=v;
+    V->w=w;
+    V->next=NULL;
+    B=g->adjs[u];
+    while((B->next!=NULL)&&(v>B->next->v)){B=B->next;}
+    V->next=B->next;
+    B->next=V;
+}
+unsigned char getroot(struct graph* g,unsigned char u){
+    if(g->pare[u]==u){return u;}
+    else             {return g->pare[u]=getroot(g,g->pare[u]);}
+}
+void unify(struct graph* g,unsigned char u,unsigned char v){
+    unsigned char a=getroot(g,u); // root of u
+    unsigned char b=getroot(g,v); // root of v
+    if(a!=b){g->pare[a]=b;}
+}
+void kruskal(struct graph* g){
+    unsigned char j; // loop variable
+    unsigned char k; // loop variable
+    struct edge e[N*N];
+    struct node* B;
+    struct edge t; // swap buffer
+    unsigned char c=0; // number of edge
+
+    // 간선 배열
+    for(j=0;j<g->n;j++){
+        B=g->adjs[j];
+        while((B=B->next)!=NULL){
+            if(j<B->v){ // 무향 그래프: u->v, v->u 간선 중 한 개를 취함
+                e[c].u=     j;
+                e[c].v=  B->v;
+                e[c++].w=B->w;
+            }
+        }
+    }
+    // 간선 배열 정렬(오름차순)
+    for(j=0;j<c-1;j++){
+        for(k=j+1;k<c;k++){
+            if(e[j].w>e[k].w){
+                t=e[j];
+                e[j]=e[k];
+                e[k]=t;
+            }
+        }
+    }
+    // kruskal: 분리 집합
+    for(j=0;j<c;j++){
+        if(getroot(g,e[j].u)!=getroot(g,e[j].v)){
+            unify(g,e[j].u,e[j].v);
+            printf("edge: %u - %u, weight: %u\n",e[j].u,e[j].v,e[j].w);
+        }
+    }
+}
+```
+```
+$ ./test
+edge: 4 - 6, weight: 2
+edge: 0 - 1, weight: 3
+edge: 4 - 5, weight: 4
+edge: 1 - 3, weight: 5
+edge: 2 - 5, weight: 8
+edge: 3 - 4, weight: 9
+```
+<!-- ### 6.4.3 Prim -->
+<!-- #### Prim -->
