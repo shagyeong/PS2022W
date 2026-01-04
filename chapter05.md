@@ -1,6 +1,7 @@
 # 5장 트리
 ## 5.1 트리
 ### 5.1.1 이진 트리
+#### 선형 트리
 |노드|선형 인덱스|
 |---|---|
 |root|1|
@@ -338,5 +339,164 @@ $ ./test
 ```
 <!-- ### 5.3.2 AVL 트리 -->
 <!-- ### 5.3.3 RB트리 -->
-<!-- ## 5.4 힙 -->
-<!-- ### 5.4.1 -->
+
+
+
+## 5.4 힙
+### 5.4.1 힙
+#### 힙(최대 힙)
+선형 이진 트리 성질: 5.1.1절 참고  
+root=1  
+parent(i)=floor(i/2)  
+lchild(i)=i*2  
+rchild(i)=i*2+1  
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct heap{
+    int* a; // array: 선형 트리
+    int  i; // item: 엘리먼트 개수
+};
+
+void push(struct heap* h,int v);
+int pop(struct heap* h);
+
+int main(void){
+    int a[10];
+    struct heap h;
+    h.a=&a[0];
+    h.i=0;
+    push(&h,1);
+    push(&h,4);
+    push(&h,2);
+    push(&h,3);
+    printf("pop: %d\n",pop(&h));
+    printf("pop: %d\n",pop(&h));
+    printf("pop: %d\n",pop(&h));
+    printf("pop: %d\n",pop(&h));
+}
+
+void push(struct heap* h,int v){
+    int j; // loop variable
+    int t; // temp variable(swap)
+    h->a[++(h->i)]=v; // 선형 트리 마지막 엘리먼트로 삽입
+    j=h->i;
+
+    // heapify
+ // while((j>1)&&(h->a[j]<h->a[j/2])){ 최소 힙 부등호 방향
+    while((j>1)&&(h->a[j]>h->a[j/2])){ // 부모: floor(j/2)
+        t=h->a[j];
+        h->a[j]=h->a[j/2];
+        h->a[j/2]=t;
+        j/=2;
+    }
+}
+int pop(struct heap* h){
+    int r; // root: 리턴값
+    int j; // loop variable
+    int t; // temp variable(swap)
+    int c; // child
+
+    r=h->a[1]; // 루트
+    h->a[1]=h->a[(h->i)--]; // 선형 트리 마지막 엘리먼트를 루트로
+    j=1;
+
+    // heapify
+    while(j*2<=h->i){
+        c=j*2; // lchild
+     // if((c+1<=h->i)&&(h->a[c+1]<h->a[c])){ 최소 힙 부등호 방향
+        if((c+1<=h->i)&&(h->a[c+1]>h->a[c])){
+            c+=1; // rchild: j*2+1
+        }
+     // if(h->a[j]>=h->a[c]) 최소 힙 부등호 방향
+        if(h->a[j]<=h->a[c]){
+            break;
+        }
+        t=h->a[j];
+        h->a[j]=h->a[c];
+        h->a[c]=t;
+        j=c;
+    }
+    return r;
+}
+c// 선형 이진 트리 기본 성질
+// root=1
+// parent(i)=floor(i/2)
+// lchild(i)=i*2
+// rchild(i)=i*2+1
+
+#include<stdio.h>
+#include<stdlib.h>
+
+struct heap{
+    int* a; // array: 선형 트리
+    int  i; // item: 엘리먼트 개수
+};
+
+void push(struct heap* h,int v);
+int pop(struct heap* h);
+
+int main(void){
+    int a[10];
+    struct heap h;
+    h.a=&a[0];
+    h.i=0;
+    push(&h,1);
+    push(&h,4);
+    push(&h,2);
+    push(&h,3);
+    printf("pop: %d\n",pop(&h));
+    printf("pop: %d\n",pop(&h));
+    printf("pop: %d\n",pop(&h));
+    printf("pop: %d\n",pop(&h));
+}
+
+void push(struct heap* h,int v){
+    int j; // loop variable
+    int t; // temp variable(swap)
+    h->a[++(h->i)]=v; // 선형 트리 마지막 엘리먼트로 삽입
+    j=h->i;
+
+    // heapify
+    while((j>1)&&(h->a[j]>h->a[j/2])){ // 부모: floor(j/2)
+        t=h->a[j];
+        h->a[j]=h->a[j/2];
+        h->a[j/2]=t;
+        j/=2;
+    }
+}
+int pop(struct heap* h){
+    int r; // root: 리턴값
+    int j; // loop variable
+    int t; // temp variable(swap)
+    int c; // child
+
+    r=h->a[1]; // 루트
+    h->a[1]=h->a[(h->i)--]; // 선형 트리 마지막 엘리먼트를 루트로
+    j=1;
+
+    // heapify
+    while(j*2<=h->i){
+        c=j*2; // lchild
+        if((c+1<=h->i)&&(h->a[c+1]>h->a[c])){
+            c+=1; // rchild: j*2+1
+        }
+        if(h->a[j]>=h->a[c]){
+            break;
+        }
+        t=h->a[j];
+        h->a[j]=h->a[c];
+        h->a[c]=t;
+        j=c;
+    }
+    return r;
+}
+```
+```
+$ ./test
+pop: 4
+pop: 3
+pop: 2
+pop: 1
+```
