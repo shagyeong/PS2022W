@@ -48,6 +48,9 @@ node 7's adjs:
 node 8's adjs: 
 node 9's adjs: 
 ```
+#### 인접행렬 거듭제곱
+$\mathbf{A}^k_{i,j}$: 노드 $i$에서 $j$로 $k$개의 간선을 거치는 경로 개수(unweighted graph)  
+$\because\mathbf{A}\mathbf{A}_{i,j}=\displaystyle\sum_{m=0}^{n-1}\mathbf{A}_{i,m}\times\mathbf{A}_{m,j}$  
 ### 6.1.2 인접리스트
 #### 그래프 구현: 인접리스트
 ```C
@@ -313,8 +316,8 @@ bfs: 0 1 2 3 4 6 5
 
 
 ## 6.3 최단 경로
-### 6.3.1 다이크스트라
-#### 예제: 다이크스트라
+### 6.3.1 데이크스트라
+#### 예제: 데이크스트라
 <img src="./static/PS622-dijkstra.png">
 
 시작점: A  
@@ -326,7 +329,7 @@ bfs: 0 1 2 3 4 6 5
 |$S=\{A,C,E\}$|0|8|5|**13**|7|D: $\min(14,7+6)$|
 |$S=\{A,C,E,B\}$|0|8|5|**9**|7|C: $\min(5,8+2)$<br>D: $\min(13,8+1)$|
 |$S=\{A,C,E,B,D\}$|0|8|5|9|7|E: $\min(7,9+4)$|
-#### 다이크스트라
+#### 데이크스트라
 ```C
 #include<stdio.h>
 #include<stdlib.h>
@@ -445,7 +448,93 @@ expanded: 4, distance: 0 8 5 13 7
 expanded: 1, distance: 0 8 5 9 7 
 expanded: 3, distance: 0 8 5 9 7
 ```
-<!-- ### 6.3.2 플로이드-워셜 -->
+### 6.3.2 플로이드-워셜
+#### 플로이드-워셜
+예제 데이터: 데이크스트라 예제와 같음  
+```C
+#include<stdio.h>
+
+#define N   5   // 노드 최대 개수
+#define INF 255
+
+struct graph{
+    unsigned char n; // 노드 개수
+    unsigned char dist[N][N];
+};
+
+struct graph g;
+
+void init_graph(unsigned char n);
+void insert(unsigned char u,unsigned char v,unsigned char w);
+void fw(void);
+
+int main(void){
+    unsigned char j; // loop variable
+    unsigned char k; // loop variable
+    unsigned char n; // number of node
+
+    n=5;
+    init_graph(n);
+    insert(0,1,10);insert(0,2,5);
+    insert(1,2,2); insert(1,3,1);
+    insert(2,1,3); insert(2,3,9); insert(2,4,2);
+    insert(3,4,4);
+    insert(4,0,7); insert(4,3,6);
+    fw();
+    for(j=0;j<n;j++){
+        for(k=0;k<n;k++){
+            if(g.dist[j][k]==INF){printf("INF\t");}
+            else                 {printf("%u\t",g.dist[j][k]);}
+        }
+        printf("\n");
+    }
+    return 0;    
+}
+
+void init_graph(unsigned char n){
+    unsigned char j;
+    unsigned char k;
+    for(j=0;j<n;j++){
+        for(k=0;k<n;k++){
+            if(j==k){g.dist[j][k]=0;}
+            else    {g.dist[j][k]=INF;}
+        }
+    }
+    g.n=n;
+}
+void insert(unsigned char u,unsigned char v,unsigned char w){
+    if(g.dist[u][v]>w){g.dist[u][v]=w;}
+}
+void fw(){
+    unsigned char j;
+    unsigned char k;
+    unsigned char l;
+    for(j=0;j<g.n;j++){
+    for(k=0;k<g.n;k++){
+    for(l=0;l<g.n;l++){
+        if(g.dist[k][l]>g.dist[k][j]+g.dist[j][l]){
+           g.dist[k][l]=g.dist[k][j]+g.dist[j][l];
+        }
+    }}}
+}
+```
+```
+$ ./test
+from/to A       B       C       D       E
+A       0       8       5       9       7
+B       11      0       2       1       4
+C       9       3       0       4       2
+D       11      19      16      0       4
+E       7       15      12      6       0
+```
+<!-- ### 6.3.3 DAG 최단경로: 위상정렬
+#### DAG
+DAG: directed acyclic graph  
+#### 위상 정렬
+```C
+```
+```
+``` -->
 
 
 
