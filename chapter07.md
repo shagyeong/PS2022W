@@ -272,5 +272,72 @@ weight  value
 ```
 
 
-<!-- ## 7.4 그리디 -->
+## 7.4 그리디
+### 7.4.1 acitivity selection
+#### activity selection
+|ID/time|0|1|2|3|4|5|6|7|8|9|
+|---|---|---|---|---|---|---|---|---|---|---|
+|0      |o|o|o|o|-|-|-|-|-|-|
+|**1**  |-|-|o|o|o|-|-|-|-|-|
+|**2**  |-|o|o|-|-|-|-|-|-|-|
+|**3**  |-|-|-|-|-|-|-|o|o|o|
+|4      |-|-|-|o|o|o|o|-|-|-|
+|**5**  |-|-|-|-|-|o|o|o|-|-|
+
+```
+$ ./test
+activity id: 2  start: 1        end: 2
+activity id: 1  start: 2        end: 4
+activity id: 5  start: 5        end: 7
+activity id: 3  start: 7        end: 9
+```
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+struct activity{
+    int i; // id
+    int s; // start: 시작 시간
+    int e; // end: 종료 시간
+};
+
+int compare(const void *u,const void *v); // qsort: 종료 시간 오름차순 정렬
+void as(struct activity a[],int n); // as: activity selection
+
+int main(void){
+    int n=6;
+    struct activity a[6];
+    a[0].i=0; a[0].s=0; a[0].e=3;
+    a[1].i=1; a[1].s=2; a[1].e=4;
+    a[2].i=2; a[2].s=1; a[2].e=2;
+    a[3].i=3; a[3].s=7; a[3].e=9;
+    a[4].i=4; a[4].s=3; a[4].e=6;
+    a[5].i=5; a[5].s=5; a[5].e=7;
+
+    qsort(a,n,sizeof(struct activity),compare);
+    as(a,n);
+}
+
+int compare(const void* u,const void* v){
+    if((((struct activity*)u)->e)<(((struct activity*)v)->e)){return -1;}
+    if((((struct activity*)u)->e)>(((struct activity*)v)->e)){return 1;}
+    return 0;
+}
+void as(struct activity a[],int n){
+    int j=0; // current activity
+    int k; // loop variable
+    
+    printf("activity id: %d\tstart: %d\tend: %d\n",a[j].i,a[j].s,a[j].e);
+    
+    for(k=1;k<n;k++){
+        if(a[k].s>=a[j].e){
+            j=k;
+            printf("activity id: %d\tstart: %d\tend: %d\n",a[j].i,a[j].s,a[j].e);
+        }
+    }
+}
+```
+
+
+
 <!-- ## 7.5 백트래킹 -->
