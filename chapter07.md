@@ -1,11 +1,7 @@
-# 7장 기타 과제 유형
-<!-- ## 7.1 재귀 -->
-
-
-
-## 7.2 분할 정복
-<!-- ### 7.2.1 병합 정렬 -->
-### 7.2.2 거듭제곱 계산
+# 7장 최적화: D&C, DP and Greedy
+## 7.1 Devid and Conquer(분할 정복)
+<!-- ### 7.1.1 병합 정렬 -->
+### 7.1.2 거듭제곱 계산
 #### 거듭제곱 계산
 선형 거듭제곱: $C^{16}=C\times C\times C\times\cdots\times C$  
 로그 거듭제곱: $C^{16}=(((C^2)^2)^2)^2$  
@@ -42,7 +38,7 @@ unsigned int power(unsigned int b,unsigned int e){
 $ ./test
 2^13=8192
 ```
-### 7.2.3 피보나치 수
+### 7.1.3 피보나치 수
 #### 피보나치 수
 피보나치 수열: $F_n=F_{n-2}+F_{n-1}$  
 $\begin{bmatrix}F_2&F_1\\F_1&F_0\end{bmatrix}=\begin{bmatrix}1&1\\1&0\end{bmatrix}$  
@@ -117,8 +113,8 @@ fib(10)=55  fib(11)=89  fib(12)=144 fib(13)=233 fib(14)=377
 
 
 
-## 7.3 DP
-### 7.3.1 피보나치 수: DP
+## 7.2 DP
+### 7.2.1 피보나치 수: DP
 #### 피보나치 수: DP
 연산 횟수: $n$회  
 ```C
@@ -146,7 +142,7 @@ fib(0)=0    fib(1)=1    fib(2)=1    fib(3)=2    fib(4)=3
 fib(5)=5    fib(6)=8    fib(7)=13   fib(8)=21   fib(9)=34
 fib(10)=55  fib(11)=89  fib(12)=144 fib(13)=233 fib(14)=377
 ```
-### 7.3.2 LCS
+### 7.2.2 LCS
 #### LCS
 LCS: longest common subsequence  
 $X=x_1,x_2,\cdots,x_m$  
@@ -225,7 +221,7 @@ $ ./test
 lcs: G_MORN.
 length: 7
 ```
-### 7.3.3 LIS
+### 7.2.3 LIS
 #### LIS
 LIS: longest increasing subsequence  
 #### 이분 탐색 LIS
@@ -294,7 +290,7 @@ $ ./test
 length: 3
 LIS: 1 4 5 
 ```
-### 7.3.4 knapsack
+### 7.2.4 knapsack
 #### knapsack
 ```C
 #include<stdio.h>
@@ -342,8 +338,8 @@ weight  value
 
 
 
-## 7.4 그리디
-### 7.4.1 acitivity selection
+## 7.3 Greedy
+### 7.3.1 acitivity selection
 #### activity selection
 |ID/time|0|1|2|3|4|5|6|7|8|9|
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -407,78 +403,3 @@ void as(struct activity a[],int n){
     }
 }
 ```
-
-
-
-<!-- ## 7.5 백트래킹 -->
-<!-- ## 7.6 문자열 조작 -->
-
-
-
-## 7.7 P-NP 문제
-### 7.7.1 TSP
-#### TSP
-TSP: traveling salesman problem  
-순회 세일즈맨(또는 외판원) 문제  
-#### 부르트포스 TSP
-```C
-#include <stdio.h>
-
-#define N 10 // 노드 최대 개수
-#define INF 2147483647
-
-struct graph{
-    int n;          // 노드 개수
-    int adjs[N][N]; // 인접행렬
-    int vist[N];    // 방문 상태: 0(NO),1(YES)
-    int m;          // 최소비용
-};
-
-void tsp(struct graph* g,int cur,int num,int acc);
-
-int main(void){
-    int j; // loop variable
-
-    // 그래프 초기화
-    struct graph g;
-    g.n=4;
-    g.m=INF;
-    for(j=0;j<g.n;j++){g.vist[j]=0;}
-    g.adjs[0][0]=0; g.adjs[0][1]=10; g.adjs[0][2]=15;g.adjs[0][3]=20;
-    g.adjs[1][0]=5; g.adjs[1][1]=0;  g.adjs[1][2]=9; g.adjs[1][3]=10;
-    g.adjs[2][0]=6; g.adjs[2][1]=13; g.adjs[2][2]=0; g.adjs[2][3]=12;
-    g.adjs[3][0]=8; g.adjs[3][1]=8;  g.adjs[3][2]=9; g.adjs[3][3]=0;
-
-    // TSP
-    g.vist[0]=1;
-    tsp(&g,0,1,0);
-    
-    // 결과 출력
-    if(g.m==INF){printf("-1\n");}
-    else        {printf("%d\n",g.m);}
-}
-
-void tsp(struct graph* g,int cur,int num,int acc){
-    int j; // loop variable
-    if(num==g->n){
-        if(g->adjs[cur][0]!=0){
-            if(g->m>acc+g->adjs[cur][0]){
-               g->m=acc+g->adjs[cur][0];
-            }
-        }
-        return;
-    }
-    for(j=0;j<g->n;j++){
-        if((g->vist[j]==0)&&(g->adjs[cur][j]!=0)){
-            g->vist[j]=1;
-            tsp(g,j,num+1,acc+g->adjs[cur][j]);
-            g->vist[j]=0;
-        }
-    }
-}
-```
-```
-$ ./test
-35
-```
-<!-- #### DP TSP -->
