@@ -527,14 +527,143 @@ C       9       3       0       4       2
 D       11      19      16      0       4
 E       7       15      12      6       0
 ```
-<!-- ### 6.3.3 DAG 최단경로: 위상정렬
+### 6.3.3 DAG 최단경로: 위상정렬
 #### DAG
 DAG: directed acyclic graph  
-#### 위상 정렬
+#### undirected DAG 위상 정렬
+<img src="./static/PS633-tsort.png">
+
 ```C
+#include<stdio.h>
+#include<stdlib.h>
+
+#define N 11
+
+struct node{
+    unsigned char v; // value: 0 ~ N-1, 인접리스트 인덱스 겸용
+    struct node* next;
+};
+
+struct graph{
+    unsigned char n; // 노드 개수
+    struct node* adjs[N];
+    unsigned char ideg[N]; // indegree: 진입 차수
+    unsigned char heap[N]; // 최소 힙: 사전순 유지
+    unsigned char i;       // item: 엘리먼트 개수
+};
+
+void tsort(struct graph* g); // topological sort
+void init_graph(struct graph* g, unsigned char n);
+void insert(struct graph* g,unsigned char u,unsigned char v); // u->v
+void push(struct graph* g,unsigned char v);
+unsigned char pop(struct graph* g);
+
+int main(void){
+    struct graph* g=(struct graph*)malloc(sizeof(struct graph));
+    init_graph(g,11); // 10+1: 1부터 시작하는 과제 환경(힙)
+    insert(g,1,3); insert(g,1,4);insert(g,2,4); insert(g,2,5);insert(g,2,10);
+    insert(g,3,6); insert(g,3,7);insert(g,4,6); insert(g,5,7);insert(g,6,9);
+    insert(g,6,10);insert(g,7,9);insert(g,8,10);
+    tsort(g);
+}
+void tsort(struct graph* g){
+    unsigned char j; // loop variable
+    unsigned char u;
+    struct node* b; // 인접 노드 진입 차수 조작
+    
+    // 진입 차수 0 노드 push
+    for(j=1;j<g->n;j++){
+        if(g->ideg[j]==0){
+            push(g,j);
+        }
+    }
+
+    // tsort
+    while(g->i>0){
+        u=pop(g); // 힙에 의해 사전순 추출
+        printf("%u ",u);
+
+        b=g->adjs[u];
+        while((b=b->next)!=NULL){
+            if((--(g->ideg[b->v]))==0){
+                push(g,b->v);
+            }
+        }
+    }
+}
+void init_graph(struct graph* g,unsigned char n){
+    unsigned char j;
+    struct node* new;
+    for(j=0;j<n;j++){
+        new=(struct node*)malloc(sizeof(struct node));
+        new->v=j;
+        new->next=NULL;
+        g->adjs[j]=new;
+        g->ideg[j]=0;
+    }
+    g->n=n;
+    g->i=0; // number of heap item
+}
+void insert(struct graph* g,unsigned char u,unsigned char v){
+    struct node* B; // 버퍼
+    struct node* V=(struct node*)malloc(sizeof(struct node));
+    
+    // 진입 차수 갱신
+    g->ideg[v]+=1;
+
+    // 삽입
+    V->v=v;
+    V->next=NULL;
+    B=g->adjs[u];
+    while((B->next!=NULL)&&(v>B->next->v)){B=B->next;}
+    V->next=B->next;
+    B->next=V;
+}
+void push(struct graph* g,unsigned char v){
+    unsigned char j; // loop variable
+    unsigned char t; // temp variable(swap)
+    g->heap[++(g->i)]=v; // 선형 트리 마지막 엘리먼트로 삽입
+    j=g->i;
+
+    // heapify
+    while((j>1)&&(g->heap[j]<g->heap[j/2])){
+        t=g->heap[j];
+        g->heap[j]=g->heap[j/2];
+        g->heap[j/2]=t;
+        j/=2;
+    }
+}
+unsigned char pop(struct graph* g){
+    unsigned char r; // root: 리턴값
+    unsigned char j; // loop variable
+    unsigned char t; // temp variable(swap)
+    unsigned char c; // child
+
+    r=g->heap[1]; // 루트
+    g->heap[1]=g->heap[(g->i)--]; // 선형 트리 마지막 엘리먼트를 루트로
+    j=1;
+
+    // heapify
+    while(j*2<=g->i){
+        c=j*2; // lchild
+        if((c+1<=g->i)&&(g->heap[c+1]<g->heap[c])){
+            c+=1; // rchild: j*2+1
+        }
+        if(g->heap[j]<=g->heap[c]){
+            break;
+        }
+        t=g->heap[j];
+        g->heap[j]=g->heap[c];
+        g->heap[c]=t;
+        j=c;
+    }
+    return r;
+}
 ```
 ```
-``` -->
+$ ./test
+1 2 3 4 5 6 7 8 9 10
+```
 
 
 
