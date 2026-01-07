@@ -225,7 +225,76 @@ $ ./test
 lcs: G_MORN.
 length: 7
 ```
-### 7.3.3 knapsack
+### 7.3.3 LIS
+#### LIS
+LIS: longest increasing subsequence  
+#### 이분 탐색 LIS
+LIS 길이 작성 루프  
+|a[j]|i|p|
+|---|---|---|
+|2|**-1**|{0}|
+|1|0|{0,0}|
+|4|**-1**|{0,0,1}|
+|5|**-1**|{0,0,1,2}|
+|3|1|{0,0,1,2,1}|
+
+역추적 루프  
+|p[j]|e|a[j]|q[j]|
+|---|---|---|---|
+|p[4]=1|2|a[4]=3||
+|p[3]=2|2--|a[3]=5|**q[2]=5**|
+|p[2]=1|1--|a[2]=4|**q[1]=4**|
+|p[1]=0|0--|a[1]=1|**q[0]=1**|
+|p[0]=0|-1 |a[0]=2||
+
+```C
+#include<stdio.h>
+
+int main(void){
+    int j; // loop variable
+    int n=5;
+    int a[5]={2,1,4,5,3};
+    int t[5]; // tmp: LIS 길이 작성
+    int p[5]; // position: 역추적
+    int q[5]; // 역추적 결과 저장
+    int s=0; // length
+    int l;   // left
+    int m;   // middle
+    int r;   // right
+    int i;   // location
+    int e;   // end: 역추적
+    
+    // LIS 길이 작성
+    for(j=0;j<n;j++){
+        l=0;
+        r=s-1;
+        i=-1;
+        while(l<=r){
+            m=(l+r)/2;
+            if(t[m]<a[j]){l=m+1;}
+            else         {i=m; r=m-1;}
+        }
+        if(i==-1){p[j]=s; t[s++]=a[j];}
+        else     {p[j]=i; t[i  ]=a[j];}
+    }
+    
+    // 역추적
+    e=s-1;
+    for(j=n-1;j>=0;j--){
+        if(p[j]==e){q[e--]=a[j];}
+    }
+
+    // 결과 출력
+    printf("length: %d\nLIS: ",s);
+    for(j=0;j<s;j++){printf("%d ",q[j]);}printf("\n");
+}
+```
+```
+$ ./test
+length: 3
+LIS: 1 4 5 
+```
+### 7.3.4 knapsack
 #### knapsack
 ```C
 #include<stdio.h>
@@ -270,6 +339,7 @@ weight  value
 3       6       0 0 0 0 8 8 13 13 
 5       12      0 0 0 6 8 8 13 14 
 ```
+
 
 
 ## 7.4 그리디
