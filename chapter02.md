@@ -6,33 +6,31 @@
 #include<stdio.h>
 
 int main(void){
-    unsigned char i;
-    unsigned char a[3]={1,2,3};
-    for(i=0;i<3;i++){printf("%u\n",a[i]);}
+    int j; 
+    int a[3];
+    for(j=0;j<3;j++){a[j]=j;}
+    for(j=0;j<3;j++){printf("%d ",a[j]);}
 }
+```
+```
+$ ./test
+0 1 2 
 ```
 #### 선형리스트 저장 순서
 ```C
 #include<stdio.h>
 
 int main(void){
-    unsigned char i;
-    unsigned char j;
-    unsigned char a[2][3]={
-        {1,2,3},
-        {4,5,6}
-    };
-    for(i=0;i<2;i++){
-        for(j=0;j<3;j++){
-            printf("%u: %p\t", a[i][j],&a[i][j]);
-        }printf("\n");
-    }
+    int j;
+    int k;
+    int a[2][3]={{1,2,3},{4,5,6}};
+    for(j=0;j<2;j++){for(k=0;k<3;k++){printf("%d: %p\t",a[j][k],&a[j][k]);}printf("\n");}
 }
 ```
 ```
 $ ./test
-1: 0x7ffd0ba2b852       2: 0x7ffd0ba2b853       3: 0x7ffd0ba2b854
-4: 0x7ffd0ba2b855       5: 0x7ffd0ba2b856       6: 0x7ffd0ba2b857
+1: 0x7ffe36f15ca0       2: 0x7ffe36f15ca4       3: 0x7ffe36f15ca8
+4: 0x7ffe36f15cac       5: 0x7ffe36f15cb0       6: 0x7ffe36f15cb4
 ```
 
 
@@ -46,95 +44,80 @@ $ ./test
 |2.2.3 양방향|head|prev<br>next|append()<br>insert()<br>delete()|
 ### 2.2.1 연결리스트
 #### 기본 연결리스트
-엘리먼트 추가: append(), delete()  
-엘리먼트 삭제: delete()
 ```C
 #include<stdio.h>
 #include<stdlib.h>
 
 struct node{
-    unsigned char v;
+    int v; // value
     struct node* next;
 };
 
-struct linkedlist{
-    unsigned char n; //노드 개수
-    struct node* head;
+struct list{
+    int n;          // number of item
+    struct node* h; // head
 };
 
-void printll(struct linkedlist* ll);
-void append(struct linkedlist* ll,                  struct node* new);// append
-void insert(struct linkedlist* ll,unsigned char loc,struct node* new);// i번째 인덱스에 삽입
-void delete(struct linkedlist* ll,unsigned char loc);                 // i번째 노드 삭제
+void printl(struct list* l);
+void append(struct list* l,int v);
+void insert(struct list* l,int v,int i);
+void delete(struct list* l,      int i);
 
 int main(void){
-    unsigned char i;
-    struct node* new;
-    // 연결리스트 생성
-    struct linkedlist* ll=(struct linkedlist*)malloc(sizeof(struct linkedlist));
-    ll->n=0;
-    ll->head=(struct node*)malloc(sizeof(struct node));
-    ll->head->v=255;
-    ll->head->next=NULL;
+    struct list l;
+    l.n=0;
+    l.h=(struct node*)malloc(sizeof(struct node));
+    l.h->v=-1;
+    l.h->next=NULL;
 
-    // 연결리스트 초기화: append()
-    for(i=0;i<5;i++){
-        new=(struct node*)malloc(sizeof(struct node));
-        new->v=i;
-        new->next=NULL;
-        append(ll,new);
-    }
-    printll(ll);
-
-    // insert(), delete()
-    new=(struct node*)malloc(sizeof(struct node));
-    new->v=7;
-    new->next=NULL;
-    insert(ll,3,new);printll(ll);
-    delete(ll,3);    printll(ll);    
+    // append(), insert()
+    append(&l,3);   append(&l,2);   append(&l,1);
+    insert(&l,4,3); insert(&l,5,0); insert(&l,6,3);
+    printl(&l);
+    
+    // delete
+    delete(&l,5);
+    delete(&l,0);
+    printl(&l);
 }
 
-void printll(struct linkedlist* ll){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=ll->head->next;
-    for(i=0;i<ll->n;i++){
-        printf("%hhu ",buf->v);
-        buf=buf->next;
-    }
-    printf("\n");
+void printl(struct list* l){
+    struct node* b=l->h;
+    while((b=b->next)!=NULL){printf("%d ",b->v);}printf("\n");
 }
-void append(struct linkedlist* ll,struct node* new){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=ll->head;
-    for(i=0;i<ll->n;i++){buf=buf->next;}
-    buf->next=new;
-    ll->n+=1;
+void append(struct list* l,int v){
+    int j;
+    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    struct node* b;
+    b=l->h; for(j=0;j<l->n;j++){b=b->next;}
+    n->v=v; n->next=NULL;
+    b->next=n;
+    l->n+=1;
 }
-void insert(struct linkedlist* ll,unsigned char loc,struct node* new){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=ll->head;
-    for(i=0;i<loc;i++){buf=buf->next;}
-    new->next=buf->next;
-    buf->next=new;
-    ll->n+=1;
+void insert(struct list* l,int v,int i){
+    int j;
+    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    struct node* b;
+    b=l->h; for(j=0;j<i;j++){b=b->next;}
+    n->v=v; n->next=b->next;
+    b->next=n;
+    l->n+=1;
 }
-void delete(struct linkedlist* ll,unsigned char loc){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=ll->head; 
-    for(i=0;i<loc;i++){buf=buf->next;}
-    buf->next=buf->next->next;
-    ll->n-=1;
+void delete(struct list* l,      int i){
+    int j;
+    struct node* b;
+    struct node* f; // free
+    b=l->h; for(j=0;j<i;j++){b=b->next;}
+    f=b->next;
+    b->next=b->next->next;
+    free(f);
+    l->n-=1;
 }
 ```
 ```
 $ ./test
-0 1 2 3 4       # 초기 연결리스트
-0 1 2 7 3 4     # insert()
-0 1 2 3 4       # delete()
+5 3 2 6 1 4 
+3 2 6 1 
 ```
 ### 2.2.2 원형 연결리스트
 #### 원형 연결리스트
@@ -143,91 +126,74 @@ $ ./test
 #include<stdlib.h>
 
 struct node{
-    unsigned char v;
+    int v; // value
     struct node* next;
 };
 
-struct linkedlist{
-    unsigned char n; //노드 개수
-    struct node* head;
-    struct node* tail;
+struct list{
+    int n;          // number of item
+    struct node* h; // head
+    struct node* t; // tail
 };
 
-void printll(struct linkedlist* ll);
-void append(struct linkedlist* ll,                  struct node* new);// append
-void insert(struct linkedlist* ll,unsigned char loc,struct node* new);// i번째 인덱스에 삽입
-void delete(struct linkedlist* ll,unsigned char loc);                 // i번째 노드 삭제
+void printl(struct list* l);
+void append(struct list* l,int v);
+void insert(struct list* l,int v,int i);
+void delete(struct list* l,      int i);
 
 int main(void){
-    unsigned char i;
-    struct node* new;
-    // 연결리스트 생성
-    struct linkedlist* ll=(struct linkedlist*)malloc(sizeof(struct linkedlist));
-    ll->n=0;
-    ll->head=(struct node*)malloc(sizeof(struct node));
-    ll->head->v=255;
-    ll->head->next=NULL; // 헤드: 더미
-    ll->tail=ll->head;   // 테일: 포인팅
+    struct list l;
+    l.n=0;
+    l.h=(struct node*)malloc(sizeof(struct node)); // head: dummy
+    l.t=l.h;                                       // tail: pointing
+    l.h->v=-1;
+    l.h->next=NULL;
 
-    // 연결리스트 초기화: append()
-    for(i=0;i<5;i++){
-        new=(struct node*)malloc(sizeof(struct node));
-        new->v=i;
-        new->next=NULL;
-        append(ll,new);
-    }
-    printll(ll);
-
-    // insert(), delete()
-    new=(struct node*)malloc(sizeof(struct node));
-    new->v=7;
-    new->next=NULL;
-    insert(ll,5,new);printll(ll);
-    delete(ll,5);    printll(ll);
-    append(ll,new);  printll(ll);
+    // append(), insert()
+    append(&l,3);   append(&l,2);   append(&l,1);
+    insert(&l,4,3); insert(&l,5,0); insert(&l,6,3);
+    printl(&l);
+    
+    // delete
+    delete(&l,5);
+    delete(&l,0);
+    printl(&l);
 }
 
-void printll(struct linkedlist* ll){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=ll->head->next;
-    for(i=0;i<ll->n;i++){
-        printf("%hhu ",buf->v);
-        buf=buf->next;
-    }
-    printf("\n");
+void printl(struct list* l){
+    struct node* b=l->h;
+    while((b=b->next)!=NULL){printf("%d ",b->v);}printf("\n");
 }
-void append(struct linkedlist* ll,struct node* new){
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=ll->tail;
-    buf->next=new;
-    ll->tail=new;
-    ll->n+=1;
+void append(struct list* l,int v){
+    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    struct node* b;
+    n->v=v; n->next=NULL;
+    b=l->t; b->next=n;
+    l->t=n; l->n+=1;
 }
-void insert(struct linkedlist* ll,unsigned char loc,struct node* new){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=ll->head;
-    for(i=0;i<loc;i++){buf=buf->next;}
-    new->next=buf->next;
-    buf->next=new;
-    ll->n+=1;
+void insert(struct list* l,int v,int i){
+    int j;
+    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    struct node* b;
+    b=l->h; for(j=0;j<i;j++){b=b->next;}
+    n->v=v; n->next=b->next;
+    b->next=n;
+    l->n+=1;
 }
-void delete(struct linkedlist* ll,unsigned char loc){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=ll->head; 
-    for(i=0;i<loc;i++){buf=buf->next;}
-    buf->next=buf->next->next;
-    ll->n-=1;
+void delete(struct list* l,      int i){
+    int j;
+    struct node* b;
+    struct node* f; // free
+    b=l->h; for(j=0;j<i;j++){b=b->next;}
+    f=b->next;
+    b->next=b->next->next;
+    free(f);
 }
 ```
 ```
 $ ./test
-0 1 2 3 4       # 초기 연결리스트
-0 1 2 3 4 7     # insert
-0 1 2 3 4       # delete
-0 1 2 3 4 7     # append
+5 3 2 6 1 4 
+3 2 6 1 
 ```
 ### 2.2.3 양방향 연결리스트
 #### 양방향 연결리스트
@@ -236,97 +202,82 @@ $ ./test
 #include<stdlib.h>
 
 struct node{
-    unsigned char v;
+    int v; // value
     struct node* prev;
     struct node* next;
 };
 
-struct linkedlist{
-    unsigned char n; //노드 개수
-    struct node* head;
+struct list{
+    int n;          // number of item
+    struct node* h; // head
 };
 
-void printll(struct linkedlist* ll);
-void append(struct linkedlist* ll,                  struct node* new);// append
-void insert(struct linkedlist* ll,unsigned char loc,struct node* new);// i번째 인덱스에 삽입
-void delete(struct linkedlist* ll,unsigned char loc);                 // i번째 노드 삭제
+void printl(struct list* l);
+void append(struct list* l,int v);
+void insert(struct list* l,int v,int i);
+void delete(struct list* l,      int i);
 
 int main(void){
-    unsigned char i;
-    struct node* new;
-    // 연결리스트 생성
-    struct linkedlist* ll=(struct linkedlist*)malloc(sizeof(struct linkedlist));
-    ll->n=0;
-    ll->head=(struct node*)malloc(sizeof(struct node));
-    ll->head->v=255;
-    ll->head->prev=ll->head;
-    ll->head->next=ll->head;
+    struct list l;
+    l.n=0;
+    l.h=(struct node*)malloc(sizeof(struct node));
+    l.h->v=-1;
+    l.h->prev=l.h;
+    l.h->next=l.h;
 
-    // 연결리스트 초기화: append()
-    for(i=0;i<5;i++){
-        new=(struct node*)malloc(sizeof(struct node));
-        new->v=i;
-        new->prev=NULL;
-        new->next=NULL;
-        append(ll,new);
-    }
-    printll(ll);
-
-    // insert(), delete()
-    new=(struct node*)malloc(sizeof(struct node));
-    new->v=7;
-    new->next=NULL;
-    insert(ll,5,new);printll(ll);
-    delete(ll,5);    printll(ll);
-    append(ll,new);  printll(ll);
+    // append(), insert()
+    append(&l,3);   append(&l,2);   append(&l,1);
+    insert(&l,4,3); insert(&l,5,0); insert(&l,6,3);
+    printl(&l);
+    
+    // delete
+    delete(&l,5);
+    delete(&l,0);
+    printl(&l);
 }
 
-void printll(struct linkedlist* ll){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=ll->head->next;
-    for(i=0;i<ll->n;i++){
-        printf("%hhu ",buf->v);
-        buf=buf->next;
-    }
-    printf("\n");
+void printl(struct list* l){
+    int j;
+    struct node* b=l->h->next;
+    for(j=0;j<l->n;j++){printf("%d ",b->v);b=b->next;}printf("\n");
 }
-void append(struct linkedlist* ll,struct node* new){
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=ll->head;
-    new->prev=buf->prev;
-    new->next=buf;
-    buf->prev->next=new;
-    buf->prev=new;
-    ll->n+=1;
+void append(struct list* l,int v){
+    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    n->v=v;
+    n->prev         =l->h->prev;
+    n->next         =l->h;
+    l->h->prev->next=n;
+    l->h->prev      =n;
+    l->n+=1;
 }
-void insert(struct linkedlist* ll,unsigned char loc,struct node* new){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=ll->head;
-    for(i=0;i<loc;i++){buf=buf->next;}
-    new->next=buf->next;
-    new->prev=buf;
-    buf->next->prev=new;
-    buf->next=new;
-    ll->n+=1;
+void insert(struct list* l,int v,int i){
+    int j;
+    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    struct node* b;
+    b=l->h; for(j=0;j<i;j++){b=b->next;}
+    n->v=v;
+    n->prev      =b;
+    n->next      =b->next;
+    b->next->prev=n;
+    b->next      =n;
+    l->n+=1;
 }
-void delete(struct linkedlist* ll,unsigned char loc){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=ll->head; 
-    for(i=0;i<loc;i++){buf=buf->next;}
-    buf->next->next->prev=buf;
-    buf->next=buf->next->next;
-    ll->n-=1;
+void delete(struct list* l,      int i){
+    int j;
+    struct node* b;
+    struct node* f; // free
+    b=l->h; for(j=0;j<i;j++){b=b->next;}
+    f=b->next;
+    b->next->next->prev=b;
+    b->next            =b->next->next;
+    free(f);
+    l->n-=1;
 }
 ```
 ```
 $ ./test
-0 1 2 3 4       # 초기 연결리스트
-0 1 2 3 4 7     # insert
-0 1 2 3 4       # delete
-0 1 2 3 4 7     # append
+5 3 2 6 1 4 
+3 2 6 1 
 ```
 
 
@@ -335,52 +286,59 @@ $ ./test
 ### 2.3절 구현체 요약
 ||구현체|기능|
 |---|---|---|
-|2.3.1 배열 스택|선형리스트|push()<br>pop()|
+|2.3.1 선형 스택|배열|push()<br>pop()|
 |2.3.2 연결 스택|연결리스트|push()<br>pop()|
-### 2.3.1 배열 스택
-#### 배열 스택
+### 2.3.1 선형 스택
+#### 선형 스택
 ```C
 #include<stdio.h>
 #include<stdlib.h>
 
+# define N 10
+
 struct stack{
-    unsigned char n; // 노드 개수
-    unsigned char l[10];    
+    int n;    // number of item
+    int a[N]; // linear stack
 };
 
-void push(struct stack* s,unsigned char new){s->l[s->n]=new;s->n+=1;}
-unsigned char pop(struct stack* s){return s->l[--(s->n)];}
-void printstack(struct stack* s){
-    unsigned char i;
-    for(i=0;i<s->n;i++){printf("%hhu ",s->l[i]);}
-    printf("\n");
-}
+void prints(struct stack* s);
+void   push(struct stack* s,int v);
+int     pop(struct stack* s);
 
 int main(void){
-    unsigned char i;
-    struct stack* s=(struct stack*)malloc(sizeof(struct stack));
-    s->n=0;
-    for(i=0;i<5;i++){
-        push(s,i);
-    }
-    printstack(s);
-    printf("pop:  %hhu, printstack: ",pop(s)); printstack(s);
-    printf("pop:  %hhu, printstack: ",pop(s)); printstack(s);
-    printf("pop:  %hhu, printstack: ",pop(s)); printstack(s);
-    printf("push: 2, printstack: ");push(s,2); printstack(s);
-    printf("push: 3, printstack: ");push(s,3); printstack(s);
-    printf("push: 4, printstack: ");push(s,4); printstack(s);
+    struct stack s;
+    s.n=0;
+
+    // push()
+    printf("push(1), stack: "); push(&s,1); prints(&s);
+    printf("push(2), stack: "); push(&s,2); prints(&s);
+    printf("push(3), stack: "); push(&s,3); prints(&s);
+
+    // pop()
+    printf("pop: %d, stack: ",pop(&s)); prints(&s);
+    printf("pop: %d, stack: ",pop(&s)); prints(&s);
+    printf("pop: %d, stack: ",pop(&s)); prints(&s);
+}
+
+void prints(struct stack* s){
+    int j;
+    for(j=0;j<s->n;j++){printf("%d ",s->a[j]);}printf("\n");
+}
+void   push(struct stack* s,int v){
+    s->a[(s->n)++]=v;
+}
+int     pop(struct stack* s){
+    return s->a[--(s->n)];
 }
 ```
 ```
 $ ./test
-0 1 2 3 4 # 초기 스택
-pop:  4, printstack: 0 1 2 3 
-pop:  3, printstack: 0 1 2 
-pop:  2, printstack: 0 1 
-push: 2, printstack: 0 1 2 
-push: 3, printstack: 0 1 2 3 
-push: 4, printstack: 0 1 2 3 4 
+push(1), stack: 1 
+push(2), stack: 1 2 
+push(3), stack: 1 2 3 
+pop: 3, stack: 1 2 
+pop: 2, stack: 1 
+pop: 1, stack: 
 ```
 ### 2.3.2 연결 스택
 #### 연결 스택
@@ -389,66 +347,65 @@ push: 4, printstack: 0 1 2 3 4
 #include<stdlib.h>
 
 struct node{
-    unsigned char v;
+    int v; // value
     struct node* next;
 };
 
 struct stack{
-    unsigned char n; // 노드 개수
-    struct node* head;
+    int n;          // number of item
+    struct node* h; // head
 };
-void push(struct stack* s,struct node* new);
-struct node* pop(struct stack* s);
-void printstack(struct stack* s);
+
+void prints(struct stack* s);
+void   push(struct stack* s,int v);
+int     pop(struct stack* s);
 
 int main(void){
-    unsigned char i;
-    struct node* new;
+    struct stack s;
+    s.n=0;
+    s.h=(struct node*)malloc(sizeof(struct node));
+    s.h->v=-1;
+    s.h->next=NULL;
 
-    struct stack* s=(struct stack*)malloc(sizeof(struct stack));
-    s->n=0;
-    s->head=(struct node*)malloc(sizeof(struct node));
-    s->head->v=25;
-    s->head->next=NULL;
+    // push()
+    printf("push(1), stack: "); push(&s,1); prints(&s);
+    printf("push(2), stack: "); push(&s,2); prints(&s);
+    printf("push(3), stack: "); push(&s,3); prints(&s);
 
-    for(i=0;i<5;i++){
-        new=(struct node*)malloc(sizeof(struct node));
-        new->v=i;
-        new->next=NULL;
-        push(s,new);
-    }
-    printstack(s);
-    printf("pop: %hhu, printstack: ",pop(s)->v); printstack(s);
-    printf("pop: %hhu, printstack: ",pop(s)->v); printstack(s);
-    printf("pop: %hhu, printstack: ",pop(s)->v); printstack(s);
+    // pop()
+    printf("pop: %d, stack: ",pop(&s)); prints(&s);
+    printf("pop: %d, stack: ",pop(&s)); prints(&s);
+    printf("pop: %d, stack: ",pop(&s)); prints(&s);
 }
 
-void push(struct stack* s,struct node* new){
-    new->next=s->head->next;
-    s->head->next=new;
+void prints(struct stack* s){
+    struct node* b=s->h;
+    while((b=b->next)!=NULL){printf("%d ",b->v);}printf("\n");
+}
+void   push(struct stack* s,int v){
+    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    n->v=v; n->next=s->h->next;
+    s->h->next=n;
     s->n+=1;
 }
-struct node* pop(struct stack* s){
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=s->head->next;
-    s->head->next=s->head->next->next;
+int     pop(struct stack* s){
+    int p;          // pop
+    struct node* f; // free
+    f=s->h->next; p=f->v;
+    s->h->next=s->h->next->next;
+    free(f);
     s->n-=1;
-    return buf;
-}
-void printstack(struct stack* s){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=s->head->next;
-    for(i=0;i<s->n;i++){printf("%hhu ",buf->v);buf=buf->next;}
-    printf("\n");
+    return p;
 }
 ```
 ```
 $ ./test
-4 3 2 1 0 # 초기 스택
-pop: 4, printstack: 3 2 1 0 
-pop: 3, printstack: 2 1 0 
-pop: 2, printstack: 1 0 
+push(1), stack: 1 
+push(2), stack: 2 1 
+push(3), stack: 3 2 1 
+pop: 3, stack: 2 1 
+pop: 2, stack: 1 
+pop: 1, stack: 
 ```
 
 
@@ -457,13 +414,67 @@ pop: 2, printstack: 1 0
 ### 2.4절 구현체 요약
 ||구현체|기능|
 |---|---|---|
-|2.4.1 순차 큐|||
+|2.4.1 선형 큐|배열|enqueue()<br>dequeue()|
 |2.4.2 연결 큐|원형 연결리스트|enqueue()<br>dequeue()|
-|2.4.3 데크|양방향 연결리스트|enqueue_front()<br>dequeue_front()<br>enqueue_rear()<br>dequeue_rear()|
-<!-- ### 2.4.1 순차 큐
-#### 순차 큐
+|2.4.3 데크|선형: 배열<br>연결: 양방향 연결리스트|enqueue_front()<br>dequeue_front()<br>enqueue_rear()<br>dequeue_rear()|
+### 2.4.1 선형 큐
+#### 선형 큐
 ```C
-``` -->
+#include<stdio.h>
+#include<stdlib.h>
+
+# define N 10
+
+struct queue{
+    int n;      // number of item
+    int f;      // front
+    int r;      // rear
+    int a[N*N]; // linear queue
+};
+
+void printq(struct queue* q);
+void enqueue(struct queue* q,int v);
+int  dequeue(struct queue* q);
+
+int main(void){
+    struct queue q;
+    q.n=0;
+    q.f=0;
+    q.r=0;
+
+    // enqueue()
+    printf("enqueue(1), queue: "); enqueue(&q,1); printq(&q);
+    printf("enqueue(2), queue: "); enqueue(&q,2); printq(&q);
+    printf("enqueue(3), queue: "); enqueue(&q,3); printq(&q);
+
+    // dequeue()
+    printf("dequeue: %d, queue: ",dequeue(&q)); printq(&q);
+    printf("dequeue: %d, queue: ",dequeue(&q)); printq(&q);
+    printf("dequeue: %d, queue: ",dequeue(&q)); printq(&q);
+}
+
+void printq(struct queue* q){
+    int j;
+    for(j=q->f;j<q->r;j++){printf("%d ",q->a[j]);}printf("\n");
+}
+void enqueue(struct queue* q,int v){
+    q->a[q->r++]=v;
+    q->n++;
+}
+int  dequeue(struct queue* q){
+    q->n--;
+    return q->a[q->f++];
+}
+```
+```
+$ ./test
+enqueue(1), queue: 1 
+enqueue(2), queue: 1 2 
+enqueue(3), queue: 1 2 3 
+dequeue: 1, queue: 2 3 
+dequeue: 2, queue: 3 
+dequeue: 3, queue: 
+```
 ### 2.4.2 연결 큐
 #### 연결 큐
 ```C
@@ -471,72 +482,68 @@ pop: 2, printstack: 1 0
 #include<stdlib.h>
 
 struct node{
-    unsigned char v;
+    int v; // value
     struct node* next;
 };
 
 struct queue{
-    unsigned char n; //노드 개수
-    struct node* head;
-    struct node* tail;
+    int n;          // number of item
+    struct node* h; // head
+    struct node* t; // tail
 };
 
-void enqueue(struct queue* q, struct node* new);
-struct node* dequeue(struct queue* q);
-void printqueue(struct queue* q);
+void printq(struct queue* q);
+void enqueue(struct queue* q,int v);
+int  dequeue(struct queue* q);
 
 int main(void){
-    unsigned char i;
-    struct node* new;
-    // 큐 생성
-    struct queue* q=(struct queue*)malloc(sizeof(struct queue));
-    q->n=0;
-    q->head=(struct node*)malloc(sizeof(struct node));
-    q->head->v=255;
-    q->head->next=NULL;
-    q->tail=q->head;
+    struct queue q;
+    q.n=0;
+    q.h=(struct node*)malloc(sizeof(struct node)); // head: dummy
+    q.t=q.h;                                       // tail: pointing
+    q.h->v=-1;
+    q.h->next=NULL;
 
-    // 큐 초기화
-    for(i=0;i<5;i++){
-        new=(struct node*)malloc(sizeof(struct node));
-        new->v=i;
-        new->next=NULL;
-        enqueue(q,new);
-    }
-    printqueue(q);
-    printf("dequeue: %hhu, printqueue: ",dequeue(q)->v); printqueue(q);
-    printf("dequeue: %hhu, printqueue: ",dequeue(q)->v); printqueue(q);
-    printf("dequeue: %hhu, printqueue: ",dequeue(q)->v); printqueue(q);
+    // enqueue()
+    printf("enqueue(1), queue: "); enqueue(&q,1); printq(&q);
+    printf("enqueue(2), queue: "); enqueue(&q,2); printq(&q);
+    printf("enqueue(3), queue: "); enqueue(&q,3); printq(&q);
+
+    // dequeue()
+    printf("dequeue: %d, queue: ",dequeue(&q)); printq(&q);
+    printf("dequeue: %d, queue: ",dequeue(&q)); printq(&q);
+    printf("dequeue: %d, queue: ",dequeue(&q)); printq(&q);
 }
 
-void enqueue(struct queue* q, struct node* new){
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=q->tail;
-    buf->next=new;
-    q->tail=new;
-    q->n+=1;
+void printq(struct queue* q){
+    struct node* b=q->h;
+    while((b=b->next)!=NULL){printf("%d ",b->v);}printf("\n");
 }
-struct node* dequeue(struct queue* q){
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=q->head->next;
-    q->head->next=q->head->next->next;
+void enqueue(struct queue* q,int v){
+    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    struct node* b;
+    n->v=v; n->next=NULL;
+    b=q->t; b->next=n;
+    q->t=n; q->n+=1;
+}
+int  dequeue(struct queue* q){
+    int d; // dequeue
+    struct node* f; // free
+    f=q->h->next; d=f->v;
+    q->h->next=q->h->next->next;
+    free(f);
     q->n-=1;
-    return buf;
-}
-void printqueue(struct queue* q){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=q->head->next;
-    for(i=0;i<q->n;i++){printf("%hhu ",buf->v);buf=buf->next;}
-    printf("\n");
+    return d;
 }
 ```
 ```
 $ ./test
-0 1 2 3 4 # 초기 큐
-dequeue: 0, printquueue: 1 2 3 4 
-dequeue: 1, printquueue: 2 3 4 
-dequeue: 2, printquueue: 3 4 
+enqueue(1), queue: 1 
+enqueue(2), queue: 1 2 
+enqueue(3), queue: 1 2 3 
+dequeue: 1, queue: 2 3 
+dequeue: 2, queue: 3 
+dequeue: 3, queue: 
 ```
 ### 2.4.3 데크
 #### 데크
@@ -545,98 +552,104 @@ dequeue: 2, printquueue: 3 4
 #include<stdlib.h>
 
 struct node{
-    unsigned char v;
+    int v; // value
     struct node* prev;
     struct node* next;
 };
 
-struct deque{
-    unsigned char n; //노드 개수
-    struct node* head;
+struct queue{
+    int n;          // number of item
+    struct node* h; // head
 };
 
-void enqueue_front(struct deque* d,struct node* new);
-void enqueue_rear (struct deque* d,struct node* new);
-struct node* dequeue_front(struct deque* d);
-struct node* dequeue_rear (struct deque* d);
-void printdeque(struct deque* d);
+void printq(struct queue* q);
+void fenqueue(struct queue* q,int v);
+void renqueue(struct queue* q,int v);
+int  fdequeue(struct queue* q);
+int  rdequeue(struct queue* q);
 
 int main(void){
-    unsigned char i;
-    struct node* new;
-    // 데크 생성
-    struct deque* d=(struct deque*)malloc(sizeof(struct deque));
-    d->n=0;
-    d->head=(struct node*)malloc(sizeof(malloc));
-    d->head->v=255;
-    d->head->prev=d->head;
-    d->head->next=d->head;
+    struct queue q;
+    q.n=0;
+    q.h=(struct node*)malloc(sizeof(struct node));
+    q.h->v=-1;
+    q.h->prev=q.h;
+    q.h->next=q.h;
 
-    // 데크 초기화: enqueue_rear
-    for(i=3;i<6;i++){
-        new=(struct node*)malloc(sizeof(struct node));
-        new->v=i; new->prev=NULL; new->next=NULL;
-        enqueue_rear(d,new);
-    }
-    printdeque(d);
-    // 데크 초기화: enqueue_front
-    for(i=2;i!=255;i--){ // 부호 없는 자료형: 2, 1, 0 enqueue
-        new=(struct node*)malloc(sizeof(struct node));
-        new->v=i; new->prev=NULL; new->next=NULL;
-        enqueue_front(d,new);
-    }
-    printdeque(d);
-    // dequeue_front(), dequeue_rear()
-    printf("dequeue_front: %hhu ,printdeque: ",dequeue_front(d)->v); printdeque(d);
-    printf("dequeue_rear:  %hhu ,printdeque: ",dequeue_rear(d)->v);  printdeque(d);
+    printf("front\n");
+    printf("enqueue(1), queue: "); fenqueue(&q,1); printq(&q);
+    printf("enqueue(2), queue: "); fenqueue(&q,2); printq(&q);
+    printf("enqueue(3), queue: "); fenqueue(&q,3); printq(&q);
+    printf("dequeue: %d, queue: ",fdequeue(&q)); printq(&q);
+    printf("dequeue: %d, queue: ",fdequeue(&q)); printq(&q);
+    printf("dequeue: %d, queue: ",fdequeue(&q)); printq(&q);
+
+    printf("\nrear\n");
+    printf("enqueue(1), queue: "); renqueue(&q,1); printq(&q);
+    printf("enqueue(2), queue: "); renqueue(&q,2); printq(&q);
+    printf("enqueue(3), queue: "); renqueue(&q,3); printq(&q);
+    printf("dequeue: %d, queue: ",rdequeue(&q)); printq(&q);
+    printf("dequeue: %d, queue: ",rdequeue(&q)); printq(&q);
+    printf("dequeue: %d, queue: ",rdequeue(&q)); printq(&q);
 }
 
-void enqueue_front(struct deque* d,struct node* new){
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=d->head;
-    new->prev=buf;
-    new->next=buf->next;
-    buf->next->prev=new;
-    buf->next=new;
-    d->n+=1;
+void printq(struct queue* q){
+    int j;
+    struct node* b=q->h->next;
+    for(j=0;j<q->n;j++){printf("%d ",b->v);b=b->next;}printf("\n");
 }
-void enqueue_rear (struct deque* d,struct node* new){
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=d->head->prev;
-    new->prev=buf;
-    new->next=buf->next;
-    buf->next->prev=new;
-    buf->next=new;
-    d->n+=1;
+void fenqueue(struct queue* q,int v){
+    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    n->v=v;
+    n->prev         =q->h;
+    n->next         =q->h->next;
+    q->h->next->prev=n;
+    q->h->next      =n;
+    q->n+=1;
 }
-struct node* dequeue_front(struct deque* d){
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=d->head->next;
-    buf->prev->next=buf->next;
-    buf->next->prev=buf->prev;
-    d->n-=1;
-    return buf;
+void renqueue(struct queue* q,int v){
+    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    n->v=v;
+    n->prev         =q->h->prev;
+    n->next         =q->h;
+    q->h->prev->next=n;
+    q->h->prev      =n;
+    q->n+=1;
 }
-struct node* dequeue_rear (struct deque* d){
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=d->head->prev;
-    buf->prev->next=buf->next;
-    buf->next->prev=buf->prev;
-    d->n-=1;
-    return buf;
+int  fdequeue(struct queue* q){
+    int d; // dequeue
+    struct node* f; // free
+    f=q->h->prev; d=f->v;
+    q->h->prev->prev->next=q->h;
+    q->h->prev            =q->h->prev->prev;
+    q->n-=1; free(f);
+    return d;
 }
-void printdeque(struct deque* d){
-    unsigned char i;
-    struct node* buf=(struct node*)malloc(sizeof(struct node));
-    buf=d->head->next;
-    for(i=0;i<d->n;i++){printf("%hhu ",buf->v);buf=buf->next;}
-    printf("\n");
+int rdequeue(struct queue* q){
+    int d; // dequeue
+    struct node* f; // free
+    f=q->h->next; d=f->v;
+    q->h->next->next->prev=q->h;
+    q->h->next            =q->h->next->next;
+    q->n-=1; free(f);
+    return d;
 }
 ```
 ```
 $ ./test
-3 4 5 
-0 1 2 3 4 5 
-dequeue_front: 0 ,printdeque: 1 2 3 4 5 
-dequeue_rear:  5 ,printdeque: 1 2 3 4 
+front
+enqueue(1), queue: 1 
+enqueue(2), queue: 2 1 
+enqueue(3), queue: 3 2 1 
+dequeue: 1, queue: 3 2 
+dequeue: 2, queue: 3 
+dequeue: 3, queue: 
+
+rear
+enqueue(1), queue: 1 
+enqueue(2), queue: 1 2 
+enqueue(3), queue: 1 2 3 
+dequeue: 1, queue: 2 3 
+dequeue: 2, queue: 3 
+dequeue: 3, queue: 
 ```
