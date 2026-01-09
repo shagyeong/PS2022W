@@ -1,205 +1,126 @@
 # 5장 트리
 ## 5.1 트리
 ### 5.1.1 이진 트리
-#### 선형 트리
+#### 선형 이진 트리
 |노드|선형 인덱스|
 |---|---|
 |root|1|
 |parent(i)|$\lfloor i/2\rfloor$|
 |leftchild(i)|$i\times2$|
 |rightchild(i)|$i\times2+1$|
-
 ```
             1
     2               3
 4       5       6       7
 ...
 ```
-#### 이진 트리: 연결
+#### 선형 이진 트리
 ```C
-#include<stdio.h>
-#include<stdlib.h>
-
-struct node{
-    char v;
-    struct node* l;
-    struct node* r;
-};
-
 struct tree{
-    struct node* root;
+    int  n; // number of item
+    int* a; // array: 선형 트리
 };
-
-int main(void){
-    struct node* a=(struct node*)malloc(sizeof(struct node));
-    struct node* b=(struct node*)malloc(sizeof(struct node));
-    struct node* c=(struct node*)malloc(sizeof(struct node));
-    struct node* d=(struct node*)malloc(sizeof(struct node));
-    struct node* e=(struct node*)malloc(sizeof(struct node));
-    struct node* f=(struct node*)malloc(sizeof(struct node));
-    struct node* g=(struct node*)malloc(sizeof(struct node));
-    a->v='a'; a->l=b;    a->r=c;
-    b->v='b'; b->l=d;    b->r=e;
-    c->v='c'; c->l=f;    c->r=g;
-    d->v='d'; d->l=NULL; d->r=NULL; // leaf
-    e->v='e'; e->l=NULL; e->r=NULL; // leaf
-    f->v='f'; f->l=NULL; f->r=NULL; // leaf
-    g->v='g'; g->l=NULL; g->r=NULL; // leaf
-
-    struct tree* t=(struct tree*)malloc(sizeof(struct tree));
-    t->root=a;
-
-    printf("%c\n",t->root->v);
-    printf("%c\t",t->root->l->v);
-    printf("%c\n",t->root->r->v);
-    printf("%c\t",t->root->l->l->v);
-    printf("%c\t",t->root->l->r->v);
-    printf("%c\t",t->root->r->l->v);
-    printf("%c\n",t->root->r->r->v);
+```
+#### 연결 이진 트리
+```C
+struct node{
+    int v;          // value
+    struct node* l; // lchild
+    struct node* r; // rchild
+}
+struct tree{
+    int n;          // number of item
+    struct node* r; // root
 }
 ```
-```
-$ ./test
-a
-b       c
-d       e       f       g
-```
-<!-- ### 5.1.2 스레드 이진 트리 -->
+<!-- 5.1.2 스레드 이진 트리 -->
 
 
 
 ## 5.2 트리 탐색
-### 5.2.1 DFS
-#### 전위 순회, 중위 순회, 후위 순회
+### 5.2.1 선형 이진 트리 탐색
+#### 선형 이진 트리 탐색
+DFS: 재귀, 스택  
+BFS: 큐, 배열 출력  
+#### 선형 이진 트리 탐색
 ```C
 #include<stdio.h>
 #include<stdlib.h>
 
-struct node{
-    char v;
-    struct node* l;
-    struct node* r;
-};
-
 struct tree{
-    struct node* root;
+    int  n; // number of item
+    int* a; // array: 선형 트리
 };
 
-// r: (서브)트리 루트
-void preorder (struct node* r);
-void inorder  (struct node* r);
-void postorder(struct node* r);
+void dfs_r(struct tree* t,int r); // 재귀 DFS
+void dfs_s(struct tree* t,int r); // 스택 DFS
+void bfs_q(struct tree* t,int r); // 큐 BFS
+void bfs_a(struct tree* t);       // 배열 출력 BFS(루트에서만 동작)
 
 int main(void){
-    struct node* a=(struct node*)malloc(sizeof(struct node));
-    struct node* b=(struct node*)malloc(sizeof(struct node));
-    struct node* c=(struct node*)malloc(sizeof(struct node));
-    struct node* d=(struct node*)malloc(sizeof(struct node));
-    struct node* e=(struct node*)malloc(sizeof(struct node));
-    struct node* f=(struct node*)malloc(sizeof(struct node));
-    struct node* g=(struct node*)malloc(sizeof(struct node));
-    a->v='a'; a->l=b;    a->r=c;
-    b->v='b'; b->l=d;    b->r=e;
-    c->v='c'; c->l=f;    c->r=g;
-    d->v='d'; d->l=NULL; d->r=NULL; // leaf
-    e->v='e'; e->l=NULL; e->r=NULL; // leaf
-    f->v='f'; f->l=NULL; f->r=NULL; // leaf
-    g->v='g'; g->l=NULL; g->r=NULL; // leaf
-
-    struct tree* t=(struct tree*)malloc(sizeof(struct tree));
-    t->root=a;
-
-    printf("preorder: ");preorder(t->root);  printf("\n");
-    printf("inorder:  ");inorder(t->root);   printf("\n");
-    printf("postorder:");postorder(t->root); printf("\n");
+    int n=7;
+    int a[8]={0,1,2,3,4,5,6,7}; // 8=7+1: 1부터 시작하는 선형 트리 인덱스
+    struct tree t;
+    t.n=n;
+    t.a=&a[0];
+    printf("DFS(recursion): "); dfs_r(&t,1); printf("\n");
+    printf("DFS(stack):     "); dfs_s(&t,1); printf("\n");
+    printf("BFS(queue):     "); bfs_q(&t,1); printf("\n");
+    printf("BFS(array):     "); bfs_a(&t);   printf("\n");
 }
 
-void preorder (struct node* r){
-    if(r!=NULL){
-        printf("%c ",r->v);
-        preorder(r->l);
-        preorder(r->r);
+void dfs_r(struct tree* t,int r){
+    if(r>t->n){return;}
+    printf("%d ",t->a[r]); // preorder
+    dfs_r(t,r*2);   // lchild
+    dfs_r(t,r*2+1); // rchild
+}
+void dfs_s(struct tree* t,int r){
+    int b;
+    int s[t->n+1]; // stack
+    int h=0;       // head
+    s[h++]=r; // push
+    while(h>0){
+        b=s[--h]; // pop
+            printf("%d ",t->a[b]);
+            if(2*b+1<=t->n){s[h++]=2*b+1;} // push rchild
+            if(2*b  <=t->n){s[h++]=2*b;}   // push lchild
     }
 }
-void inorder  (struct node* r){
-    if(r!=NULL){
-        inorder(r->l);
-        printf("%c ",r->v);
-        inorder(r->r);
+void bfs_q(struct tree* t,int r){
+    int b;
+    int q[t->n+1]; // queue
+    int s=0;       // start
+    int e=0;       // end
+    q[e++]=r; //enqueue
+    while(s<e){
+        b=q[s++]; // dequeue
+        printf("%d ",t->a[b]); 
+        if(2*b  <=t->n){q[e++]=2*b;}   // enqueue lchild
+        if(2*b+1<=t->n){q[e++]=2*b+1;} // dequeue rchild
     }
 }
-void postorder(struct node* r){
-    if(r!=NULL){
-        postorder(r->l);
-        postorder(r->r);
-        printf("%c ",r->v);
-    }
+void bfs_a(struct tree* t){
+    int j;
+    for(j=1;j<=t->n;j++){printf("%d ",t->a[j]);}
 }
 ```
 ```
 $ ./test
-preorder: a b d e c f g 
-inorder:  d b e a f c g 
-postorder:d e b f g c a 
+DFS(recursion): 1 2 4 5 3 6 7 
+DFS(stack):     1 2 4 5 3 6 7 
+BFS(queue):     1 2 3 4 5 6 7 
+BFS(array):     1 2 3 4 5 6 7 
 ```
-### 5.2.2 BFS
-#### BFS
+### 5.2.2 연결 이진 트리 탐색
+#### 연결 이진 트리 탐색
+DFS: 재귀, 스택  
+BFS: 큐  
+<!-- #### 연결 이진 트리 탐색
 ```C
-#include<stdio.h>
-#include<stdlib.h>
-
-struct node{
-    char v;
-    struct node* l;
-    struct node* r;
-};
-
-struct tree{
-    struct node* root;
-};
-
-void bfs(struct tree* t);
-
-int main(void){
-    struct node* a=(struct node*)malloc(sizeof(struct node));
-    struct node* b=(struct node*)malloc(sizeof(struct node));
-    struct node* c=(struct node*)malloc(sizeof(struct node));
-    struct node* d=(struct node*)malloc(sizeof(struct node));
-    struct node* e=(struct node*)malloc(sizeof(struct node));
-    struct node* f=(struct node*)malloc(sizeof(struct node));
-    struct node* g=(struct node*)malloc(sizeof(struct node));
-    a->v='a'; a->l=b;    a->r=c;
-    b->v='b'; b->l=d;    b->r=e;
-    c->v='c'; c->l=f;    c->r=g;
-    d->v='d'; d->l=NULL; d->r=NULL; // leaf
-    e->v='e'; e->l=NULL; e->r=NULL; // leaf
-    f->v='f'; f->l=NULL; f->r=NULL; // leaf
-    g->v='g'; g->l=NULL; g->r=NULL; // leaf
-
-    struct tree* t=(struct tree*)malloc(sizeof(struct tree));
-    t->root=a;
-
-    printf("bfs: "); bfs(t); printf("\n");
-}
-
-void bfs(struct tree* t){
-    struct node* b;      // buffer
-    struct node* q[256]; // 선형 큐
-    unsigned char f=0;   // front
-    unsigned char r=0;   // rear
-    q[r++]=t->root;
-    while(f<r){
-        b=q[f++];
-        printf("%c ",b->v);
-        if(b->l!=NULL){q[r++]=b->l;}
-        if(b->r!=NULL){q[r++]=b->r;}
-    }
-}
 ```
 ```
-$ ./test
-bfs: a b c d e f g 
-```
+``` -->
 
 
 
@@ -234,24 +155,14 @@ char         insert(struct tree* t,char v); // 실패: -1(중복 노드 삽입 �
 char         delete(struct tree* t,char v); // 실패: -1
 
 int main(void){
-    struct node* a=(struct node*)malloc(sizeof(struct node));
-    struct node* b=(struct node*)malloc(sizeof(struct node));
-    struct node* c=(struct node*)malloc(sizeof(struct node));
-    struct node* d=(struct node*)malloc(sizeof(struct node));
-    struct node* e=(struct node*)malloc(sizeof(struct node));
-    struct node* f=(struct node*)malloc(sizeof(struct node));
-    struct node* g=(struct node*)malloc(sizeof(struct node));
-    struct node* h=(struct node*)malloc(sizeof(struct node));
-    a->v=8;  a->l=b;    a->r=c;
-    b->v=3;  b->l=d;    b->r=e;
-    c->v=10; c->l=NULL; c->r=f;
-    d->v=2;  d->l=NULL; d->r=NULL;
-    e->v=5;  e->l=NULL; e->r=NULL;
-    f->v=14; f->l=g;    f->r=h;
-    g->v=11; g->l=NULL; g->r=NULL;
-    h->v=16; h->l=NULL; h->r=NULL;
     struct tree* t=(struct tree*)malloc(sizeof(struct tree));
-    t->root=a;
+    t->root=(struct node*)malloc(sizeof(struct node));
+    t->root->v=8;
+    t->root->l=NULL;
+    t->root->r=NULL;
+    insert(t,3);  insert(t,10);
+    insert(t,2);  insert(t,5);  insert(t,14);
+    insert(t,11); insert(t,16);
 
     printf(" search()\n");
     if(search(t,11)==NULL){printf("11: not found\n");}else{printf("11: found\n");}
@@ -272,8 +183,8 @@ struct node* search(struct tree* t,char v){
     struct node* b=t->root;
     while(b!=NULL){
         if(v<b->v){b=b->l;}
-        else if(v==b->v){return b;}
-        else{b=b->r;}
+        if(v==b->v){return b;}
+        if(v>b->v){b=b->r;}
     }
     return b; // NULL
 }
@@ -281,9 +192,9 @@ char insert(struct tree* t,char v){
     struct node* b=t->root;
     struct node* p=b; // parent
     while(b!=NULL){
-        if(v<b->v){p=b; b=b->l;}
+        if     (v< b->v){p=b; b=b->l;}
         else if(v==b->v){return -1;} // 중복 엘리먼트 삽입
-        else{p=b; b=b->r;}
+        else            {p=b; b=b->r;}
     }
     struct node* n=(struct node*)malloc(sizeof(struct node)); // new
     n->v=v;
@@ -297,9 +208,9 @@ char delete(struct tree* t,char v){
     struct node* b=t->root;
     struct node* p=b; // parent
     while(b!=NULL){
-        if(v<b->v){p=b; b=b->l;}
+        if     (v< b->v){p=b; b=b->l;}
         else if(v==b->v){break;}
-        else{p=b; b=b->r;}
+        else            {p=b; b=b->r;}
     }
     if(b==NULL){return -1;} // 실패(노드 없음)
     if((b->l==NULL)&&(b->r==NULL)){ // 터미널
@@ -345,11 +256,6 @@ $ ./test
 ## 5.4 힙
 ### 5.4.1 힙
 #### 힙(최대 힙)
-선형 이진 트리 성질: 5.1.1절 참고  
-root=1  
-parent(i)=floor(i/2)  
-lchild(i)=i*2  
-rchild(i)=i*2+1  
 ```C
 #include<stdio.h>
 #include<stdlib.h>
@@ -360,7 +266,7 @@ struct heap{
 };
 
 void push(struct heap* h,int v);
-int pop(struct heap* h);
+int   pop(struct heap* h);
 
 int main(void){
     int a[10];
