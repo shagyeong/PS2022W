@@ -1,308 +1,266 @@
 # 1장 C for Problem Solving
-## 1.1 배열
-### 1.1.1 배열
-#### 메모리 할당량 확인(sizeof())
-sizeof(): 변수에 할당된 바이트 수(long unsgiend int(%ld)) 리턴  
+## 1.1 표준입출력
+### 1.1.1 정수
+#### 정수
 ```C
 #include<stdio.h>
 
 int main(void){
-    unsigned char c=0;
-    unsigned char a[3]={0,1,2};
-    printf("size of char:      %ld bytes\n",sizeof(c));
-    printf("size of char array:%ld bytes\n",sizeof(a));
+    char          c;  unsigned char          uc;
+    short         s;  unsigned short         us;
+    int           i;  unsigned int           ui;
+    long int      l;  unsigned long int      ul;
+    long long int ll; unsigned long long int ull;
+    scanf("%hhd",&c);    scanf("%hhu",&uc);
+    scanf("%hd", &s);    scanf("%hu", &us);
+    scanf("%d",  &i);    scanf("%u",  &ui);
+    scanf("%ld", &l);    scanf("%lu", &ul);
+    scanf("%lld",&ll);   scanf("%llu",&ull);
 }
 ```
-```
-$ ./test
-size of char:      1 bytes
-size of char array:3 bytes
-```
-#### 문자 배열
+### 1.1.2 문자
+#### 문자
 ```C
 #include<stdio.h>
 
-int main(void){
-    char a[4]="abc\0";
-    char b[4]={'d','e','f','\0'};
-    printf("char array a: %s\t",a); printf("size: %ld\n",sizeof(a));
-    printf("char array b: %s\t",b); printf("size: %ld\n",sizeof(b));
-}
-```
-```
-$ ./test
-char array a: abc   size: 4
-char array b: def   size: 4
-```
-#### 배열 초기화: 표준 입력
-```C
-#include<stdio.h>
-
-int main(void){
-    // 변수 초기화
-    unsigned char c;
-    scanf("%hhu",&c);
-    printf("c: %u\n",c);
-
-    // 숫자 배열 초기화
-    unsigned char i;
-    unsigned char N=3;
-    unsigned char a[N];
-    for(i=0;i<N;i++){scanf("%hhu",&a[i]);}
-    for(i=0;i<N;i++){printf("a[%u]: %u\n",i,a[i]);}
-
-    // 문자 배열 초기화
-    char s[3];
-    scanf("%s",s);
-    printf("s: %s\n",s);
-}
-```
-```
-$ ./test
-# 변수 초기화
-1
-c: 1
-# 숫자 배열 초기화
-1
-2
-3
-a[0]: 1
-a[1]: 2
-a[2]: 3
-# 문자 배열 초기화
-abc
-s: abc
-```
-### 1.1.2 문자 배열과 포인터
-#### 문자 배열과 포인터
-```C
-#include<stdio.h>
-
-int main(void){
-    char s[4]="abc\0";
-    char* p;
-    p=s; // 동치 문장: p=&s[0];
-    printf("%c\n",*p);
-    printf("%c\n",*(++p));
-    printf("%c\n",*(++p));
-}
-```
-```
-$ ./test
-a
-b
-c
-```
-#### 포인터 배열
-포인터 배열  
-```C
-#include<stdio.h>
-
-int main(void){
-    unsigned char i;
-    char s1[4]="Joe\0";     char* p1=s1;
-    char s2[7]="Oliver\0";  char* p2=s2;
-    char s3[5]="Liam\0";    char* p3=s3;
-    char s4[9]="Benjamin\0";char* p4=s4;
-    char* p[4]={p1,p2,p3,p4};
-    for(i=0;i<4;i++){printf("%s\n",p[i]);}
-}
-```
-```
-$ ./test
-Joe
-Oliver
-Liam
-Benjamin
-```
-이중 포인터: 명령행 인자  
-```C
-#include<stdio.h>
-
-int main(int argc, char** argv){
-    unsigned char i;
-    for(i=1;i<argc;i++){printf("%s\n",argv[i]);}
-}
-```
-```
-$ ./test Joe Oliver Liam Benjamin
-Joe
-Oliver
-Liam
-Benjamin
-```
-
-
-
-## 1.2 구조체
-### 1.2.1 구조체
-#### 구조체 포인터
-```C
-#include<stdio.h>
-#include<string.h>
-
-struct student{
-    char name[20];
-    unsigned char id;
-};
-
-int main(void){
-    struct student K; struct student* Kim=&K;
-    struct student L; struct student* Lee=&L;
-    strcpy(Kim->name,"Kim"); Kim->id=222;
-    strcpy(Lee->name,"Lee"); Lee->id=223;
-    printf("%s: %u\n",Kim->name,Kim->id);
-    printf("%s: %u\n",Lee->name,Lee->id);
-}
-```
-```
-$ ./test
-Kim: 222
-Lee: 223
-```
-#### 익명 객체 생성: malloc()
-```C
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-
-struct student{
-    char name[20];
-    unsigned char id;
-};
-
-int main(void){
-    int i;
-    int n; scanf("%d",&n);
-    struct student* class[n];
-    
-    char          buffer_name[20];
-    unsigned char buffer_id;
-
-    for(i=0;i<n;i++){
-        class[i]=(struct student*)malloc(sizeof(struct student));
-        scanf("%s %hhu",buffer_name,&buffer_id);
-        strcpy(class[i]->name,buffer_name);
-        class[i]->id=buffer_id;
-    }
-
-    printf("name\tid\n");
-    for(i=0;i<n;i++){
-        printf("%s\t%u\n",class[i]->name,class[i]->id);
-    }
-}
-```
-```
-$ ./test
-3
-Kim 232
-Lee 210
-Park 10
-
-name    id
-Kim     232
-Lee     210
-Park    10
-```
-
-
-## 1.3 기타 C 문법
-### 1.3.1 서식 지정자
-#### 숫자 입출력
-```C
-#include<stdio.h>
-
-int main(void){
-    char  c; unsigned char  uc;
-    short s; unsigned short us;
-    int   i; unsigned int   ui;
-    scanf("%hhd %hhu",&c,&uc);
-    scanf("%hd %hu",  &s,&us);
-    scanf("%d %u",    &i,&ui);
-    printf("char : %d, unsigned char : %u\n",c,uc);
-    printf("short: %d, unsigned short: %u\n",s,us);
-    printf("int  : %d, unsigned int  : %u\n",i,ui);
-}
-```
-#### 문자 입출력
-```C
-#include<stdio.h>
 int main(void){
     char c;
-    scanf("%c",&c);
-    printf("char: %c\n",c);
+    scanf("%c",&c); printf("%c",c);
 }
 ```
-#### 문자열 입출력
+### 1.1.3 문자열
+#### 단일 문자열 조작: 문자 배열
 ```C
 #include<stdio.h>
+
 int main(void){
-    char s[10];
-    scanf("%s",s);
-    printf("%s\n",s);
+    char s[20];
+    scanf("%s",s); printf("%s",s);
 }
 ```
-#### 문자열 입출력: 포인터 배열
+#### 단일 문자열 조작: 문자 포인터
 ```C
 #include<stdio.h>
 #include<stdlib.h>
-#include<string.h>
 
 int main(void){
-    unsigned char i;
-    unsigned char N=3;
-    char b[20]; // 문자열 버퍼
-    char* p[N];
-    for(i=0;i<N;i++){
-        scanf("%s",b);
-        p[i]=(char*)malloc(strlen(b)+1);
-        strcpy(p[i],b);
-    }
-    for(i=0;i<N;i++){
-        printf("student %d: %s\n",i,p[i]);
-    }
+    char s[20];
+    char* p=&s[0];
+    scanf("%s",p); printf("%s",s);
 }
+```
+#### 문자 포인터 배열을 이용한 가변길이 문자열 처리: 명령행 인자
+```C
+#include<stdio.h>
+
+int main(int argc,char** argv){
+    int j;
+    char* a[3];
+    for(j=1;j<argc;j++){a[j-1]=argv[j];}
+    for(j=1;j<argc;j++){printf("%s\n",a[j-1]);}
+}
+```
+```
+$ ./test Kim Lee Park
+Kim
+Lee
+Park
+```
+#### 문자 포인터 배열을 이용한 가변길이 문자열 처리: 표준입력 및 동적할당
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+int main(void){
+    int j=0; // loop variable
+    int n=3; // number of item
+    char* a[3];
+    for(j=0;j<n;j++){
+        a[j]=(char*)malloc(sizeof(char)*20);
+        scanf("%s",a[j]);
+    }
+    for(j=0;j<n;j++){
+        printf("%s\n",a[j]);
+        free(a[j]);
+    }
+} 
 ```
 ```
 $ ./test
 Kim
 Lee
 Park
-student 0: Kim
-student 1: Lee
-student 2: Park
+Kim
+Lee
+Park
 ```
-### 1.3.2 enumerate
-#### enumerate
+
+
+
+## 1.2 메모리
+### 1.2.1 포인터
+#### 단일 변수 역참조
 ```C
 #include<stdio.h>
 
-typedef enum{
-    SUM,
-    SUB
-}mode_calc;
-
-void calc(int a,int b,mode_calc mode){
-    if     (mode==SUM){printf("%d+%d=%d\n",a,b,a+b);}
-    else if(mode==SUB){printf("%d-%d=%d\n",a,b,a-b);}
+int main(void){
+    int   i=0;
+    int* p=&i;
+    printf("%d\n",*p);
 }
+```
+#### 배열 역참조
+```C
+#include<stdio.h>
 
 int main(void){
-    printf("value of SUM: %d\n",SUM);
-    printf("value of SUB: %d\n",SUB);
-    int a=1;
-    int b=1;
-    calc(a,b,SUM);
-    calc(a,b,SUB);
+    int  a[3]={0,1,2};
+    int* p=&a[0];
+    printf("%d\n",*p);
+    printf("%d\n",*(p+1));
+    printf("%d\n",*(p+2));
+}
+```
+### 1.2.2 메모리 초기화: memset()
+#### memset()
+```C
+#include<string.h>
+void* memset(void* s,int c,size_t n);
+```
+#### 메모리 초기화: 1바이트 자료형
+```C
+#include<stdio.h>
+#include<string.h>
+
+int main(void){
+    int j;
+    int n=3; // number of item
+    char a[3];
+    
+    memset(&a[0],0b00000000,sizeof(char)*n);
+    for(j=0;j<n;j++){printf("%d ",a[j]);}
 }
 ```
 ```
 $ ./test
-value of SUM: 0
-value of SUB: 1
-1+1=2
-1-1=0
+0 0 0 
 ```
-<!-- ### 1.3.3 함수 -->
-<!-- #### static -->
-<!-- #### const -->
+#### 메모리 초기화: 1바이트를 초과하는 자료형
+int: 4바이트 정수  
+$16843009_{10}=0000\ 0001\ 0000\ 0001\ 0000\ 0001\ 0000\ 0001\ 0000\ 0001_2$  
+```C
+#include<stdio.h>
+#include<string.h>
+
+int main(void){
+    int j;
+    int n=3; // number of item
+
+    int a[3]; memset(&a[0],0b00000000,sizeof(int)*n);
+    int b[3]; memset(&b[0],0b00000001,sizeof(int)*n);
+    for(j=0;j<n;j++){printf("%d ",a[j]);}printf("\n");
+    for(j=0;j<n;j++){printf("%d ",b[j]);}printf("\n");
+}
+```
+```
+$ ./test
+0 0 0 
+16843009 16843009 16843009 
+```
+### 1.2.3 동적할당
+#### 동적 할당 및 해제: malloc(),free()
+```C
+#include <stdlib.h>
+void* malloc(size_t size);
+void  free(void *ptr);
+```
+#### 동적할당의 목적: 가변길이 처리
+물리적으로 연속된 공간에 가변길이 데이터 할당시 시프트 소요 발생  
+랜덤 지정 할당 후 포인팅  
+포인터를 연속된 공간에 저장  
+예제: 1.1.3과 같음  
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+int main(void){
+    int j=0; // loop variable
+    int n=3; // number of item
+    char* a[3];
+    for(j=0;j<n;j++){
+        a[j]=(char*)malloc(sizeof(char)*20);
+        scanf("%s",a[j]);
+    }
+    for(j=0;j<n;j++){
+        printf("%s\n",a[j]);
+        free(a[j]);
+    }
+} 
+```
+```
+$ ./test
+Kim
+Lee
+Park
+Kim
+Lee
+Park
+```
+#### 동적할당의 목적: 힙 영역 활용
+함수(main() 외부)가 DS를 조작해도 데이터 유지됨  
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct list{
+    int n;          // number of item
+    struct node* h; // head
+};
+struct node{
+    int v;
+    struct node* next;
+};
+
+void insert(struct list* l,int v);
+void  clean(struct list* l);
+
+int main(void){
+    struct list l;
+    l.n=0;
+    l.h=(struct node*)malloc(sizeof(struct node));
+    l.h->v=-1;
+    l.h->next=NULL;
+    insert(&l,0);
+    insert(&l,1);
+    insert(&l,2);
+    clean(&l);
+    free(l.h);
+}
+
+void insert(struct list* l,int v){
+    struct node* b=l->h;
+    while(b->next!=NULL){b=b->next;}
+    b->next=(struct node*)malloc(sizeof(struct node));
+    b->next->v=v;
+    b->next->next=NULL;
+    l->n+=1;
+}
+void  clean(struct list* l){
+    int j;
+    struct node* b=l->h->next;
+    struct node* f;
+    for(j=0;j<l->n;j++){
+        f=b; printf("free: %d\n",f->v);
+        b=b->next;
+        free(f);
+    }
+    l->h->next=NULL;
+    l->n=0;
+}
+```
+```
+$ ./test
+free: 0
+free: 1
+free: 2
+```

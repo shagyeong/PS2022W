@@ -1,9 +1,8 @@
 # PS2022W: Problem Solving
 ## C for Problem Solving
 #### 1장 C for Problem Solving
-1.1 배열  
-1.2 구조체  
-1.3 기타 C 문법  
+1.1 표준입출력  
+1.2 메모리  
 #### 2장 기본 자료구조
 2.1 선형리스트  
 2.2 연결리스트  
