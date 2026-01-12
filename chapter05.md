@@ -374,18 +374,18 @@ void init(int n,int s,int e){
     m=(s+e)/2;
     init(2*n,  s,  m);      // lchild
     init(2*n+1,m+1,e);      // rchild
-    t[n]=t[n*2]+t[n*2+1]; // 구간합
+    t[n]=t[2*n]+t[2*n+1]; // 구간합
 }
-void update(int n,int s,int e,int i,long long v){
+void update(int n,int s,int e,int i,long long int v){
     int m; // middle
     if((i<s)||(i>e)){return;}
     if(s==e){t[n]=v; return;}
     m=(s+e)/2;
     update(2*n,  s,  m,i,v); // lchild
     update(2*n+1,m+1,e,i,v); // rchild
-    t[n]=t[n*2]+t[n*2+1];    // 구간합
+    t[n]=t[2*n]+t[2*n+1];    // 구간합
 }
-long long query(int n,int s,int e,int l,int r){
+long long int query(int n,int s,int e,int l,int r){
     int m; // middle
     if((l>e)||(r<s))    {return 0;}
     if(((l<=s)&&(e<=r))){return t[n];}
@@ -440,18 +440,18 @@ void init(int n,int s,int e){
     m=(s+e)/2;
     init(2*n,  s,  m);      // lchild
     init(2*n+1,m+1,e);      // rchild
-    t[n]=(t[n*2]*t[n*2+1])%Q;
+    t[n]=(t[2*n]*t[2*n+1])%Q;
 }
-void update(int n,int s,int e,int i,long long v){
+void update(int n,int s,int e,int i,long long int v){
     int m; // middle
     if((i<s)||(i>e)){return;}
     if(s==e){t[n]=v; return;}
     m=(s+e)/2;
     update(2*n,  s,  m,i,v); // lchild
     update(2*n+1,m+1,e,i,v); // rchild
-    t[n]=(t[n*2]*t[n*2+1])%Q;
+    t[n]=(t[2*n]*t[2*n+1])%Q;
 }
-long long query(int n,int s,int e,int l,int r){
+long long int query(int n,int s,int e,int l,int r){
     int m; // middle
     if((l>e)||(r<s))    {return 1;}
     if(((l<=s)&&(e<=r))){return t[n];}
