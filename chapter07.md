@@ -403,3 +403,44 @@ void as(struct activity a[],int n){
     }
 }
 ```
+### 7.3.2 동전 개수
+#### 동전 개수 최소화: 그리디
+```C
+#include<stdio.h>
+
+#define N 8 // number of element
+int c[8]={5000,1000,500,100,50,10,5,1};
+
+int coins(int v);
+
+int main(void){
+    int v=4790;
+    printf("value: %d\n",v);
+    printf("number of coins: %d\n",coins(v));
+}
+
+int coins(int v){
+    int j;   // loop variable 
+    int a=0; // answer: number of coins
+    for(j=0;j<N;j++){
+        if(v==0){break;}
+        if(c[j]<=v){
+            a+=(v/c[j]);
+            v%=c[j];
+        }
+    }
+    return a;
+}
+```
+```
+$ ./test
+value: 4790
+number of coins: 12
+# 1000*4
+# 500 *1
+# 100 *2
+# 50  *1
+# 10  *4
+```
+#### 동전 개수 최소화: DP
+배수 관계가 아님: 부르트포스 또는 DP 접근  
