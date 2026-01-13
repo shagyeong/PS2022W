@@ -187,3 +187,4 @@
 |10999|<span style="background-color:#27e2a4">P4</span>|C|2026-01-13|구간 합 구하기 2|느리게 갱신되는 세그먼트 트리|
 |16975|<span style="background-color:#27e2a4">P4</span>|C|2026-01-13|수열과 쿼리 21|느리게 갱신되는 세그먼트 트리|
 |1395 |<span style="background-color:#27e2a4">P3</span>|C|2026-01-13|스위치|느리게 갱신되는 세그먼트 트리|
+|6086 |<span style="background-color:#ec9a00">G3</span>|C|2026-01-13|최대 유량|최대 유량|
