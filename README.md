@@ -189,3 +189,5 @@
 |16975|<span style="background-color:#27e2a4">P4</span>|C|2026-01-13|수열과 쿼리 21|느리게 갱신되는 세그먼트 트리|
 |1395 |<span style="background-color:#27e2a4">P3</span>|C|2026-01-13|스위치|느리게 갱신되는 세그먼트 트리|
 |6086 |<span style="background-color:#ec9a00">G3</span>|C|2026-01-13|최대 유량|최대 유량|
+|2166 |<span style="background-color:#ec9a00">G5</span>|C|2026-01-13|다각형의 면적|면적|
+|1708 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-13|볼록 껍질|볼록 껍질|
