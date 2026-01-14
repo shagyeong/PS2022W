@@ -51,8 +51,65 @@ int main(void){
 $ ./test
 2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
 ```
-<!-- #### 소인수분해 -->
-<!-- #### 큰 수 소인수분해: 폴라드 로 -->
+#### 밀러-라빈
+부호없는 64비트 정수 소수 판정  
+```C
+#include<stdio.h>
+
+unsigned long long int power(
+    unsigned long long int b,
+    unsigned long long int e,
+    unsigned long long int q
+);
+int mr( // Miller-Rabin
+    unsigned long long int n
+);
+
+int main(void){
+    unsigned long long int n=1;
+    printf("mr(%lld): %d\n",n,mr(n));
+}
+
+unsigned long long int power(unsigned long long int b,unsigned long long int e,unsigned long long int q){
+    unsigned long long int r = 1; // return value
+    b%=q;
+    while(e>0){
+        if(e%2==1){r=(unsigned long long int)(((__int128)r*b)%q);}
+        b=           (unsigned long long int)(((__int128)b*b)%q);
+        e/=2;
+    }
+    return r;
+}
+int mr(unsigned long long int n){
+    if(n==2||n==3)  {return 1;}
+    if(n==1||n%2==0){return 0;}
+    unsigned long long int a[12]={2,3,5,7,11,13,17,19,23,29,31,37};
+    unsigned long long int d=n-1;
+    unsigned long long int x;
+    int                    s=0;
+    int                    j; // loop variable
+    int                    k; // loop variable
+    int                    f; // prime flag
+
+    while(d%2==0){d/=2;s++;} 
+    for(j=0;j<12;j++){
+        if(n<=a[j]){break;}
+        x=power(a[j],d,n);
+        if((x==1)||(x==n-1)){continue;}
+        f=0;
+        for(k=1;k<s;k++){
+            x=(unsigned long long int)(((__int128)x*x)%n);
+            if(x==n-1){f=1;break;}
+        }
+        if(f==0){return 0;}
+    }
+    return 1;
+}
+```
+```
+ ./test
+mr(1): 0
+```
 ### 8.1.2 유클리드 호제법
 #### 유클리드 호제법
 GCD: greates common divisor - 최대공약수  
@@ -93,6 +150,238 @@ int main(void){
 $ ./test
 GCD: 6
 LCM: 72
+```
+### 8.1.3 소인수분해
+#### 소인수분해
+```C
+#include<stdio.h>
+#include<math.h>
+
+int main(void){
+    int j; // loop variable
+    int p; // prime number
+    int n;
+    int q; // quotient
+    int e; // exponential: 소인수 차수
+    int s=0; // sqrt(n)+1
+
+    scanf("%d",&n);
+    while(s*s<=n){s++;}
+
+    int a[s+1];
+    for(j=0;j<=s;j++){a[j]=j;}
+    for(p=2;p<=s;p++){
+        if(a[p]!=p)              {continue;}
+        else{for(j=p*p;j<=s;j+=p){a[j]=0;}} // 합성수 마크
+    }
+
+    q=n;
+    for(j=2;j<=s;j++){
+        if(a[j]!=0){
+            e=0;
+            if(q%a[j]==0){
+                while(q%a[j]==0){
+                    q/=a[j];
+                    e+=1;
+                }
+                printf("(%d^%d) x ", a[j], e);
+            }
+        }
+    }
+    if(q>1){printf("(%d^1)\n",q);}
+}
+```
+```
+$ ./test
+60
+(2^2)(3^1)(5^1)
+```
+#### 오일러 Φ 함수
+오일러피함수: $n$에대해 $1$~$n$의 자연수 중 서로소 개수 리턴  
+$\phi(n)=|\{k\in\mathbb{Z}|1\leq k\leq n,\gcd(n,k)=1\}|$  
+$\phi(n)=n\times\displaystyle\prod_{i=1}^m(1-{{1}\over{p_i}})$  
+$p_i$: $n$의 $i$번째 소인수  
+```C
+#include<stdio.h>
+#include<math.h>
+
+int main(void){
+    long long int r; // result: phi(n)
+    long long int j; // loop variable
+    long long int p; // prime number
+    long long int n;
+    long long int q; // quotient
+    long long int s=0; // sqrt(n)+1
+
+    scanf("%lld",&n);
+    while(s*s<=n){s++;}
+
+    long long int a[s+1];
+    for(j=0;j<=s;j++){a[j]=j;}
+    for(p=2;p<=s;p++){
+        if(a[p]!=p)              {continue;}
+        else{for(j=p*p;j<=s;j+=p){a[j]=0;}} // 합성수 마크
+    }
+
+    r=n; q=n;
+    for(j=2;j<=s;j++){
+        if((a[j]!=0)&&(q%a[j]==0)){
+            r-=r/a[j];
+            while(q%a[j]==0){q/=a[j];}
+        }
+    }
+    if(q>1){r-=(r/q);}
+    printf("%lld",r);
+}
+```
+```
+$ ./test
+100
+40
+```
+#### 큰 수 소인수분해: 폴라드 로
+```C
+#include<stdio.h>
+#include<stdlib.h> // rand(),qsort()
+
+unsigned long long int p[64]; // 소인수
+int t;
+
+unsigned long long int power(
+    unsigned long long int b,
+    unsigned long long int e,
+    unsigned long long int q
+);
+unsigned long long int gcd(
+    unsigned long long int a,
+    unsigned long long int b
+);
+int mr( // Miller-Rabin
+    unsigned long long int n
+);
+void pr( // Phollard's rho
+    unsigned long long int n
+);
+
+int main(void){
+    int j;
+    unsigned long long int n; scanf("%lld",&n);
+    t=0; pr(n);
+    for(j=0;j<t;j++){printf("%lld ",p[j]);}
+}
+
+unsigned long long int power(unsigned long long int b,unsigned long long int e,unsigned long long int q){
+    unsigned long long int r = 1; // return value
+    b%=q;
+    while(e>0){
+        if(e%2==1){r=(unsigned long long int)(((__int128)r*b)%q);}
+        b=           (unsigned long long int)(((__int128)b*b)%q);
+        e/=2;
+    }
+    return r;
+}
+unsigned long long int gcd(unsigned long long int a,unsigned long long int b){
+    unsigned long long int t; // tmp
+    while(b!=0){a%=b;t=a;a=b;b=t;}
+    return a;
+}
+int mr(unsigned long long int n){
+    if(n==2||n==3)  {return 1;}
+    if(n==1||n%2==0){return 0;}
+    unsigned long long int a[12]={2,3,5,7,11,13,17,19,23,29,31,37};
+    unsigned long long int d=n-1;
+    unsigned long long int x;
+    int                    s=0;
+    int                    j; // loop variable
+    int                    k; // loop variable
+    int                    f; // prime flag
+
+    while(d%2==0){d/=2;s++;} 
+    for(j=0;j<12;j++){
+        if(n<=a[j]){break;}
+        x=power(a[j],d,n);
+        if((x==1)||(x==n-1)){continue;}
+        f=0;
+        for(k=1;k<s;k++){
+            x=(unsigned long long int)(((__int128)x*x)%n);
+            if(x==n-1){f=1;break;}
+        }
+        if(f==0){return 0;}
+    }
+    return 1;
+}
+void pr(unsigned long long int n){
+    if(n==1) {return;}
+    if(mr(n)){p[t++]=n; return;}
+    if(n%2==0){
+        p[t++]=2;
+        pr(n/2);
+        return;
+    }
+
+    unsigned long long int x;
+    unsigned long long int y;
+    unsigned long long int c;
+    unsigned long long int g;
+    unsigned long long int d;
+
+    x=rand()%(n-2)+2;
+    y=x;
+    c=rand()%(n-1)+1;
+    g=1;
+    
+    while(g==1){
+        x=(unsigned long long int)(((__int128)x*x+c)%n);
+        y=(unsigned long long int)(((__int128)y*y+c)%n);
+        y=(unsigned long long int)(((__int128)y*y+c)%n);
+        d=(x>y)?x-y:y-x;
+        g=gcd(d,n);
+        if(g==n){
+            pr(n);
+            return;
+        }
+    }
+
+    pr(g);
+    pr(n/g);
+}
+```
+```
+$ ./test
+24
+2 2 2 3 
+```
+#### 오일러 phi 함수: 큰 수
+폴라드 로 확장  
+main()  
+```C
+int main(void){
+    unsigned long long int n; scanf("%llu",&n);
+    t=0; pr(n);
+    phi(n);
+}
+```
+phi(): 전역 소인수 배열(p) 조작  
+```
+void phi(unsigned long long int n){
+    int j; // loop variable
+    unsigned long long int r; // rsult: phi(n)
+    unsigned long long int q; /// quotient
+    r=n; q=n;
+    for(j=0;j<t;j++){
+        if(q%p[j]==0){
+            r-=r/p[j];
+            while(q%p[j]==0){q/=p[j];}
+        }
+    }
+    if(q>1){r-=(r/q);}
+    printf("%llu",r);
+}
+```
+```
+$ ./test
+100
+40
 ```
 
 
