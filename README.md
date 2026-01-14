@@ -191,3 +191,6 @@
 |6086 |<span style="background-color:#ec9a00">G3</span>|C|2026-01-13|최대 유량|최대 유량|
 |2166 |<span style="background-color:#ec9a00">G5</span>|C|2026-01-13|다각형의 면적|면적|
 |1708 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-13|볼록 껍질|볼록 껍질|
+|1662 |<span style="background-color:#ec9a00">G4</span>|C|2026-01-14|압축|스택,재귀|
+|1533 |<span style="background-color:#27e2a4">P3</span>|C|2026-01-14|길의 개수|그래프,분할정복거듭제곱|
+|11689 |<span style="background-color:#ec9a00">G1</span>|C|2026-01-14|GCD(n,k)=1|오일러피함수|
