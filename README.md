@@ -193,4 +193,11 @@
 |1708 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-13|볼록 껍질|볼록 껍질|
 |1662 |<span style="background-color:#ec9a00">G4</span>|C|2026-01-14|압축|스택,재귀|
 |1533 |<span style="background-color:#27e2a4">P3</span>|C|2026-01-14|길의 개수|그래프,분할정복거듭제곱|
-|11689 |<span style="background-color:#ec9a00">G1</span>|C|2026-01-14|GCD(n,k)=1|오일러피함수|
+|11689|<span style="background-color:#ec9a00">G1</span>|C|2026-01-14|GCD(n,k)=1|오일러피함수|
+|4355 |<span style="background-color:#ec9a00">G1</span>|C|2026-01-15|서로소|오일러피함수|
+|13926|<span style="background-color:#00b4fc">D5</span>|C|2026-01-15|GCD(n,k)=1|오일러피함수,밀러-라빈,폴라드로|
+|4149 |<span style="background-color:#27e2a4">P1</span>|C|2026-01-15|큰 수 소인수분해|밀러-라빈,폴라드로|
+|10854|<span style="background-color:#27e2a4">P1</span>|C|2026-01-15|Divisions(약수 개수 구하기)|밀러-라빈,폴라드로,소인수분해|
+|2150 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-15|Strongly Connected Component|강결합컴포넌트|
+|13549|<span style="background-color:#ec9a00">G5</span>|C|2026-01-15|숨바꼭질 3|0-1BFS|
+|1865 |<span style="background-color:#ec9a00">G3</span>|C|2026-01-15|웜홀|벨만-포드|
