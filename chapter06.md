@@ -224,51 +224,49 @@ bfs: 0 1 2 4 3
 #include<stdio.h>
 #include<stdlib.h>
 
-#define N 5 // 노드 최대 개수
-#define INF 255
+#define N 5
+#define INF 1000000000
 #define NOTVIST 0
 #define ALLDONE 1
 
 struct node{
-    unsigned char v; // value
-    unsigned char w; // weight
+    int v;
+    int w;
     struct node* next;
 };
 struct graph{
-    unsigned char n; // 노드 개수
-    struct node*  adjs[N];
-    unsigned char dist[N];
-    unsigned char vist[N];
+    int n; // number of node
+    struct node* adjs[N];
+    int          dist[N];
+    int          vist[N];
 };
 
-void dijkstra(struct graph* g,unsigned char s);
-void init_graph(struct graph* g,unsigned char n);
-void init_dist(struct graph* g); // INF로 초기화
-void init_vist(struct graph* g);
-void insert(struct graph* g,unsigned char u,unsigned char v,unsigned char w);
+void dijkstra(struct graph* g,int u);
+void     init(struct graph* g,int n);
+void   insert(struct graph* g,int u,int v,int w);
 
 int main(void){
-    struct graph* g=(struct graph*)malloc(sizeof(struct graph));
-    init_graph(g,N);
-    insert(g,0,1,10);insert(g,0,2,5);
-    insert(g,1,2,2); insert(g,1,3,1);
-    insert(g,2,1,3); insert(g,2,3,9); insert(g,2,4,2);
-    insert(g,3,4,4);
-    insert(g,4,0,7); insert(g,4,3,6);
-    dijkstra(g,0);
+    int n=5; // number of node
+    struct graph g;
+    init(&g,n);
+    insert(&g,0,1,10);insert(&g,0,2,5);
+    insert(&g,1,2,2); insert(&g,1,3,1);
+    insert(&g,2,1,3); insert(&g,2,3,9); insert(&g,2,4,2);
+    insert(&g,3,4,4);
+    insert(&g,4,0,7); insert(&g,4,3,6);
+    dijkstra(&g,0);
 }
 
-void dijkstra(struct graph* g,unsigned char s){
-    unsigned char i=s;    // min distance index buffer
-    unsigned char d;      // min distance buffer
-    unsigned char j;    // loop variable
-    unsigned char k;    // loop variable
-    init_dist(g); g->dist[s]=0;
-    init_vist(g);
+void dijkstra(struct graph* g,int u){
+    int j;   // loop variable
+    int k;   // loop variable
+    int i=u; // min distance index
+    int d;   // min distance value
     struct node* b;
+    g->dist[u]=0;
 
     for(j=0;j<g->n;j++){
-        // 방문되지 않은 노드 중 가장 가까운 노드 찾기
+        // 방문되지 않은 노드 중 비용이 가장 낮은 노드 찾기
         d=INF;
         for(k=0;k<g->n;k++){
             if((g->dist[k]<d)&&(g->vist[k]==NOTVIST)){
@@ -279,64 +277,50 @@ void dijkstra(struct graph* g,unsigned char s){
         b=g->adjs[i];
         d=g->dist[i];
         g->vist[i]=ALLDONE;
-        
+
         // dist[]<-min(dist[],dist[]+dist[][])
         while((b=b->next)!=NULL){
-            if(d+b->w<g->dist[b->v]){
+            if((d+b->w)<(g->dist[b->v])){
                 g->dist[b->v]=d+b->w;
             }
         }
 
-        printf("expanded: %u, distance: ",i);
-        for(unsigned char x=0;x<N;x++){printf("%u ",g->dist[x]);}printf("\n");
-
+        // 확장 과정 출력
+        // printf("expanded: %d, distance: ",i);
+        // for(int x=0;x<g->n;x++){
+            // if(g->dist[x]==INF){printf("INF ");}
+            // else               {printf("%d ",g->dist[x]);}
+        // }
+        // printf("\n");
     }
 }
-void init_graph(struct graph* g,unsigned char n){
-    unsigned char j;
-    struct node* new;
-    for(j=0;j<n;j++){
-        new=(struct node*)malloc(sizeof(struct node));
-        new->v=j;
-        new->w=0;
-        new->next=NULL;
-        g->adjs[j]=new;
-        g->dist[j]=INF;
-        g->vist[j]=NOTVIST;
-    }
+void     init(struct graph* g,int n){
+    int j;
     g->n=n;
-}
-void init_dist(struct graph* g){
-    unsigned char j;
-    for(j=0;j<g->n;j++){
+    for(j=0;j<n;j++){
+        g->adjs[j]=(struct node*)malloc(sizeof(struct node));
+        g->adjs[j]->v=j;
+        g->adjs[j]->w=0;
+        g->adjs[j]->next=NULL;
         g->dist[j]=INF;
-    }
-}
-void init_vist(struct graph* g){
-    unsigned char j;
-    for(j=0;j<g->n;j++){
         g->vist[j]=NOTVIST;
     }
 }
-void insert(struct graph* g,unsigned char u,unsigned char v,unsigned char w){
-    struct node* B;
-    struct node* V=(struct node*)malloc(sizeof(struct node));
-    V->v=v;
-    V->w=w;
-    V->next=NULL;
-    B=g->adjs[u];
-    while((B->next!=NULL)&&(v>B->next->v)){B=B->next;}
-    V->next=B->next;
-    B->next=V;
+void   insert(struct graph* g,int u,int v,int w){
+    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    n->v=v;
+    n->w=w;
+    n->next=g->adjs[u]->next;
+    g->adjs[u]->next=n;
 }
 ```
 ```
 $ ./test
-expanded: 0, distance: 0 10 5 255 255 
+expanded: 0, distance: 0 10 5 INF INF 
 expanded: 2, distance: 0 8 5 14 7 
 expanded: 4, distance: 0 8 5 13 7 
 expanded: 1, distance: 0 8 5 9 7 
-expanded: 3, distance: 0 8 5 9 7
+expanded: 3, distance: 0 8 5 9 7 
 ```
 ### 6.3.2 플로이드-워셜
 #### 플로이드-워셜
@@ -344,68 +328,60 @@ expanded: 3, distance: 0 8 5 9 7
 ```C
 #include<stdio.h>
 
-#define N   5   // 노드 최대 개수
-#define INF 255
+#define N   5
+#define INF 1000000000
 
 struct graph{
-    unsigned char n; // 노드 개수
-    unsigned char dist[N][N];
+    int n;
+    int dist[N][N];
 };
 
-struct graph g;
-
-void init_graph(unsigned char n);
-void insert(unsigned char u,unsigned char v,unsigned char w);
-void fw(void);
+void   init(struct graph* g,int n);
+void insert(struct graph* g,int u,int v,int w);
+void     fw(struct graph* g);
 
 int main(void){
-    unsigned char j; // loop variable
-    unsigned char k; // loop variable
-    unsigned char n; // number of node
-
-    n=5;
-    init_graph(n);
-    insert(0,1,10);insert(0,2,5);
-    insert(1,2,2); insert(1,3,1);
-    insert(2,1,3); insert(2,3,9); insert(2,4,2);
-    insert(3,4,4);
-    insert(4,0,7); insert(4,3,6);
-    fw();
-    for(j=0;j<n;j++){
-        for(k=0;k<n;k++){
-            if(g.dist[j][k]==INF){printf("INF\t");}
-            else                 {printf("%u\t",g.dist[j][k]);}
-        }
-        printf("\n");
-    }
-    return 0;    
+    int n=5; // number of node
+    struct graph g;
+    init(&g,n);
+    insert(&g,0,1,10);insert(&g,0,2,5);
+    insert(&g,1,2,2); insert(&g,1,3,1);
+    insert(&g,2,1,3); insert(&g,2,3,9); insert(&g,2,4,2);
+    insert(&g,3,4,4);
+    insert(&g,4,0,7); insert(&g,4,3,6);
+    fw(&g);
 }
 
-void init_graph(unsigned char n){
-    unsigned char j;
-    unsigned char k;
+void   init(struct graph* g,int n){
+    int j; // loop variable
+    int k; // loop variable
+    g->n=n;
     for(j=0;j<n;j++){
-        for(k=0;k<n;k++){
-            if(j==k){g.dist[j][k]=0;}
-            else    {g.dist[j][k]=INF;}
-        }
-    }
-    g.n=n;
+    for(k=0;k<n;k++){
+        if(j==k){g->dist[j][k]=0;}
+        else    {g->dist[j][k]=INF;}
+    }}
 }
-void insert(unsigned char u,unsigned char v,unsigned char w){
-    if(g.dist[u][v]>w){g.dist[u][v]=w;}
+void insert(struct graph* g,int u,int v,int w){
+    if(g->dist[u][v]>w){g->dist[u][v]=w;}
 }
-void fw(){
-    unsigned char j;
-    unsigned char k;
-    unsigned char l;
-    for(j=0;j<g.n;j++){
-    for(k=0;k<g.n;k++){
-    for(l=0;l<g.n;l++){
-        if(g.dist[k][l]>g.dist[k][j]+g.dist[j][l]){
-           g.dist[k][l]=g.dist[k][j]+g.dist[j][l];
+void     fw(struct graph* g){
+    int j; // loop variable
+    int k; // loop variable
+    int l; // loop variable
+    for(j=0;j<g->n;j++){
+    for(k=0;k<g->n;k++){
+    for(l=0;l<g->n;l++){
+        if(g->dist[k][l]>g->dist[k][j]+g->dist[j][l]){
+           g->dist[k][l]=g->dist[k][j]+g->dist[j][l];
         }
     }}}
+    // 결과 출력
+    // for(j=0;j<g->n;j++){
+    // for(k=0;k<g->n;k++){
+        // if(g->dist[j][k]==INF){printf("INF\t");}
+        // else                  {printf("%d\t",g->dist[j][k]);}
+    // }printf("\n");}
 }
 ```
 ```
@@ -420,139 +396,87 @@ E       7       15      12      6       0
 ### 6.3.3 DAG 최단경로: 위상정렬
 #### DAG
 DAG: directed acyclic graph  
-#### undirected DAG 위상 정렬
+#### DAG 위상 정렬
 <img src="./static/PS633-tsort.png">
 
 ```C
 #include<stdio.h>
 #include<stdlib.h>
 
-#define N 11
+#define N 11 // 10+1: 사전순 출력 확장시 1부터 시작(힙)
 
 struct node{
-    unsigned char v; // value: 0 ~ N-1, 인접리스트 인덱스 겸용
+    int v;
     struct node* next;
 };
-
 struct graph{
-    unsigned char n; // 노드 개수
+    int n; // number of node
     struct node* adjs[N];
-    unsigned char ideg[N]; // indegree: 진입 차수
-    unsigned char heap[N]; // 최소 힙: 사전순 유지
-    unsigned char i;       // item: 엘리먼트 개수
+    int          ideg[N]; // indegree: 진입 차수
 };
 
-void tsort(struct graph* g); // topological sort
-void init_graph(struct graph* g, unsigned char n);
-void insert(struct graph* g,unsigned char u,unsigned char v); // u->v
-void push(struct graph* g,unsigned char v);
-unsigned char pop(struct graph* g);
+void  tsort(struct graph* g); // topological sort
+void   init(struct graph* g,int n);
+void insert(struct graph* g,int u,int v);
 
 int main(void){
-    struct graph* g=(struct graph*)malloc(sizeof(struct graph));
-    init_graph(g,11); // 10+1: 1부터 시작하는 과제 환경(힙)
-    insert(g,1,3); insert(g,1,4);insert(g,2,4); insert(g,2,5);insert(g,2,10);
-    insert(g,3,6); insert(g,3,7);insert(g,4,6); insert(g,5,7);insert(g,6,9);
-    insert(g,6,10);insert(g,7,9);insert(g,8,10);
-    tsort(g);
+    int n=10; // number of node
+    struct graph g;
+    init(&g,n+1); // n+1: 1부터 시작하는 과제 환경
+    insert(&g,1,3); insert(&g,1,4);insert(&g,2,4); insert(&g,2,5);insert(&g,2,10);
+    insert(&g,3,6); insert(&g,3,7);insert(&g,4,6); insert(&g,5,7);insert(&g,6,9);
+    insert(&g,6,10);insert(&g,7,9);insert(&g,8,10);
+    tsort(&g);
 }
+
 void tsort(struct graph* g){
-    unsigned char j; // loop variable
-    unsigned char u;
-    struct node* b; // 인접 노드 진입 차수 조작
+    int j;          // loop variable
+    int q[g->n];    // queue
+    int f=0;        // front
+    int r=0;        // rear
+    int d;          // node(dequeue)
+    struct node* c; // node(인접리스트 포인터)
     
-    // 진입 차수 0 노드 push
     for(j=1;j<g->n;j++){
         if(g->ideg[j]==0){
-            push(g,j);
+            q[r++]=j; // enqueue
         }
     }
 
-    // tsort
-    while(g->i>0){
-        u=pop(g); // 힙에 의해 사전순 추출
-        printf("%u ",u);
-
-        b=g->adjs[u];
-        while((b=b->next)!=NULL){
-            if((--(g->ideg[b->v]))==0){
-                push(g,b->v);
-            }
+    while(f<r){
+        d=q[f++]; // dequeue
+        printf("%d ",d);
+        c=g->adjs[d];
+        while((c=c->next)!=NULL){
+            g->ideg[c->v]-=1; // 진입 차수 갱신
+            if(g->ideg[c->v]==0){q[r++]=c->v;} // enqueue
         }
     }
 }
-void init_graph(struct graph* g,unsigned char n){
-    unsigned char j;
-    struct node* new;
+void   init(struct graph* g,int n){
+    int j;
+    g->n=n;
     for(j=0;j<n;j++){
-        new=(struct node*)malloc(sizeof(struct node));
-        new->v=j;
-        new->next=NULL;
-        g->adjs[j]=new;
+        g->adjs[j]=(struct node*)malloc(sizeof(struct node));
+        g->adjs[j]->v=j;
+        g->adjs[j]->next=NULL;
         g->ideg[j]=0;
     }
-    g->n=n;
-    g->i=0; // number of heap item
 }
-void insert(struct graph* g,unsigned char u,unsigned char v){
-    struct node* B; // 버퍼
-    struct node* V=(struct node*)malloc(sizeof(struct node));
-    
-    // 진입 차수 갱신
+void insert(struct graph* g,int u,int v){
+    // 인접리스트 조작
+    struct node* n=(struct node*)malloc(sizeof(struct node));
+    n->v=v;
+    n->next=g->adjs[u]->next;
+    g->adjs[u]->next=n;
+
+    // 진입차수 갱신
     g->ideg[v]+=1;
-
-    // 삽입
-    V->v=v;
-    V->next=NULL;
-    B=g->adjs[u];
-    while((B->next!=NULL)&&(v>B->next->v)){B=B->next;}
-    V->next=B->next;
-    B->next=V;
-}
-void push(struct graph* g,unsigned char v){
-    unsigned char j; // loop variable
-    unsigned char t; // temp variable(swap)
-    g->heap[++(g->i)]=v; // 선형 트리 마지막 엘리먼트로 삽입
-    j=g->i;
-
-    // heapify
-    while((j>1)&&(g->heap[j]<g->heap[j/2])){
-        t=g->heap[j];
-        g->heap[j]=g->heap[j/2];
-        g->heap[j/2]=t;
-        j/=2;
-    }
-}
-unsigned char pop(struct graph* g){
-    unsigned char r; // root: 리턴값
-    unsigned char j; // loop variable
-    unsigned char t; // temp variable(swap)
-    unsigned char c; // child
-
-    r=g->heap[1]; // 루트
-    g->heap[1]=g->heap[(g->i)--]; // 선형 트리 마지막 엘리먼트를 루트로
-    j=1;
-
-    // heapify
-    while(j*2<=g->i){
-        c=j*2; // lchild
-        if((c+1<=g->i)&&(g->heap[c+1]<g->heap[c])){
-            c+=1; // rchild: j*2+1
-        }
-        if(g->heap[j]<=g->heap[c]){
-            break;
-        }
-        t=g->heap[j];
-        g->heap[j]=g->heap[c];
-        g->heap[c]=t;
-        j=c;
-    }
-    return r;
 }
 ```
 ```
 $ ./test
-1 2 3 4 5 6 7 8 9 10
+1 2 8 3 5 4 7 6 10 9 
 ```
 
 
