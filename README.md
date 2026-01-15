@@ -205,3 +205,4 @@
 |11400|<span style="background-color:#27e2a4">P5</span>|C|2026-01-15|단절선|단절선,BFS|
 |11656|<span style="background-color:#435f7a">S4</span>|C|2026-01-15|접미사 배열|문자열,접미사배열|
 |13264|<span style="background-color:#27e2a4">P3</span>|C|2026-01-15|접미사 배열 2|접미사배열,맨버-마이어스|
+|2252 |<span style="background-color:#ec9a00">G3</span>|C|2026-01-16|줄 세우기|DAG,위상정렬|
