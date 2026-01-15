@@ -393,91 +393,7 @@ C       9       3       0       4       2
 D       11      19      16      0       4
 E       7       15      12      6       0
 ```
-### 6.3.3 DAG 최단경로: 위상정렬
-#### DAG
-DAG: directed acyclic graph  
-#### DAG 위상 정렬
-<img src="./static/PS633-tsort.png">
-
-```C
-#include<stdio.h>
-#include<stdlib.h>
-
-#define N 11 // 10+1: 사전순 출력 확장시 1부터 시작(힙)
-
-struct node{
-    int v;
-    struct node* next;
-};
-struct graph{
-    int n; // number of node
-    struct node* adjs[N];
-    int          ideg[N]; // indegree: 진입 차수
-};
-
-void  tsort(struct graph* g); // topological sort
-void   init(struct graph* g,int n);
-void insert(struct graph* g,int u,int v);
-
-int main(void){
-    int n=10; // number of node
-    struct graph g;
-    init(&g,n+1); // n+1: 1부터 시작하는 과제 환경
-    insert(&g,1,3); insert(&g,1,4);insert(&g,2,4); insert(&g,2,5);insert(&g,2,10);
-    insert(&g,3,6); insert(&g,3,7);insert(&g,4,6); insert(&g,5,7);insert(&g,6,9);
-    insert(&g,6,10);insert(&g,7,9);insert(&g,8,10);
-    tsort(&g);
-}
-
-void tsort(struct graph* g){
-    int j;          // loop variable
-    int q[g->n];    // queue
-    int f=0;        // front
-    int r=0;        // rear
-    int d;          // node(dequeue)
-    struct node* c; // node(인접리스트 포인터)
-    
-    for(j=1;j<g->n;j++){
-        if(g->ideg[j]==0){
-            q[r++]=j; // enqueue
-        }
-    }
-
-    while(f<r){
-        d=q[f++]; // dequeue
-        printf("%d ",d);
-        c=g->adjs[d];
-        while((c=c->next)!=NULL){
-            g->ideg[c->v]-=1; // 진입 차수 갱신
-            if(g->ideg[c->v]==0){q[r++]=c->v;} // enqueue
-        }
-    }
-}
-void   init(struct graph* g,int n){
-    int j;
-    g->n=n;
-    for(j=0;j<n;j++){
-        g->adjs[j]=(struct node*)malloc(sizeof(struct node));
-        g->adjs[j]->v=j;
-        g->adjs[j]->next=NULL;
-        g->ideg[j]=0;
-    }
-}
-void insert(struct graph* g,int u,int v){
-    // 인접리스트 조작
-    struct node* n=(struct node*)malloc(sizeof(struct node));
-    n->v=v;
-    n->next=g->adjs[u]->next;
-    g->adjs[u]->next=n;
-
-    // 진입차수 갱신
-    g->ideg[v]+=1;
-}
-```
-```
-$ ./test
-1 2 8 3 5 4 7 6 10 9 
-```
+<!-- ### 6.3.3 벨만-포드 -->
 
 
 
@@ -904,3 +820,95 @@ int flow(struct graph* g,int s,int e){
 ```
 <!-- ### 6.5.3 최대 유량 최소 컷 정리 -->
 <!-- ### 6.5.4 최소 비용 최대 유량 -->
+
+
+
+## 6.6 DAG
+### 6.6.1 위상정렬
+#### DAG
+DAG: directed acyclic graph  
+#### DAG 위상 정렬
+<img src="./static/PS661-tsort.png">
+
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+#define N 11 // 10+1: 사전순 출력 확장시 1부터 시작(힙)
+
+struct node{
+    int v;
+    struct node* next;
+};
+struct graph{
+    int n; // number of node
+    struct node* adjs[N];
+    int          ideg[N]; // indegree: 진입 차수
+};
+
+void  tsort(struct graph* g); // topological sort
+void   init(struct graph* g,int n);
+void insert(struct graph* g,int u,int v);
+
+int main(void){
+    int n=10; // number of node
+    struct graph g;
+    init(&g,n+1); // n+1: 1부터 시작하는 과제 환경
+    insert(&g,1,3); insert(&g,1,4);insert(&g,2,4); insert(&g,2,5);insert(&g,2,10);
+    insert(&g,3,6); insert(&g,3,7);insert(&g,4,6); insert(&g,5,7);insert(&g,6,9);
+    insert(&g,6,10);insert(&g,7,9);insert(&g,8,10);
+    tsort(&g);
+}
+
+void tsort(struct graph* g){
+    int j;          // loop variable
+    int q[g->n];    // queue
+    int f=0;        // front
+    int r=0;        // rear
+    int d;          // node(dequeue)
+    struct node* c; // node(인접리스트 포인터)
+    
+    for(j=1;j<g->n;j++){
+        if(g->ideg[j]==0){
+            q[r++]=j; // enqueue
+        }
+    }
+
+    while(f<r){
+        d=q[f++]; // dequeue
+        printf("%d ",d);
+        c=g->adjs[d];
+        while((c=c->next)!=NULL){
+            g->ideg[c->v]-=1; // 진입 차수 갱신
+            if(g->ideg[c->v]==0){q[r++]=c->v;} // enqueue
+        }
+    }
+}
+void   init(struct graph* g,int n){
+    int j;
+    g->n=n;
+    for(j=0;j<n;j++){
+        g->adjs[j]=(struct node*)malloc(sizeof(struct node));
+        g->adjs[j]->v=j;
+        g->adjs[j]->next=NULL;
+        g->ideg[j]=0;
+    }
+}
+void insert(struct graph* g,int u,int v){
+    // 인접리스트 조작
+    struct node* n=(struct node*)malloc(sizeof(struct node));
+    n->v=v;
+    n->next=g->adjs[u]->next;
+    g->adjs[u]->next=n;
+
+    // 진입차수 갱신
+    g->ideg[v]+=1;
+}
+```
+```
+$ ./test
+1 2 8 3 5 4 7 6 10 9 
+```
+<!-- ### 6.6.2 SCC -->
+<!-- #### SCC -->
+<!-- #### 2-SAT -->

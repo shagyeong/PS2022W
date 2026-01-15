@@ -28,6 +28,7 @@
 6.3 최단 경로  
 6.4 신장 트리  
 6.5 유량  
+6.6 DAG  
 #### 7장 최적화: Devide & Conquer, DP and Greedy  
 7.1 Dvide & Conquer  
 7.2 DP  
