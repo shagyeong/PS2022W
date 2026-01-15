@@ -201,3 +201,7 @@
 |2150 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-15|Strongly Connected Component|강결합컴포넌트|
 |13549|<span style="background-color:#ec9a00">G5</span>|C|2026-01-15|숨바꼭질 3|0-1BFS|
 |1865 |<span style="background-color:#ec9a00">G3</span>|C|2026-01-15|웜홀|벨만-포드|
+|11266|<span style="background-color:#27e2a4">P4</span>|C|2026-01-15|단절점|단절점,BFS|
+|11400|<span style="background-color:#27e2a4">P5</span>|C|2026-01-15|단절선|단절선,BFS|
+|11656|<span style="background-color:#435f7a">S4</span>|C|2026-01-15|접미사 배열|문자열,접미사배열|
+|13264|<span style="background-color:#27e2a4">P3</span>|C|2026-01-15|접미사 배열 2|접미사배열,맨버-마이어스|
