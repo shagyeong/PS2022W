@@ -211,3 +211,4 @@
 |15681|<span style="background-color:#ec9a00">G5</span>|C|2026-01-16|트리와 쿼리|재귀,트리DP,DFS|
 |1761 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-16|정점들의 거리|희소배열,LCA,트리DP|
 |5052 |<span style="background-color:#ec9a00">G4</span>|C|2026-01-16|전화번호 목록|트라이|
+|11280|<span style="background-color:#27e2a4">P4</span>|C|2026-01-17|2-SAT - 3|강결합컴포넌트,2-SAT|
