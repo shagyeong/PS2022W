@@ -295,45 +295,46 @@ LIS: 1 4 5
 ```C
 #include<stdio.h>
 
-int knapsack(int w[],int v[],int n,int m){
-    int j;  // loop variable
-    int k;  // loop variable
-    int t[n+1][m+1];
+int knapsack(int* w,int* v,int n,int m);
 
-    printf("weight\tvalue\n");
-    for(j=0;j<=n;j++){
-        printf("%d\t%d\t",w[j],v[j]);
-        for(k=0;k<=m;k++){
-            if((j==0)||(k==0)){
-                t[j][k]=0;
-            }
-            else if(w[j-1]<=k){
-                t[j][k]=(v[j-1]+t[j-1][k-w[j-1]]>t[j-1][k])?v[j-1]+t[j-1][k-w[j-1]]:t[j-1][k];
-            }
-            else{
-                t[j][k]=t[j-1][k];
-            }
-            printf("%d ",t[j][k]);
-        }printf("\n");
-    }
-    return t[n][m];
-}
 int main(void){
-    int n=4; // 물건 개수
+    int n=5; // 물건 개수
     int m=7; // 최대 무게
-    int w[5]={4,6,4,3,5};
-    int v[5]={7,13,8,6,12};
-    printf("%d",knapsack(w,v,n,m));
+    int w[6]={0,4,6,4,3,5};
+    int v[6]={0,7,13,8,6,12};
+    printf("%d",knapsack(&w[0],&v[0],n,m));
+}
+
+int knapsack(int* w,int* v,int n,int m){
+    int j; int k; // loop variable
+    int t[++n][++m];
+    printf("weight\tvalue\n");
+    for(j=0;j<n;j++){
+        printf("%d\t%d\t",w[j],v[j]);
+        for(k=0;k<m;k++){
+            if(j==0||k==0){t[j][k]=0;} // 0행 및 0열 초기화
+            else if(w[j]<=k){          // 물건이 배낭 용량 이하인 경우
+                if((t[j-1][k])>(v[j]+t[j-1][k-w[j]])){t[j][k]=t[j-1][k];}
+                else                                 {t[j][k]=v[j]+t[j-1][k-w[j]];}
+            } 
+            else                                     {t[j][k]=t[j-1][k];}
+            printf("%d ", t[j][k]);
+        }
+        printf("\n");
+    }
+    return t[n-1][m-1];
 }
 ```
 ```
 $ ./test
 weight  value
-4       7       0 0 0 0 0 0 0 0 
-6       13      0 0 0 0 7 7 7 7 
-4       8       0 0 0 0 7 7 13 13 
-3       6       0 0 0 0 8 8 13 13 
-5       12      0 0 0 6 8 8 13 14 
+0       0       0 0 0 0 0 0 0 0 
+4       7       0 0 0 0 7 7 7 7 
+6       13      0 0 0 0 7 7 13 13 
+4       8       0 0 0 0 8 8 13 13 
+3       6       0 0 0 6 8 8 13 14 
+5       12      0 0 0 6 8 12 13 14 
+14
 ```
 
 
