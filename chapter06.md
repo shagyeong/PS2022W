@@ -76,7 +76,7 @@ void insert(struct graph* g,int u,int v,int w){
 #### DFS
 <img src="./static/PS621-graphDFS.png">
 
-#### DFS
+#### DFS: 재귀
 ```C
 #include<stdio.h>
 #include<stdlib.h>
@@ -149,29 +149,29 @@ dfs: 0 1 2 3 4
 ```
 #### DFS: 스택
 ```C
-void dfs(struct graph* g,int s){
+void    dfs(struct graph* g,int s){
     struct node* b;
-    struct node* t[(g->n)];        // tmp(사전순 유지)
-    struct node* a[(g->n)*(g->n)]; // stack
-    int h=0;                       // head of stack
-    int c=0;                       // number of tmp array
-    a[h++]=g->adjs[s]; // push
-    while(h>0){
-        b=a[--h]; // pop
-        if(g->vist[b->v]==ALLDONE){continue;}
-        g->vist[b->v]=ALLDONE;
+    int a[g->n];    // stack
+    int t=0;        // top of stack
+    
+    a[t++]=s; // push
+    g->vist[s]=ALLDONE;
+
+    while(t>0){
+        b=g->adjs[a[--t]]; // pop
         printf("%d ",b->v);
-        c=0;
         while((b=b->next)!=NULL){
             if(g->vist[b->v]==NOTVIST){
-                t[c++]=g->adjs[b->v];
+                g->vist[b->v]=ALLDONE;
+                a[t++]=b->v; // push
             }
-        }
-        while(--c>=0){
-            a[h++]=t[c]; // 사전순 유지: 역순 push
         }
     }
 }
+```
+```
+$ ./test
+dfs: 0 4 3 2 1 # 사전순 탐색 없음
 ```
 ### 6.2.2 BFS
 #### BFS
@@ -179,20 +179,22 @@ void dfs(struct graph* g,int s){
 
 #### BFS: 큐
 ```C
-void bfs(struct graph* g,int s){
+void    bfs(struct graph* g,int s){
     struct node* b;
-    struct node* q[(g->n)*(g->n)]; // stack
-    int f=0;                       // front
-    int r=0;                       // rear
-    q[r++]=g->adjs[s]; // enqueue
+    int q[g->n];
+    int f=0; // front of queue
+    int r=0; // rear  of queue
+
+    q[r++]=s; // enqueue
+    g->vist[s]=ALLDONE;
+    
     while(f<r){
-        b=q[f++]; // dequeue
-        if(g->vist[b->v]==ALLDONE){continue;}
-        g->vist[b->v]=ALLDONE;
+        b=g->adjs[q[f++]]; // dequeue
         printf("%d ",b->v);
         while((b=b->next)!=NULL){
             if(g->vist[b->v]==NOTVIST){
-                q[r++]=g->adjs[b->v]; // enqueue
+                g->vist[b->v]=ALLDONE;
+                q[r++]=b->v; // enqueue
             }
         }
     }
