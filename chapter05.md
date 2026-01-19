@@ -471,3 +471,35 @@ $ cat test.txt
 24          # 2*3*4
 56          # 2*7*4
 ```
+
+
+
+## 5.6 기타 트리 과제 유형
+### 5.6.1 분리집합
+#### 분리집합
+```C
+#include<stdio.h>
+
+#define N 10
+
+int p[N]; // parent
+
+int getroot(int q);
+void  unify(int u,int v);
+
+int main(void){
+    int j;
+    for(j=0;j<N;j++){p[j]=j;}
+}
+
+int getroot(int q){
+    if(p[q]==q){return q;}
+    else       {return p[q]=getroot(p[q]);}
+}
+void unify(int u,int v){
+    p[getroot(u)]=getroot(v);
+}
+```
+<!-- ### 5.6.2 트리 지름 -->
+<!-- ### 5.6.3 리프 노드 개수 -->
+<!-- ### 5.6.4 LCA -->
