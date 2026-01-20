@@ -914,3 +914,89 @@ $ ./test
 <!-- ### 6.6.2 SCC -->
 <!-- #### SCC -->
 <!-- #### 2-SAT -->
+
+
+
+## 6.7 격자그래프
+### 6.7.1 BFS
+#### BFS: 격자그래프 최단경로
+```C
+#include<stdio.h>
+
+struct node{
+    int r;
+    int c;
+};
+
+int n;
+int m;
+int adjs[1000][1000]; // grid
+int vist[1000][1000]; // 방문 상태
+struct node d[4]={
+    {-1, 0},
+    { 1, 0},
+    { 0,-1},
+    { 0, 1}
+};
+
+struct node q[1000001]; // queue
+int s;                  // front of queue
+int e;                  // rear  of queue
+
+void bfs(int r,int c);
+
+int main(void){
+    int j;
+    int k;
+    scanf("%d %d",&n,&m);
+    for(j=0;j<n;j++){for(k=0;k<m;k++){scanf("%1d",&adjs[j][k]);}}
+    bfs(0,0);
+    
+    if(vist[n-1][m-1]==0){printf("-1");}
+    else                 {printf("%d",vist[n-1][m-1]);}
+}
+
+void bfs(int r,int c){
+    int k;
+    struct node u; // current node
+    struct node v; // next node
+    q[e  ].r=r;    // enqueue
+    q[e++].c=c;    // enqueue
+    vist[r][c]=1;
+    while(s<e){
+        u.r=q[s  ].r; // dequeue
+        u.c=q[s++].c; // dequeue
+        for(k=0;k<4;k++){
+            v.r=u.r+d[k].r;
+            v.c=u.c+d[k].c;
+            if((v.r>=0&&v.r<n)&&(v.c>=0&&v.c<m)){
+                if((adjs[v.r][v.c]==0)&&(vist[v.r][v.c]==0)){
+                    vist[v.r][v.c]=vist[u.r][u.c]+1;
+                    q[e  ].r=v.r; // enqueue
+                    q[e++].c=v.c; // enqueue
+                }
+            }
+        }
+    }
+}
+```
+```
+$ ./test
+6 4
+0000
+1110
+1000
+0000
+0111
+0000
+15
+```
+```
+$ ./test
+4 4
+0100
+1100
+0000
+0000
+-1
+```
