@@ -218,3 +218,6 @@
 |27172|<span style="background-color:#ec9a00">G4</span>|C|2026-01-19|수 나누기 게임|정수론|
 |1644 |<span style="background-color:#ec9a00">G3</span>|C|2026-01-19|소수의 연속합|소수판정,투포인터,비트마스킹|
 |1202 |<span style="background-color:#ec9a00">G2</span>|C|2026-01-19|보석 도둑|정렬,힙,그리디|
+|10775|<span style="background-color:#ec9a00">G2</span>|C|2026-01-20|공항|그리디,분리집합|
+|1562 |<span style="background-color:#ec9a00">G1</span>|C|2026-01-20|계단 수|비트필드DP|
+|14003|<span style="background-color:#27e2a4">P5</span>|C|2026-01-20|가장 긴 증가하는 부분 수열 5|LIS|
