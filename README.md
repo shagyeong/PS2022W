@@ -226,3 +226,5 @@
 |17387|<span style="background-color:#ec9a00">G2</span>|C|2026-01-20|선분 교차 2|기하학,선분교차|
 |2162 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-20|선분 그룹|선분교차,분리집합|
 |10942|<span style="background-color:#ec9a00">G4</span>|C|2026-01-20|팰린드롬?|DP|
+|1766 |<span style="background-color:#ec9a00">G2</span>|C|2026-01-22|문제집|DAG,위상정렬,힙|
+|2473 |<span style="background-color:#ec9a00">G3</span>|C|2026-01-22|세 용액|투포인터|
