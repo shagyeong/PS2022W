@@ -315,8 +315,8 @@ int pop(struct heap* h){
         if((c+1<=h->i)&&(h->a[c+1]>h->a[c])){
             c+=1; // rchild: j*2+1
         }
-     // if(h->a[j]>=h->a[c]) 최소 힙 부등호 방향
-        if(h->a[j]<=h->a[c]){
+     // if(h->a[j]<=h->a[c]) 최소 힙 부등호 방향
+        if(h->a[j]>=h->a[c]){
             break;
         }
         t=h->a[j];

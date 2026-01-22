@@ -290,8 +290,8 @@ $ ./test
 length: 3
 LIS: 1 4 5 
 ```
-### 7.2.4 knapsack
-#### knapsack
+### 7.2.4 배낭(knapsack)
+#### 0/1
 ```C
 #include<stdio.h>
 
@@ -336,7 +336,9 @@ weight  value
 5       12      0 0 0 6 8 12 13 14 
 14
 ```
-
+<!-- #### fracional -->
+<!-- #### unbounded -->
+<!-- #### bounded -->
 
 
 ## 7.3 Greedy
