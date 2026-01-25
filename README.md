@@ -231,5 +231,8 @@
 |2887 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-22|행성 터널|MST,정렬|
 |12100|<span style="background-color:#ec9a00">G1</span>|C|2026-01-22|2048|재귀,브루트포스,시뮬레이션,백트래킹|
 |14286|<span style="background-color:#27e2a4">P3</span>|C|2026-01-23|간선 끊어가기 2|유량,최대유량최소컷정리|
-|11281 |<span style="background-color:#27e2a4">P3</span>|C|2026-01-23|2-SAT - 4|강결합컴포넌트,2-SAT,역추적|
-|11438 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-23|LCA 2|희소배열,LCA,트리DP|
+|11281|<span style="background-color:#27e2a4">P3</span>|C|2026-01-23|2-SAT - 4|강결합컴포넌트,2-SAT,역추적|
+|11438|<span style="background-color:#27e2a4">P5</span>|C|2026-01-23|LCA 2|희소배열,LCA,트리DP|
+|16978|<span style="background-color:#27e2a4">P4</span>|C|2026-01-24|수열과 쿼리 22|세그먼트트리,오프라인쿼리|
+|13925|<span style="background-color:#00b4fc">D5</span>|C|2026-01-24|수열과 쿼리 13|느리게갱신되는세그먼트트리|
+|13547|<span style="background-color:#27e2a4">P2</span>|C|2026-01-24|수열과 쿼리 5|오프라인쿼리,mo's|
