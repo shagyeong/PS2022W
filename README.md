@@ -236,3 +236,5 @@
 |16978|<span style="background-color:#27e2a4">P4</span>|C|2026-01-24|수열과 쿼리 22|세그먼트트리,오프라인쿼리|
 |13925|<span style="background-color:#00b4fc">D5</span>|C|2026-01-24|수열과 쿼리 13|느리게갱신되는세그먼트트리|
 |13547|<span style="background-color:#27e2a4">P2</span>|C|2026-01-24|수열과 쿼리 5|오프라인쿼리,mo's|
+|1707 |<span style="background-color:#ec9a00">G4</span>|C|2026-01-26|이분 그래프|이분그래프|
+|1154 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-26|팀 편성|이분그래프|
