@@ -261,78 +261,64 @@ $ ./test
 #include<stdlib.h>
 
 struct heap{
-    int* a; // array: 선형 트리
-    int  i; // item: 엘리먼트 개수
+    int* a; // array
+    int  n; // number of element
 };
 
+void init(struct heap* h,int n);
 void push(struct heap* h,int v);
 int   pop(struct heap* h);
 
 int main(void){
-    int a[10];
+    int j;
+    int v;
+    int n; scanf("%d",&n);
     struct heap h;
-    h.a=&a[0];
-    h.i=0;
-    push(&h,1);
-    push(&h,4);
-    push(&h,2);
-    push(&h,3);
-    printf("pop: %d\n",pop(&h));
-    printf("pop: %d\n",pop(&h));
-    printf("pop: %d\n",pop(&h));
-    printf("pop: %d\n",pop(&h));
+    init(&h,n);
+    for(j=0;j<n;j++){scanf("%d",&v); push(&h,v);}
+    for(j=0;j<n;j++){printf("%d ",pop(&h));}
 }
 
+void init(struct heap* h,int n){
+    h->a=(int*)malloc(sizeof(int)*(n+1)); // n+1: 1부터 시작하는 선형 트리 인덱스
+    h->n=0;
+}
 void push(struct heap* h,int v){
-    int j; // loop variable
-    int t; // temp variable(swap)
-    h->a[++(h->i)]=v; // 선형 트리 마지막 엘리먼트로 삽입
-    j=h->i;
-
-    // heapify
- // while((j>1)&&(h->a[j]<h->a[j/2])){ 최소 힙 부등호 방향
-    while((j>1)&&(h->a[j]>h->a[j/2])){ // 부모: floor(j/2)
-        t=h->a[j];
-        h->a[j]=h->a[j/2];
-        h->a[j/2]=t;
-        j/=2;
+    int i=++(h->n); // index of tree
+    int t;          // temp variable: swap
+    
+    h->a[i]=v;      // 마지막 엘리먼트로 삽입 후 heapify up
+    while((i>1)&&(h->a[i]>h->a[i/2])){
+        t=h->a[i];
+        h->a[i]=h->a[i/2];
+        h->a[i/2]=t;
+        i/=2;
     }
 }
 int pop(struct heap* h){
-    int r; // root: 리턴값
-    int j; // loop variable
-    int t; // temp variable(swap)
-    int c; // child
+    int r=h->a[1]; // return value
+    int i=1;       // index of tree
+    int t;         // temp variable(swap)
+    int c;         // child
 
-    r=h->a[1]; // 루트
-    h->a[1]=h->a[(h->i)--]; // 선형 트리 마지막 엘리먼트를 루트로
-    j=1;
-
-    // heapify
-    while(j*2<=h->i){
-        c=j*2; // lchild
-     // if((c+1<=h->i)&&(h->a[c+1]<h->a[c])){ 최소 힙 부등호 방향
-        if((c+1<=h->i)&&(h->a[c+1]>h->a[c])){
-            c+=1; // rchild: j*2+1
-        }
-     // if(h->a[j]<=h->a[c]) 최소 힙 부등호 방향
-        if(h->a[j]>=h->a[c]){
-            break;
-        }
-        t=h->a[j];
-        h->a[j]=h->a[c];
+    h->a[i]=h->a[(h->n)--]; // 루트 덮어쓰기 후 heapify down
+    while(i*2<=h->n){
+        if((i*2+1<=h->n)&&(h->a[i*2+1]>h->a[i*2])){c=i*2+1;} // rchild
+        else                                      {c=i*2;}   // lchild
+        if(h->a[i]>=h->a[c]){break;}
+        t=h->a[i];
+        h->a[i]=h->a[c];
         h->a[c]=t;
-        j=c;
+        i=c;
     }
     return r;
 }
 ```
 ```
 $ ./test
-pop: 4
-pop: 3
-pop: 2
-pop: 1
+9
+1 3 2 7 8 9 6 4 5
+9 8 7 6 5 4 3 2 1 
 ```
 
 
