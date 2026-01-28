@@ -242,3 +242,4 @@
 |10891|<span style="background-color:#27e2a4">P3</span>|C|2026-01-27|Cactus? Not cactus?|단절점,BFS,선인장|
 |2995 |<span style="background-color:#27e2a4">P4</span>|C|2026-01-28|생일|LIS,역추적|
 |14428|<span style="background-color:#ec9a00">G1</span>|C|2026-01-28|수열과 쿼리 16|세그먼트트리|
+|2775 |<span style="background-color:#ad5600">B1</span>|C|2026-01-29|부녀회장이 될테야|DP|
