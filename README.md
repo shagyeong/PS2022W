@@ -238,5 +238,7 @@
 |13547|<span style="background-color:#27e2a4">P2</span>|C|2026-01-24|수열과 쿼리 5|오프라인쿼리,mo's|
 |1707 |<span style="background-color:#ec9a00">G4</span>|C|2026-01-26|이분 그래프|이분그래프|
 |1154 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-26|팀 편성|이분그래프|
-|13544 |<span style="background-color:#27e2a4">P3</span>|C|2026-01-27|수열과 쿼리 3|세그먼트트리,병합정렬트리|
-|10891 |<span style="background-color:#27e2a4">P3</span>|C|2026-01-27|Cactus? Not cactus?|단절점,BFS,선인장|
+|13544|<span style="background-color:#27e2a4">P3</span>|C|2026-01-27|수열과 쿼리 3|세그먼트트리,병합정렬트리|
+|10891|<span style="background-color:#27e2a4">P3</span>|C|2026-01-27|Cactus? Not cactus?|단절점,BFS,선인장|
+|2995 |<span style="background-color:#27e2a4">P4</span>|C|2026-01-28|생일|LIS,역추적|
+|14428|<span style="background-color:#ec9a00">G1</span>|C|2026-01-28|수열과 쿼리 16|세그먼트트리|
