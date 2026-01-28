@@ -114,33 +114,83 @@ fib(10)=55  fib(11)=89  fib(12)=144 fib(13)=233 fib(14)=377
 
 
 ## 7.2 DP
-### 7.2.1 피보나치 수: DP
-#### 피보나치 수: DP
-연산 횟수: $n$회  
+### 7.2.1 점화식 작성
+#### 선형시간 피보나치수
+재귀: $\mathbf{O}(2^n)$  
+DP: $\mathbf{O}(n)$  
+분할정복 행렬거듭제곱: $\mathbf{O}(\log n)$  
 ```C
 #include<stdio.h>
-
-unsigned int fib(unsigned int n);
+#include<stdlib.h>
 
 int main(void){
-    unsigned int n=0;
-    for(n=0;n<15;n++){printf("fib(%u)=%u\n",n,fib(n));}
-}
+    int j;
+    int n; scanf("%d",&n);
+    int* t=(int*)malloc(sizeof(int)*(n+1));
 
-unsigned int fib(unsigned int n){
-    unsigned int j; // loop variable
-    unsigned int t[20];
+    // 테이블 초기화
     t[0]=0;
     t[1]=1;
-    if(n==0||n==1){return t[n];}
-    for(j=0;j<n-1;j++){t[j+2]=t[j]+t[j+1];}return t[n];
+
+    // 점화식
+    for(j=2;j<=n;j++){t[j]=t[j-2]+t[j-1];}
+
+    // 결과 출력
+    printf("%d",t[n]);
 }
 ```
 ```
 $ ./test
-fib(0)=0    fib(1)=1    fib(2)=1    fib(3)=2    fib(4)=3
-fib(5)=5    fib(6)=8    fib(7)=13   fib(8)=21   fib(9)=34
-fib(10)=55  fib(11)=89  fib(12)=144 fib(13)=233 fib(14)=377
+10
+55
+```
+#### 동전 개수
+그리디(모듈로 기반) 접근이 유효하지 않은 경우 DP로 접근  
+단, 아래 과제는 그리디로도 해결 가능함  
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+#define INF 100001
+
+int main(void){
+    int j;
+    int n; scanf("%d",&n);
+    if(n<=5){
+        if(n==1){printf("-1");}
+        if(n==2){printf( "1");}
+        if(n==3){printf("-1");}
+        if(n==4){printf( "2");}
+        if(n==5){printf( "1");}
+    }
+    else{
+        // 테이블 초기화
+        int* t=(int*)malloc(sizeof(int)*(n+1));
+        for(j=0;j<=n;j++){t[j]=INF;}
+        t[0]=0;
+     // t[1]=INF;
+        t[2]=1;
+     // t[3]=INF;
+        t[4]=2;
+        t[5]=1;
+
+        // 점화식
+        for(j=6;j<=n;j++){t[j]=(t[j-2]<t[j-5])?(t[j-2]+1):(t[j-5]+1);}
+
+        // 결과 출력
+        printf("%d",t[n]);
+    }
+}
+```
+```
+$ ./test
+13
+5
+```
+```
+$ ./test
+14
+4
 ```
 ### 7.2.2 LCS
 #### LCS
