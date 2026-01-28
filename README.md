@@ -48,7 +48,12 @@
 
 
 ## Online Judge
-<!-- #### OJ2022W -->
+#### OJ2022W
+|문제 번호|난이도|제출 언어|제출일|제목|과제 분류|
+|---|---|---|---|---|---|
+|14916|<span style="background-color:#435f7a">S5</span>|Python<br>C|2022-03-01<br>2026-01-29|거스름돈|DP,그리디|
+|9625 |<span style="background-color:#435f7a">S5</span>|Python<br>C|2022-03-01<br>2026-01-29|BABBA|DP|
+|2748 |<span style="background-color:#ad5600">B1</span>|Python<br>C|2022-03-01<br>2026-01-29|피보나치 수 2|DP|
 #### OJ2025W
 |문제 번호|난이도|제출 언어|제출일|제목|과제 분류|
 |---|---|---|---|---|---|
