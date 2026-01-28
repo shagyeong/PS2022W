@@ -192,6 +192,38 @@ $ ./test
 14
 4
 ```
+#### 이항계수
+$\mathbf{C}^0_0=1,\ \mathbf{C}^k_0=1,\ \mathbf{C}^k_k=1$  
+$\mathbf{C}^m_n=\mathbf{C}^{m-1}_{n-1}+\mathbf{C}^{m-1}_n$  
+```C
+#include<stdio.h>
+
+int main(void){
+    int j; int k;
+    int m; int n; scanf("%d %d",&m,&n);
+    int t[m+1][m+1];
+
+    // 테이블 초기화
+    for(j=0;j<=m;j++){
+        t[j][0]=1;
+        t[j][j]=1;
+    }
+
+    // 점화식
+    for(j=1;j<=m;j++){
+    for(k=1;k< j;k++){
+        t[j][k]=t[j-1][k-1]+t[j-1][k];
+    }}
+
+    // 결과 출력
+    printf("combintion(%d,%d)=%d\n",m,n,t[m][n]);
+}
+```
+```
+$ ./test
+10 3
+combintion(10,3)=120
+```
 ### 7.2.2 LCS
 #### LCS
 LCS: longest common subsequence  
