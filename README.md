@@ -251,4 +251,11 @@
 |14428|<span style="background-color:#ec9a00">G1</span>|C|2026-01-28|수열과 쿼리 16|세그먼트트리|
 |2775 |<span style="background-color:#ad5600">B1</span>|C|2026-01-29|부녀회장이 될테야|DP|
 |7501 |<span style="background-color:#00b4fc">D5</span>|C|2026-01-29|Key|밀러-라빈,윌슨의정리|
-|17633 |<span style="background-color:#00b4fc">D3</span>|C|2026-01-29|제곱수의 합|밀러-라빈,폴라드로,르장드르정리,페르마정리|
+|17633|<span style="background-color:#00b4fc">D3</span>|C|2026-01-29|제곱수의 합|밀러-라빈,폴라드로,르장드르정리,페르마정리|
+|1028 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-29|다이아몬드 광산|DP|
+|2533 |<span style="background-color:#ec9a00">G3</span>|C|2026-01-30|SNS|트리DP,역추적|
+|14725|<span style="background-color:#ec9a00">G3</span>|C|2026-01-30|개미굴|문자열,트라이|
+|13334|<span style="background-color:#ec9a00">G2</span>|C|2026-01-30|철로|정렬,힙,스위핑|
+|1786 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-30|찾기|문자열,KMP|
+|3830 |<span style="background-color:#27e2a4">P3</span>|C|2026-01-30|교수님은 기다리지 않는다|분리집합|
+|3176 |<span style="background-color:#27e2a4">P4</span>|C|2026-01-30|도로네트워크|LCA|
