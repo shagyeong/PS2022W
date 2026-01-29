@@ -246,62 +246,54 @@ LCS: "BD"
 #include<string.h>
 #include<stdlib.h>
 
-// lcs 길이 리턴, lcs 역추적 결과 char* p 저장
-int lcs(char* x,char* y,char* p,int m,int n);
+void lcs(char* u,char* v);
 
 int main(void){
-    char* x="GOOD_MORNING."; int m=strlen(x);
-    char* y="GUTEN_MORGEN."; int n=strlen(y);
-    char a[50]; // 최대 길이: 50
-    char* p=&a[0];
-    int   l; // length
-
-    l=lcs(x,y,p,m,n);
-    printf("lcs: %s\n",p);
-    printf("length: %d\n",l);
+    char* u="GOOD_MORNING.";
+    char* v="GUTEN_MORGEN.";
+    lcs(u,v);
 }
 
-int lcs(char* x,char* y,char* p,int m,int n){
-    int j; // loop variable
-    int k; // loop variable
+void lcs(char* u,char* v){
+    int j; int k;
+    int n=strlen(u);
+    int m=strlen(v);
+    int t[n+1][m+1];
     int d; // table value dummy
-    int t[m+1][n+1];
-    for(j=0;j<=m;j++){t[j][0]=0;}
-    for(j=0;j<=n;j++){t[0][j]=0;}
+    char* b; // 역추적 결과
 
-    // 테이블 작성
-    for(j=1;j<=m;j++){
-        for(k=1;k<=n;k++){
-            if(x[j-1]==y[k-1]){
-                t[j][k]=t[j-1][k-1]+1;
-            }
-            else{
-                if(t[j][k-1]>t[j-1][k]){t[j][k]=t[j][k-1];}
-                else{                   t[j][k]=t[j-1][k];}
-            }
-        }
-    }
+    // 테이블 초기화
+    for(j=0;j<=n;j++){t[j][0]=0;}
+    for(j=0;j<=m;j++){t[0][j]=0;}
 
-    // 역추적 결과 저장: char* p
-    for(j=0;j<t[m][n];j++){p++;}
-    *p='\0'; p--;
-    
-    j=m; k=n;
+    // 점화식
+    for(j=1;j<=n;j++){
+    for(k=1;k<=m;k++){
+        if(u[j-1]==v[k-1]){t[j][k]=t[j-1][k-1]+1;}
+        else              {t[j][k]=(t[j][k-1]>t[j-1][k])?t[j][k-1]:t[j-1][k];}
+    }}
+
+    // 역추적
+    b=(char*)malloc(sizeof(char)*(t[n][m]+1));
+    for(j=0;j<t[n][m];j++){b++;}
+    *b='\0'; b--;
+    j=n; k=m;
     while((j>=1)&&(k>=1)){
         d=t[j][k];
-        if((d>t[j-1][k-1])&&(d>t[j-1][k])&&(d>t[j][k-1])){*p=x[j-1]; p--; j--; k--;}
+        if((d>t[j-1][k-1])&&(d>t[j-1][k])&&(d>t[j][k-1])){*b=u[j-1]; b--; j--; k--;}
         else if((d==t[j][k-1])&&(d>t[j-1][k])){                                k--;}
         else{                                                             j--;     }
     }
 
-    // lcs 길이 리턴
-    return t[m][n];
+    // 결과 출력
+    printf("length: %d\n",t[n][m]);
+    printf("LCS: %s\n",++b);
 }
 ```
 ```
 $ ./test
-lcs: G_MORN.
 length: 7
+LCS: G_MORN.
 ```
 ### 7.2.3 LIS
 #### LIS
