@@ -250,3 +250,5 @@
 |2995 |<span style="background-color:#27e2a4">P4</span>|C|2026-01-28|생일|LIS,역추적|
 |14428|<span style="background-color:#ec9a00">G1</span>|C|2026-01-28|수열과 쿼리 16|세그먼트트리|
 |2775 |<span style="background-color:#ad5600">B1</span>|C|2026-01-29|부녀회장이 될테야|DP|
+|7501 |<span style="background-color:#00b4fc">D5</span>|C|2026-01-29|Key|밀러-라빈,윌슨의정리|
+|17633 |<span style="background-color:#00b4fc">D3</span>|C|2026-01-29|제곱수의 합|밀러-라빈,폴라드로,르장드르정리,페르마정리|
