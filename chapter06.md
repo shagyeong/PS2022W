@@ -324,6 +324,135 @@ expanded: 4, distance: 0 8 5 13 7
 expanded: 1, distance: 0 8 5 9 7 
 expanded: 3, distance: 0 8 5 9 7 
 ```
+#### 데이크스트라: 정적메모리, 힙
+```C
+#include<stdio.h>
+
+#define N 20001
+#define E 300001
+#define INF 3000001
+
+struct hode{
+    int v;
+    int d;
+};
+struct node{
+    int v;
+    int w;
+    int next;
+};
+struct graph{
+    int n;
+    int         adjs[N];
+    int         dist[N];
+    struct hode heap[E*3];
+    struct node pool[E];
+    int i; // number of heap item
+    int p; // pool index
+};
+
+void   dijkstra(struct graph* g,int s);
+void       init(struct graph* g,int n);
+void     insert(struct graph* g,int u,int v,int w);
+void       push(struct graph* g,int v,int d);
+struct hode pop(struct graph* g);
+
+int main(void){
+    int j;
+    int n; int e; scanf("%d %d",&n,&e);
+    int s; scanf("%d",&s);
+    int u; int v; int w;
+    static struct graph g;
+    init(&g,n);
+    for(j=0;j<e;j++){scanf("%d %d %d",&u,&v,&w); insert(&g,u,v,w);}
+    
+    dijkstra(&g,s);
+    for(j=0;j<n;j++){printf("%d ",g.dist[j]);}
+}
+
+void   dijkstra(struct graph* g,int s){
+    struct hode h;
+    int n;
+    g->dist[s]=0;
+    push(g,s,0);
+    while(g->i>0){
+        h=pop(g);
+        if(g->dist[h.v]<h.d){continue;} // push 이후 갱신: continue
+        n=g->adjs[h.v];
+        while(n!=0){
+            if(g->dist[h.v]+g->pool[n].w<g->dist[g->pool[n].v]){
+                g->dist[g->pool[n].v]=g->dist[h.v]+g->pool[n].w;
+                push(g,g->pool[n].v,g->dist[g->pool[n].v]);
+            }
+            n=g->pool[n].next;
+        }
+    }
+}
+void       init(struct graph* g,int n){
+    int j;
+    g->n=n;
+    g->i=0;
+    g->p=1;
+    for(j=0;j<n;j++){
+        g->adjs[j]=0;
+        g->dist[j]=INF;
+    }
+}
+void     insert(struct graph* g,int u,int v,int w){
+    g->pool[g->p].v=v;
+    g->pool[g->p].w=w;
+    g->pool[g->p].next=g->adjs[u];
+    g->adjs[u]=(g->p)++;
+}
+void       push(struct graph* g,int v,int d){
+    int j=++(g->i);
+    struct hode t;
+    g->heap[j].v=v;
+    g->heap[j].d=d;
+
+    while((j>1)&&(g->heap[j].d<g->heap[j/2].d)){
+        t=g->heap[j];
+        g->heap[j]=g->heap[j/2];
+        g->heap[j/2]=t;
+        j/=2;
+    }
+}
+struct hode pop(struct graph* g){
+    int j=1;
+    int c;
+    struct hode r=g->heap[j];
+    struct hode t;
+    g->heap[j]=g->heap[(g->i)--];
+
+    while(2*j<=g->i){
+        if(2*j+1<=g->i){c=(g->heap[2*j].d<g->heap[2*j+1].d)?(2*j):(2*j+1);}
+        else           {c=2*j;}
+        if(g->heap[j].d<=g->heap[c].d){break;}
+        t=g->heap[j];
+        g->heap[j]=g->heap[c];
+        g->heap[c]=t;
+        j=c;
+    }
+    return r;
+}
+```
+```
+$ ./test > test.txt
+5 9 # number of node, edge
+0   # start
+0 1 10
+0 2 5
+1 2 2
+1 3 1
+2 1 3
+2 3 9
+2 4 2
+3 4 4
+4 3 6
+
+$ cat test.txt
+0 8 5 9 7 
+```
 ### 6.3.2 플로이드-워셜
 #### 플로이드-워셜
 예제 데이터: 데이크스트라 예제와 같음  
