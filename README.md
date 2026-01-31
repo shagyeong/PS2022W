@@ -158,8 +158,8 @@
 |14938|<span style="background-color:#ec9a00">G4</span>|C|2026-01-04|서강그라운드|데이크스트라|
 |11279|<span style="background-color:#435f7a">S2</span>|C|2026-01-04|최대 힙|힙|
 |1927 |<span style="background-color:#435f7a">S2</span>|C|2026-01-04|최소 힙|힙|
-|1753 |<span style="background-color:#ec9a00">G4</span>|C|2026-01-05|최단경로|데이크스트라,힙,정적메모리|
-|1504 |<span style="background-color:#ec9a00">G4</span>|C|2026-01-05|특정한 최단 경로|데이크스트라,힙,정적메모리|
+|1753 |<span style="background-color:#ec9a00">G4</span>|C|2026-01-05|최단경로|데이크스트라,힙,정적간선풀|
+|1504 |<span style="background-color:#ec9a00">G4</span>|C|2026-01-05|특정한 최단 경로|데이크스트라,힙,정적간선풀|
 |11404|<span style="background-color:#ec9a00">G4</span>|C|2026-01-05|플로이드|플로이드-워셜|
 |3015 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-05|오아시스 재결합|스택|
 |16496|<span style="background-color:#27e2a4">P5</span>|C|2026-01-05|큰 수 만들기|정렬,문자열|
@@ -259,3 +259,6 @@
 |1786 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-30|찾기|문자열,KMP|
 |3830 |<span style="background-color:#27e2a4">P3</span>|C|2026-01-30|교수님은 기다리지 않는다|분리집합|
 |3176 |<span style="background-color:#27e2a4">P4</span>|C|2026-01-30|도로네트워크|LCA|
+|5719 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-31|거의 최단 경로|데이크스트라,힙,정적간선풀,역추적|
+|16287|<span style="background-color:#27e2a4">P5</span>|C|2026-01-31|Parcel|DP,중간에서만나기|
+|6549 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-31|히스토그램에서 가장 큰 직사각형|스택|
