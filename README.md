@@ -262,3 +262,4 @@
 |5719 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-31|거의 최단 경로|데이크스트라,힙,정적간선풀,역추적|
 |16287|<span style="background-color:#27e2a4">P5</span>|C|2026-01-31|Parcel|DP,중간에서만나기|
 |6549 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-31|히스토그램에서 가장 큰 직사각형|스택|
+|2618 |<span style="background-color:#27e2a4">P5</span>|C|2026-02-01|경찰차|DP,역추적|
