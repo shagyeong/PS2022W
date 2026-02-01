@@ -1,57 +1,130 @@
 # 8장 수학
 ## 8.1 정수론
 ### 8.1.1 소수 판정
+#### 로그시간 정수제곱근
+```C
+#include<stdio.h>
+
+int square(int n);
+
+int main(void){
+    int n; scanf("%d",&n);
+    printf("sqrt(%d): %d",n,square(n));
+}
+
+int square(int n){
+    if(n==1){return 1;}
+    int a=0; // answer
+    int l=1; // left
+    int m;
+    int r=n; // right
+    while(l<=r){
+        m=l+(r-l)/2;
+        if((m*m)<=n){l=m+1; a=m;} // 오버플로우 발생시 m<=n/m
+        else        {r=m-1;}
+    }
+    return a;
+}
+```
+```
+$ ./test
+10
+sqrt(10): 3
+
+$ ./test
+16
+sqrt(16): 4
+```
 #### 소수 판정
 ```C
 #include<stdio.h>
 
-void sieve(int n,int s);
+void sieve(int n);
+int square(int n);
 
 int main(void){
-    sieve(23,5);
-    sieve(49,8);
+    int n; scanf("%d",&n);
+    sieve(n);
 }
 
-void sieve(int n,int s){
+void sieve(int n){
     int j;
-    for(j=2;j<=s;j++){
-        if(n%j==0){
-            printf("%d: not a prime number\n",n);
-            return;
-        }
+    int s=square(n)+1;
+    for(j=2;j<=s;j++){if(n%j==0){printf("%d: NO",n); return;}}
+    printf("%d: YES",n); return;
+}
+int square(int n){
+    if(n==1){return 1;}
+    int a=0; // answer
+    int l=1; // left
+    int m;
+    int r=n; // right
+    while(l<=r){
+        m=l+(r-l)/2;
+        if((m*m)<=n){l=m+1; a=m;}
+        else        {r=m-1;}
     }
-    printf("%d: prime number\n",n);
+    return a;
 }
 ```
 ```
 $ ./test
-23: prime number
-49: not a prime number
+23
+23: YES
+
+$ ./test
+49
+49: NO
 ```
 #### 에라토스테네스의 체
 ```C
 #include<stdio.h>
+#include<stdlib.h>
+
+void sieve(int n);
+int square(int n);
 
 int main(void){
-    unsigned char j; // loop variable
-    unsigned char n=100;
-    unsigned char s=11; // sqrt(100)+1
-    unsigned char p;  // prime number
-    unsigned char a[101];
-    for(j=0;j<=100;j++){a[j]=j;}
+    int n; scanf("%d",&n);
+    sieve(n);
+}
+
+void sieve(int n){
+    int j;
+    int p;
+    int s=square(n)+1;
+    int* a=(int*)malloc(sizeof(int)*(n+1));
+    for(j=0;j<=n;j++){a[j]=1;}
+
+    // sieve
     for(p=2;p<=s;p++){
-        if(a[p]!=p)              {continue;}
+        if(a[p]==0){continue;}
         else{for(j=p*p;j<=n;j+=p){a[j]=0;}}
     }
-    for(j=2;j<=100;j++){if(a[j]!=0){printf("%d ",a[j]);}}
-    printf("\n");
+
+    // 결과 출력
+    for(j=2;j<=n;j++){if(a[j]==1){printf("%d ",j);}}
+}
+int square(int n){
+    if(n==1){return 1;}
+    int a=0; // answer
+    int l=1; // left
+    int m;
+    int r=n; // right
+    while(l<=r){
+        m=l+(r-l)/2;
+        if((m*m)<=n){l=m+1; a=m;}
+        else        {r=m-1;}
+    }
+    return a;
 }
 ```
 ```
 $ ./test
-2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
+23
+2 3 5 7 11 13 17 19 23 
 ```
-#### 밀러-라빈
+#### 큰 수 소수 판정: 밀러-라빈
 부호없는 64비트 정수 소수 판정  
 ```C
 #include<stdio.h>
