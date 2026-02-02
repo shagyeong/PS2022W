@@ -52,19 +52,19 @@ int main(void){
 #### 문자 포인터 배열을 이용한 가변길이 문자열 처리: 명령행 인자
 ```C
 #include<stdio.h>
+#include<stdlib.h>
 
 int main(int argc,char** argv){
     int j;
-    char* a[3];
-    for(j=1;j<argc;j++){a[j-1]=argv[j];}
-    for(j=1;j<argc;j++){printf("%s\n",a[j-1]);}
+    char** a=(char**)malloc(sizeof(char*)*(argc-1));
+    for(j=0;j<argc-1;j++){a[j]=argv[j+1];}
+    for(j=0;j<argc-1;j++){printf("%s ",a[j]);}
+    free(a);
 }
 ```
 ```
 $ ./test Kim Lee Park
-Kim
-Lee
-Park
+Kim Lee Park 
 ```
 #### 문자 포인터 배열을 이용한 가변길이 문자열 처리: 표준입력 및 동적할당
 ```C
@@ -72,27 +72,25 @@ Park
 #include<stdlib.h>
 
 int main(void){
-    int j=0; // loop variable
-    int n=3; // number of item
-    char* a[3];
-    for(j=0;j<n;j++){
-        a[j]=(char*)malloc(sizeof(char)*20);
-        scanf("%s",a[j]);
-    }
-    for(j=0;j<n;j++){
-        printf("%s\n",a[j]);
-        free(a[j]);
-    }
-} 
+    int j;
+    int n; scanf("%d",&n);
+    int l; scanf("%d",&l);// 문자열 최대 길이
+    char** a=(char**)malloc(sizeof(char*)*n);
+    char*  d=(char*) malloc(sizeof(char) *n*l);
+    for(j=0;j<n;j++){a[j]=d+(j*l);} // 포인팅
+
+    for(j=0;j<n;j++){scanf("%s",a[j]);}
+    for(j=0;j<n;j++){printf("%s ",a[j]);}
+
+    free(d);
+    free(a);
+}
 ```
 ```
 $ ./test
-Kim
-Lee
-Park
-Kim
-Lee
-Park
+3 20
+Kim Lee Park
+Kim Lee Park 
 ```
 
 
@@ -127,46 +125,27 @@ int main(void){
 #include<string.h>
 void* memset(void* s,int c,size_t n);
 ```
-#### 메모리 초기화: 1바이트 자료형
-```C
-#include<stdio.h>
-#include<string.h>
-
-int main(void){
-    int j;
-    int n=3; // number of item
-    char a[3];
-    
-    memset(&a[0],0b00000000,sizeof(char)*n);
-    for(j=0;j<n;j++){printf("%d ",a[j]);}
-}
-```
-```
-$ ./test
-0 0 0 
-```
 #### 메모리 초기화: 1바이트를 초과하는 자료형
-int: 4바이트 정수  
-$16843009_{10}=0000\ 0001\ 0000\ 0001\ 0000\ 0001\ 0000\ 0001\ 0000\ 0001_2$  
 ```C
 #include<stdio.h>
 #include<string.h>
 
 int main(void){
-    int j;
-    int n=3; // number of item
-
-    int a[3]; memset(&a[0],0b00000000,sizeof(int)*n);
-    int b[3]; memset(&b[0],0b00000001,sizeof(int)*n);
-    for(j=0;j<n;j++){printf("%d ",a[j]);}printf("\n");
-    for(j=0;j<n;j++){printf("%d ",b[j]);}printf("\n");
+    char a[1];
+    int  b[1];
+    memset(&a[0],0b00000001,sizeof(char)*1);
+    memset(&b[0],0b00000001,sizeof(int) *1);
+    printf("%d\n",a[0]);
+    printf("%d\n",b[0]);
 }
 ```
 ```
 $ ./test
-0 0 0 
-16843009 16843009 16843009 
+1
+16843009
 ```
+char(1바이트): $ 1_{10}=0000\ 0001$  
+int(4바이트): $16843009_{10}=0000\ 0001\ 0000\ 0001\ 0000\ 0001\ 0000\ 0001\ 0000\ 0001_2$  
 ### 1.2.3 동적할당
 #### 동적 할당 및 해제: malloc(),free()
 ```C
@@ -174,93 +153,34 @@ $ ./test
 void* malloc(size_t size);
 void  free(void *ptr);
 ```
-#### 동적할당의 목적: 가변길이 처리
-물리적으로 연속된 공간에 가변길이 데이터 할당시 시프트 소요 발생  
-랜덤 지정 할당 후 포인팅  
-포인터를 연속된 공간에 저장  
-예제: 1.1.3과 같음  
+#### 이차원 배열 동적할당
 ```C
 #include<stdio.h>
 #include<stdlib.h>
 
 int main(void){
-    int j=0; // loop variable
-    int n=3; // number of item
-    char* a[3];
-    for(j=0;j<n;j++){
-        a[j]=(char*)malloc(sizeof(char)*20);
-        scanf("%s",a[j]);
-    }
-    for(j=0;j<n;j++){
-        printf("%s\n",a[j]);
-        free(a[j]);
-    }
-} 
-```
-```
-$ ./test
-Kim
-Lee
-Park
-Kim
-Lee
-Park
-```
-#### 동적할당의 목적: 힙 영역 활용
-함수(main() 외부)가 DS를 조작해도 데이터 유지됨  
-```C
-#include<stdio.h>
-#include<stdlib.h>
+    int j; int k;
+    int r; int c; scanf("%d %d",&r,&c);
+    int** a=(int**)malloc(sizeof(int*)*r);
+    int*  d=(int*) malloc(sizeof(int) *r*c);
+    for(j=0;j<r;j++){a[j]=d+(j*c);} // 포인팅
 
-struct list{
-    int n;          // number of item
-    struct node* h; // head
-};
-struct node{
-    int v;
-    struct node* next;
-};
+    for(j=0;j<r;j++){for(k=0;k<c;k++){scanf("%d",&a[j][k]);}}
+    for(j=0;j<r;j++){for(k=0;k<c;k++){printf("%d ",a[j][k]);}printf("\n");}
 
-void insert(struct list* l,int v);
-void  clean(struct list* l);
-
-int main(void){
-    struct list l;
-    l.n=0;
-    l.h=(struct node*)malloc(sizeof(struct node));
-    l.h->v=-1;
-    l.h->next=NULL;
-    insert(&l,0);
-    insert(&l,1);
-    insert(&l,2);
-    clean(&l);
-    free(l.h);
-}
-
-void insert(struct list* l,int v){
-    struct node* b=l->h;
-    while(b->next!=NULL){b=b->next;}
-    b->next=(struct node*)malloc(sizeof(struct node));
-    b->next->v=v;
-    b->next->next=NULL;
-    l->n+=1;
-}
-void  clean(struct list* l){
-    int j;
-    struct node* b=l->h->next;
-    struct node* f;
-    for(j=0;j<l->n;j++){
-        f=b; printf("free: %d\n",f->v);
-        b=b->next;
-        free(f);
-    }
-    l->h->next=NULL;
-    l->n=0;
+    free(d);
+    free(a);
 }
 ```
 ```
 $ ./test
-free: 0
-free: 1
-free: 2
+2 3
+1 2 3
+4 5 6
+1 2 3 
+4 5 6 
 ```
+#### 동적 할당 활용 목적
+가변길이 대응: 문자열 포인터 배열등
+힙 영역 활용: 함수 리턴과 독립적인 전역 데이터 유지 - 인접리스트, 세그먼트 트리, ...  
+힙 영역 활용: 큰 문제 공간으로 인한 스택 오버플로우 방지  
