@@ -4,7 +4,7 @@
 #### 그래프 구현: 인접행렬
 ```C
 struct graph{
-    int adjs[N][N];
+    int** adjs;
 };
 ```
 #### 인접행렬 거듭제곱
@@ -263,6 +263,7 @@ void    dfs(struct graph* g,int s){
             }
         }
     }
+    free(a);
 }
 ```
 ```
@@ -302,6 +303,7 @@ void    bfs(struct graph* g,int s){
             }
         }
     }
+    free(q);
 }
 ```
 ```
@@ -340,7 +342,6 @@ bfs: 0 1 2 4 3
 #include<stdio.h>
 #include<stdlib.h>
 
-#define N 5
 #define INF 1000000000
 #define NOTVIST 0
 #define ALLDONE 1
@@ -351,26 +352,27 @@ struct node{
     struct node* next;
 };
 struct graph{
-    int n; // number of node
-    struct node* adjs[N];
-    int          dist[N];
-    int          vist[N];
+    int n;
+    struct node** adjs;
+    int*          dist;
+    int*          vist;
 };
 
-void dijkstra(struct graph* g,int u);
+void dijkstra(struct graph* g,int s);
 void     init(struct graph* g,int n);
+void    clean(struct graph* g);
 void   insert(struct graph* g,int u,int v,int w);
 
 int main(void){
-    int n=5; // number of node
+    int j;
+    int n; int e; scanf("%d %d",&n,&e);
+    int s; scanf("%d",&s);
+    int u; int v; int w;
     struct graph g;
     init(&g,n);
-    insert(&g,0,1,10);insert(&g,0,2,5);
-    insert(&g,1,2,2); insert(&g,1,3,1);
-    insert(&g,2,1,3); insert(&g,2,3,9); insert(&g,2,4,2);
-    insert(&g,3,4,4);
-    insert(&g,4,0,7); insert(&g,4,3,6);
-    dijkstra(&g,0);
+    for(j=0;j<e;j++){scanf("%d %d %d",&u,&v,&w);insert(&g,u,v,w);}
+    dijkstra(&g,s);
+    clean(&g);
 }
 
 void dijkstra(struct graph* g,int u){
@@ -401,18 +403,21 @@ void dijkstra(struct graph* g,int u){
             }
         }
 
-        // 확장 과정 출력
+        // // 확장 과정 출력
         // printf("expanded: %d, distance: ",i);
         // for(int x=0;x<g->n;x++){
-            // if(g->dist[x]==INF){printf("INF ");}
-            // else               {printf("%d ",g->dist[x]);}
+        //     if(g->dist[x]==INF){printf("INF ");}
+        //     else               {printf("%d ",g->dist[x]);}
         // }
         // printf("\n");
     }
 }
-void     init(struct graph* g,int n){
+void   init(struct graph* g,int n){
     int j;
     g->n=n;
+    g->adjs=(struct node**)malloc(sizeof(struct node*)*n);
+    g->dist=         (int*)malloc(sizeof(int)*n);
+    g->vist=         (int*)malloc(sizeof(int)*n);
     for(j=0;j<n;j++){
         g->adjs[j]=(struct node*)malloc(sizeof(struct node));
         g->adjs[j]->v=j;
@@ -422,8 +427,24 @@ void     init(struct graph* g,int n){
         g->vist[j]=NOTVIST;
     }
 }
-void   insert(struct graph* g,int u,int v,int w){
-    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+void  clean(struct graph* g){
+    int j;
+    struct node* d;
+    struct node* f; // free
+    for(j=0;j<g->n;j++){
+        d=g->adjs[j];
+        while(d!=NULL){
+            f=d;
+            d=d->next;
+            free(f);
+        }
+    }
+    free(g->adjs);
+    free(g->dist);
+    free(g->vist);
+}
+void insert(struct graph* g,int u,int v,int w){
+    struct node* n=(struct node*)malloc(sizeof(struct node));
     n->v=v;
     n->w=w;
     n->next=g->adjs[u]->next;
@@ -431,7 +452,21 @@ void   insert(struct graph* g,int u,int v,int w){
 }
 ```
 ```
-$ ./test
+$ ./test > test.txt
+5 10 # number of node, edge
+0   # start
+0 1 10
+0 2 5
+1 2 2
+1 3 1
+2 1 3
+2 3 9
+2 4 2
+3 4 4
+4 0 7
+4 3 6
+
+$ cat test.txt
 expanded: 0, distance: 0 10 5 INF INF 
 expanded: 2, distance: 0 8 5 14 7 
 expanded: 4, distance: 0 8 5 13 7 
@@ -441,10 +476,9 @@ expanded: 3, distance: 0 8 5 9 7
 #### 데이크스트라: 정적 간선 풀, 힙
 ```C
 #include<stdio.h>
+#include<stdlib.h>
 
-#define N 20001
-#define E 300001
-#define INF 3000001
+#define INF 1000000
 
 struct hode{
     int v;
@@ -457,16 +491,17 @@ struct node{
 };
 struct graph{
     int n;
-    int         adjs[N];
-    int         dist[N];
-    struct hode heap[E*3];
-    struct node pool[E];
+    int*         adjs;
+    int*         dist;
+    struct hode* heap;
+    struct node* pool;
     int i; // number of heap item
     int p; // pool index
 };
 
 void   dijkstra(struct graph* g,int s);
-void       init(struct graph* g,int n);
+void       init(struct graph* g,int n,int e);
+void      clean(struct graph* g);
 void     insert(struct graph* g,int u,int v,int w);
 void       push(struct graph* g,int v,int d);
 struct hode pop(struct graph* g);
@@ -477,11 +512,11 @@ int main(void){
     int s; scanf("%d",&s);
     int u; int v; int w;
     static struct graph g;
-    init(&g,n);
-    for(j=0;j<e;j++){scanf("%d %d %d",&u,&v,&w); insert(&g,u,v,w);}
-    
+    init(&g,n,e);
+    for(j=0;j<e;j++){scanf("%d %d %d",&u,&v,&w);insert(&g,u,v,w);}
     dijkstra(&g,s);
     for(j=0;j<n;j++){printf("%d ",g.dist[j]);}
+    clean(&g);
 }
 
 void   dijkstra(struct graph* g,int s){
@@ -502,15 +537,25 @@ void   dijkstra(struct graph* g,int s){
         }
     }
 }
-void       init(struct graph* g,int n){
+void       init(struct graph* g,int n,int e){
     int j;
     g->n=n;
     g->i=0;
     g->p=1;
+    g->adjs=(int*)malloc(sizeof(int)*n);
+    g->dist=(int*)malloc(sizeof(int)*n);
+    g->heap=(struct hode*)malloc(sizeof(struct hode)*(2*e+1));
+    g->pool=(struct node*)malloc(sizeof(struct node)*(e+1));
     for(j=0;j<n;j++){
         g->adjs[j]=0;
         g->dist[j]=INF;
     }
+}
+void      clean(struct graph* g){
+    free(g->adjs);
+    free(g->dist);
+    free(g->heap);
+    free(g->pool);
 }
 void     insert(struct graph* g,int u,int v,int w){
     g->pool[g->p].v=v;
@@ -552,7 +597,7 @@ struct hode pop(struct graph* g){
 ```
 ```
 $ ./test > test.txt
-5 9 # number of node, edge
+5 10 # number of node, edge
 0   # start
 0 1 10
 0 2 5
@@ -562,6 +607,7 @@ $ ./test > test.txt
 2 3 9
 2 4 2
 3 4 4
+4 0 7
 4 3 6
 
 $ cat test.txt
@@ -572,43 +618,58 @@ $ cat test.txt
 예제 데이터: 데이크스트라 예제와 같음  
 ```C
 #include<stdio.h>
+#include<stdlib.h>
 
-#define N   5
 #define INF 1000000000
 
 struct graph{
     int n;
-    int dist[N][N];
+    int** dist;
+    int*  d;
 };
 
 void   init(struct graph* g,int n);
+void  clean(struct graph* g);
 void insert(struct graph* g,int u,int v,int w);
 void     fw(struct graph* g);
 
 int main(void){
-    int n=5; // number of node
+    int j;
+    int n; int e; scanf("%d %d",&n,&e);
+    int u; int v; int w;
     struct graph g;
     init(&g,n);
-    insert(&g,0,1,10);insert(&g,0,2,5);
-    insert(&g,1,2,2); insert(&g,1,3,1);
-    insert(&g,2,1,3); insert(&g,2,3,9); insert(&g,2,4,2);
-    insert(&g,3,4,4);
-    insert(&g,4,0,7); insert(&g,4,3,6);
+    for(j=0;j<e;j++){scanf("%d %d %d",&u,&v,&w);insert(&g,u,v,w);}
+    
     fw(&g);
+    for(j=0;j<g->n;j++){
+    for(k=0;k<g->n;k++){
+        if(g->dist[j][k]==INF){printf("INF\t");}
+        else                  {printf("%d\t",g->dist[j][k]);}
+    }
+    
+    clean(&g);
 }
 
 void   init(struct graph* g,int n){
-    int j; // loop variable
-    int k; // loop variable
+    int j;
+    int k;
     g->n=n;
+    g->dist=(int**)malloc(sizeof(int*)*n);
+    g->d   =(int*) malloc(sizeof(int) *n*n);
+    for(j=0;j<n;j++){g->dist[j]=g->d+j*n;}
     for(j=0;j<n;j++){
     for(k=0;k<n;k++){
         if(j==k){g->dist[j][k]=0;}
         else    {g->dist[j][k]=INF;}
     }}
 }
+void  clean(struct graph* g){
+    free(g->d);
+    free(g->dist);
+}
 void insert(struct graph* g,int u,int v,int w){
-    if(g->dist[u][v]>w){g->dist[u][v]=w;}
+    g->dist[u][v]=(w<g->dist[u][v])?w:g->dist[u][v];
 }
 void     fw(struct graph* g){
     int j; // loop variable
@@ -621,22 +682,28 @@ void     fw(struct graph* g){
            g->dist[k][l]=g->dist[k][j]+g->dist[j][l];
         }
     }}}
-    // 결과 출력
-    // for(j=0;j<g->n;j++){
-    // for(k=0;k<g->n;k++){
-        // if(g->dist[j][k]==INF){printf("INF\t");}
-        // else                  {printf("%d\t",g->dist[j][k]);}
-    // }printf("\n");}
 }
 ```
 ```
-$ ./test
-from/to A       B       C       D       E
-A       0       8       5       9       7
-B       11      0       2       1       4
-C       9       3       0       4       2
-D       11      19      16      0       4
-E       7       15      12      6       0
+$ ./test > test.txt
+5 10 # number of node, edge
+0 1 10
+0 2 5
+1 2 2
+1 3 1
+2 1 3
+2 3 9
+2 4 2
+3 4 4
+4 0 7
+4 3 6
+
+$ cat test.txt
+0       8       5       9       7
+11      0       2       1       4
+9       3       0       4       2
+11      19      16      0       4
+7       15      12      6       0
 ```
 <!-- ### 6.3.3 벨만-포드 -->
 
