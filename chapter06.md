@@ -16,39 +16,57 @@ $\because\mathbf{A}\mathbf{A}_{i,j}=\displaystyle\sum_{m=0}^{n-1}\mathbf{A}_{i,m
 #include<stdio.h>
 #include<stdlib.h>
 
-#define N 10
-
 struct node{
-    int v; // value: 0 ~ N-1, 인접리스트 인덱스 겸용
-    int w; // weight
+    int v;
+    int w;
     struct node* next;
 };
 struct graph{
-    int n; // number of node
-    struct node* adjs[N];
+    int n;
+    struct node** adjs;
 };
 
 void   init(struct graph* g,int n);
+void  clean(struct graph* g);
 void insert(struct graph* g,int u,int v,int w);
 
 int main(void){
-    int n=10; // number of node
+    int j;
+    int n; int e; scanf("%d %d",&n,&e);
+    int u; int v; int w;
     struct graph g;
     init(&g,n);
+    for(j=0;j<e;j++){scanf("%d %d %d",&u,&v,&w);insert(&g,u,v,w);};
+    clean(&g);
 }
 
 void   init(struct graph* g,int n){
     int j;
     g->n=n;
+    g->adjs=(struct node**)malloc(sizeof(struct node*)*n);
     for(j=0;j<n;j++){
         g->adjs[j]=(struct node*)malloc(sizeof(struct node));
-        g->adjs[j]->v   =j;
-        g->adjs[j]->w   =0;
+        g->adjs[j]->v=j;
+        g->adjs[j]->w=0;
         g->adjs[j]->next=NULL;
     }
 }
+void  clean(struct graph* g){
+    int j;
+    struct node* d;
+    struct node* f; // free
+    for(j=0;j<g->n;j++){
+        d=g->adjs[j];
+        while(d!=NULL){
+            f=d;
+            d=d->next;
+            free(f);
+        }
+    }
+    free(g->adjs);
+}
 void insert(struct graph* g,int u,int v,int w){
-    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    struct node* n=(struct node*)malloc(sizeof(struct node));
     n->v=v;
     n->w=w;
     n->next=g->adjs[u]->next;
@@ -58,14 +76,67 @@ void insert(struct graph* g,int u,int v,int w){
 #### insert(): 사전순 이웃 노드
 ```C
 void insert(struct graph* g,int u,int v,int w){
-    struct node* b;
+    struct node* d;
     struct node* n=(struct node*)malloc(sizeof(struct node)); // new
-    b=g->adjs[u];
-    while((b->next!=NULL)&&(v>(b->next->v))){b=b->next;}
+    d=g->adjs[u];
+    while((d->next!=NULL)&&(v>(d->next->v))){d=d->next;}
     n->v=v;
     n->w=w;
-    n->next=b->next;
-    b->next=n;
+    n->next=d->next;
+    d->next=n;
+}
+```
+### 6.1.3 정적 간선 풀
+#### 그래프 구현: 정적 간선 풀
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    int v;
+    int w;
+    int next;
+};
+struct graph{
+    int n; // number of node
+    int e; // number of edge
+    int p; // pool index
+    int*         adjs;
+    struct node* pool;
+};
+
+void   init(struct graph* g,int n,int e);
+void  clean(struct graph* g);
+void insert(struct graph* g,int u,int v,int w);
+
+int main(void){
+    int j;
+    int n; int e;scanf("%d %d",&n,&e);
+    int u; int v; int w;
+    struct graph g;
+    init(&g,n,e);
+    for(j=0;j<e;j++){scanf("%d %d %d",&u,&v,&w);insert(&g,u,v,w);}
+    clean(&g);
+}
+
+void   init(struct graph* g,int n,int e){
+    int j;
+    g->n=n;
+    g->e=e;
+    g->p=0;
+    g->adjs=(int*)malloc(sizeof(int)*n);
+    g->pool=(struct node*)malloc(sizeof(struct node)*e);
+    for(j=0;j<n;j++){g->adjs[j]=-1;}
+}
+void  clean(struct graph* g){
+    free(g->adjs);
+    free(g->pool);
+}
+void insert(struct graph* g,int u,int v,int w){
+    g->pool[g->p].v=v;
+    g->pool[g->p].w=w;
+    g->pool[g->p].next=g->adjs[u];
+    g->adjs[u]=(g->p)++;
 }
 ```
 
@@ -81,89 +152,114 @@ void insert(struct graph* g,int u,int v,int w){
 #include<stdio.h>
 #include<stdlib.h>
 
-#define N 10
 #define NOTVIST 0
 #define PROCESS 1
 #define ALLDONE 2
 
 struct node{
-    int v; // value: 0 ~ N-1, 인접리스트 인덱스 겸용
+    int v;
     struct node* next;
 };
 struct graph{
-    int n; // number of node
-    struct node* adjs[N];
-    int          vist[N];
+    int n;
+    struct node** adjs;
+    int*          vist;
 };
 
 void    dfs(struct graph* g,int s);
 void   init(struct graph* g,int n);
-void insert(struct graph* g,int u,int v); // u->v
+void  clean(struct graph* g);
+void insert(struct graph* g,int u,int v);
 
 int main(void){
-    int n=10; // number of node
+    int j;
+    int n; int e; scanf("%d %d",&n,&e);
+    int s; scanf("%d",&s);
+    int u; int v;
     struct graph g;
     init(&g,n);
-    insert(&g,0,1); insert(&g,1,0);
-    insert(&g,0,2); insert(&g,2,0);
-    insert(&g,0,4); insert(&g,4,0);
-    insert(&g,1,2); insert(&g,2,1);
-    insert(&g,1,3); insert(&g,3,1);
-    insert(&g,2,3); insert(&g,3,2);
-    insert(&g,2,4); insert(&g,4,2);
-    insert(&g,3,4); insert(&g,4,3);
-    printf("dfs: "); dfs(&g,0);
+    for(j=0;j<e;j++){
+        scanf("%d %d",&u,&v);
+        insert(&g,u,v);
+        insert(&g,v,u);
+    };
+    dfs(&g,s);
+    clean(&g);
 }
 
-void dfs(struct graph* g,int s){
-    struct node* b;
+void    dfs(struct graph* g,int s){
+    struct node* d;
     printf("%d ",s);
-    b=g->adjs[s];
+    d=g->adjs[s];
     g->vist[s]=PROCESS;
-    while((b=b->next)!=NULL){if(g->vist[b->v]==NOTVIST){dfs(g,b->v);}}
+    while((d=d->next)!=NULL){if(g->vist[d->v]==NOTVIST){dfs(g,d->v);}}
     g->vist[s]=ALLDONE;
 }
 void   init(struct graph* g,int n){
     int j;
     g->n=n;
+    g->adjs=(struct node**)malloc(sizeof(struct node*)*n);
+    g->vist=         (int*)malloc(sizeof(int)         *n);
     for(j=0;j<n;j++){
         g->adjs[j]=(struct node*)malloc(sizeof(struct node));
-        g->adjs[j]->v   =j;
+        g->adjs[j]->v=j;
         g->adjs[j]->next=NULL;
         g->vist[j]=NOTVIST;
     }
 }
-void insert(struct graph* g,int u,int v){
-    struct node* b;
+void  clean(struct graph* g){
+    int j;
+    struct node* d;
+    struct node* f; // free
+    for(j=0;j<g->n;j++){
+        d=g->adjs[j];
+        while(d!=NULL){
+            f=d;
+            d=d->next;
+            free(f);
+        }
+    }
+    free(g->adjs);
+}
+void insert(struct graph* g,int u,int v){ // DFS 검증: 사전순 이웃 노드
+    struct node* d;
     struct node* n=(struct node*)malloc(sizeof(struct node)); // new
-    b=g->adjs[u];
-    while((b->next!=NULL)&&(v>(b->next->v))){b=b->next;} // 그래프 탐색: 사전순 이웃 노드
+    d=g->adjs[u];
+    while((d->next!=NULL)&&(v>(d->next->v))){d=d->next;}
     n->v=v;
-    n->next=b->next;
-    b->next=n;
+    n->next=d->next;
+    d->next=n;
 }
 ```
 ```
 $ ./test
-dfs: 0 1 2 3 4
+5 8 # number of node, edge
+0   # start
+0 1 
+0 2
+0 4
+1 2
+1 3
+2 3
+2 4
+3 4
+dfs: 0 1 2 3 4 
 ```
 #### DFS: 스택
 ```C
 void    dfs(struct graph* g,int s){
-    struct node* b;
-    int a[g->n];    // stack
-    int t=0;        // top of stack
-    
+    struct node* d;
+    int* a=(int*)malloc(sizeof(int)*(g->n)); // stack
+    int  t=0; // top of stack
     a[t++]=s; // push
     g->vist[s]=ALLDONE;
-
     while(t>0){
-        b=g->adjs[a[--t]]; // pop
-        printf("%d ",b->v);
-        while((b=b->next)!=NULL){
-            if(g->vist[b->v]==NOTVIST){
-                g->vist[b->v]=ALLDONE;
-                a[t++]=b->v; // push
+        d=g->adjs[a[--t]]; // pop
+        printf("%d ",d->v);
+        while((d=d->next)!=NULL){
+            if(g->vist[d->v]==NOTVIST){
+                g->vist[d->v]=ALLDONE;
+                a[t++]=d->v; // push
             }
         }
     }
@@ -171,7 +267,17 @@ void    dfs(struct graph* g,int s){
 ```
 ```
 $ ./test
-dfs: 0 4 3 2 1 # 사전순 탐색 없음
+5 8 # number of node, edge
+0   # start
+0 1
+0 2
+0 4
+1 2
+1 3
+2 3
+2 4
+3 4
+dfs: 0 4 3 2 1 # 사전순 탐색 없음(인접리스트 역순)
 ```
 ### 6.2.2 BFS
 #### BFS
@@ -180,21 +286,19 @@ dfs: 0 4 3 2 1 # 사전순 탐색 없음
 #### BFS: 큐
 ```C
 void    bfs(struct graph* g,int s){
-    struct node* b;
-    int q[g->n];
-    int f=0; // front of queue
-    int r=0; // rear  of queue
-
+    struct node* d;
+    int* q=(int*)malloc(sizeof(int)*(g->n)); // queue
+    int f=0; // front of stack
+    int r=0; // rear  of stack
     q[r++]=s; // enqueue
     g->vist[s]=ALLDONE;
-    
     while(f<r){
-        b=g->adjs[q[f++]]; // dequeue
-        printf("%d ",b->v);
-        while((b=b->next)!=NULL){
-            if(g->vist[b->v]==NOTVIST){
-                g->vist[b->v]=ALLDONE;
-                q[r++]=b->v; // enqueue
+        d=g->adjs[q[f++]]; // dequeue
+        printf("%d ",d->v);
+        while((d=d->next)!=NULL){
+            if(g->vist[d->v]==NOTVIST){
+                g->vist[d->v]=ALLDONE;
+                q[r++]=d->v; // enqueue
             }
         }
     }
@@ -202,6 +306,16 @@ void    bfs(struct graph* g,int s){
 ```
 ```
 $ ./test
+5 8 # number of node, edge
+0   # start
+0 1
+0 2
+0 4
+1 2
+1 3
+2 3
+2 4
+3 4
 bfs: 0 1 2 4 3
 ```
 
@@ -324,7 +438,7 @@ expanded: 4, distance: 0 8 5 13 7
 expanded: 1, distance: 0 8 5 9 7 
 expanded: 3, distance: 0 8 5 9 7 
 ```
-#### 데이크스트라: 정적메모리, 힙
+#### 데이크스트라: 정적 간선 풀, 힙
 ```C
 #include<stdio.h>
 
