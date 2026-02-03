@@ -179,8 +179,124 @@ $ ./test
 1 3 2 7 8 9 6 4 5
 9 8 7 6 5 4 3 2 1 
 ```
-<!-- ### 3.2.2 이진탐색트리 -->
-<!-- #### 기본 BST -->
+### 3.2.2 이진탐색트리
+#### 기본 BST
+입력 예제  
+```
+            8
+    3               10
+2       5               14
+                    11      16
+```
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    int v;
+    struct node* l;
+    struct node* r;
+};
+struct tree{
+    struct node* root;
+};
+
+struct node* search(struct tree* t,int v); // 성공: 노드 주소, 실패: NULL
+int          insert(struct tree* t,int v); // 실패: -1(중복 노드 삽입 시도)
+int          delete(struct tree* t,int v); // 실패: -1
+
+int main(void){
+    int j;
+    int n; int q; scanf("%d %d",&n,&q);
+    int o; int v;
+    struct tree t;
+
+    // 트리 초기화
+    t.root=(struct node*)malloc(sizeof(struct node));
+    scanf("%d",&t.root->v);
+    t.root->l=NULL;
+    t.root->r=NULL;
+    for(j=1;j<n;j++){scanf("%d",&v); insert(&t,v);}
+
+    // 포인트 쿼리
+    for(j=0;j<q;j++){
+        scanf("%d %d",&o,&v);
+        if(o==1){printf("search(%d): %d\n",v,(search(&t,v)==NULL)?(-1):(1));}
+        if(o==2){printf("insert(%d): %d\n",v,insert(&t,v));}
+        if(o==3){printf("delete(%d): %d\n",v,delete(&t,v));}
+    }
+}
+
+struct node* search(struct tree* t,int v){
+    struct node* b=t->root;
+    while(b!=NULL){
+        if(v==b->v){return b;}
+        if(v<b->v){b=b->l;}
+        else      {b=b->r;}
+    }
+    return b; // NULL
+}
+int insert(struct tree* t,int v){
+    struct node* b=t->root;
+    struct node* p=b; // parent
+    while(b!=NULL){
+        if     (v< b->v){p=b; b=b->l;}
+        else if(v==b->v){return -1;} // 중복 엘리먼트 삽입
+        else            {p=b; b=b->r;}
+    }
+    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
+    n->v=v;
+    n->l=NULL;
+    n->r=NULL;
+    if(v<p->v){p->l=n;}
+    else      {p->r=n;}
+    return 0; // 성공
+}
+int delete(struct tree* t,int v){
+    struct node* b=t->root;
+    struct node* p=b; // parent
+    while(b!=NULL){
+        if     (v< b->v){p=b; b=b->l;}
+        else if(v==b->v){break;}
+        else            {p=b; b=b->r;}
+    }
+    if(b==NULL){return -1;} // 실패(노드 없음)
+    if((b->l==NULL)&&(b->r==NULL)){ // 터미널
+        if((p->l!=NULL)&&(p->l==b)){p->l=NULL;}
+        else                       {p->r=NULL;}
+    }
+    else if((b->l==NULL)||(b->r==NULL)){ // 서브 트리 1개
+        if((p->l!=NULL)&&(p->l==b)){p->l=(b->l!=NULL)?b->l:b->r;}
+        else                       {p->r=(b->l!=NULL)?b->l:b->r;}
+    }
+    else{   //서브트리 2개: 좌측 서브 트리 최소값 또는 우측 서브 트리 최대값를 루트(후임)로
+        struct node* f=b;    // parent of successor
+        struct node* s=b->r; // successor
+        while(s->l!=NULL){f=s; s=s->l;}
+        b->v=s->v; // 덮어씀
+        if(b==f){f->r=s->r;} // 서브트리 루트가 후임
+        else    {f->l=s->r;} // 일반적인 경우(후임 노드 우측 서브트리 편입)
+    }
+    return 0;
+}
+```
+```
+$ ./test > test.txt
+8 5 # number of node, query
+8 3 10 2 5 14 11 16
+1 7
+2 7
+1 7
+3 7
+1 7
+
+$ cat test.txt
+search(7): -1
+insert(7): 0
+search(7): 1
+delete(7): 0
+search(7): -1
+```
 <!-- #### AVL트리 -->
 <!-- #### RB트리 -->
 
@@ -257,6 +373,334 @@ $ cat test.txt
 9       # 2+3+4
 13      # 2+7+4
 ```
-<!-- #### 병합정렬트리 -->
-<!-- ### 3.3.2 구간 업데이트 -->
-<!-- ### 3.3.3 오프라인 쿼리 -->
+#### 병합정렬트리
+부분배열에서 어떤 수보다 큰 원소 개수 출력  
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+int  a[100001]; // 원본 배열
+int* t[400004]; // 병합정렬 트리, int*: 가변 길이 배열 포인터
+
+void  init(int n,int s,int e);
+int  query(int n,int s,int e,int l,int r,int q);
+int  search(int* b,int n,int q); // 부분배열 이분탐색
+
+int main(void){
+    int j;
+    int n; int m;
+    int u; int v;
+    int q; // query
+
+    scanf("%d",&n);
+    for(j=0;j<n;j++){scanf("%d",&a[j]);}
+    init(1,0,n-1);
+    
+    scanf("%d",&m);
+    for(j=0;j<m;j++){
+        scanf("%d %d %d",&u,&v,&q);
+        printf("%d\n",query(1,0,n-1,u-1,v-1,q));
+    }
+}
+
+void init(int n,int s,int e){
+    int m; // middle
+    int i; int j; int k;
+    int L; int R;
+    if(s==e){
+        t[n]=(int*)malloc(sizeof(int));
+        t[n][0]=a[s];
+        return;
+    }
+    m=(s+e)/2;
+    init(2*n,  s,  m);
+    init(2*n+1,m+1,e);
+    t[n]=(int*)malloc(sizeof(int)*(e-s+1));
+
+    // merge
+    i=0;j=0;k=0;
+    L=m-s+1;
+    R=e-m;
+    while((i<L)&&(j<R)){
+        if(t[2*n][i]<t[2*n+1][j]){t[n][k++]=t[2*n]  [i++];}
+        else                        {t[n][k++]=t[2*n+1][j++];}
+    }
+    while(i<L){t[n][k++]=t[2*n  ][i++];}
+    while(j<R){t[n][k++]=t[2*n+1][j++];}
+}
+int query(int n,int s,int e,int l,int r,int q){
+    int m; // middle
+    if((l>e)||(r<s)){return 0;}
+    if((l<=s)&&(e<=r)){return (e-s+1)-search(t[n],e-s+1,q);}
+    m=(s+e)/2;
+    return query(2*n,s,m,l,r,q)+query(2*n+1,m+1,e,l,r,q);
+}
+int search(int* b,int n,int q){
+    int s=0;    // start
+    int m;      // middle
+    int e=n;    // end
+    while(s<e){
+        m=(s+e)/2;
+        if(b[m]<=q){s=m+1;}
+        else       {e=m;}
+    }
+    return s;
+}
+```
+```
+$ ./test > test.txt
+5 # number of element
+5 1 2 3 4
+3 # number of query
+2 4 1
+4 4 4
+1 5 2
+
+$ cat test.txt
+2
+0
+3
+```
+### 3.3.2 구간 업데이트
+#### 느리게 갱신되는 세그먼트 트리
+구간합 및 구간 업데이트  
+```C
+#include<stdio.h>
+long long int a[1000001]; // 원본 배열
+long long int t[4000004]; // 구간합 트리
+long long int p[4000004]; // lazy propagtion
+
+void           init(int n,int s,int e);
+void           lazy(int n,int s,int e);
+void         update(int n,int s,int e,int l,int r,long long int v);
+long long int query(int n,int s,int e,int l,int r);
+
+int main(void){
+    int j; // loop variable
+    int n; int m; int k;
+    int o; int b; long long int c; long long int v;
+
+    scanf("%d %d %d",&n,&m,&k);
+    for(j=0;j<n;j++){scanf("%lld",&a[j]);}
+    init(1,0,n-1);
+
+    for(j=0;j<m+k;j++){
+        scanf("%d %d %lld",&o,&b,&c);
+        if(o==1){
+            scanf("%lld",&v);
+            update(1,0,n-1,b-1,(int)c-1,v);
+        }
+        else{
+            printf("%lld\n",query(1,0,n-1,b-1,(int)c-1));
+        }
+    }
+}
+
+void init(int n,int s,int e){
+    int m; // middle
+    if(s==e){t[n]=a[s]; return;}
+    m=(s+e)/2;
+    init(2*n,  s,  m);      // lchild
+    init(2*n+1,m+1,e);      // rchild
+    t[n]=t[2*n]+t[2*n+1]; // 구간합
+}
+void lazy(int n,int s,int e){
+    if(p[n]!=0){
+        t[n]+=(long long int)(e-s+1)*p[n];
+        if(s!=e){
+            p[2*n]  +=p[n];
+            p[2*n+1]+=p[n];
+        }
+        p[n]=0;
+    }
+}
+void update(int n,int s,int e,int l,int r,long long int v){
+    int m; // middle
+    lazy(n,s,e);
+    if((l>e)||(r<s)){return;}
+    if((l<=s)&&(e<=r)){
+        p[n]+=v;
+        lazy(n,s,e);
+        return;
+    }
+    m=(s+e)/2;
+    update(2*n,  s,  m,l,r,v);
+    update(2*n+1,m+1,e,l,r,v);
+    t[n]=t[2*n]+t[2*n+1];
+}
+long long int query(int n,int s,int e,int l,int r){
+    int m; // middle
+    lazy(n,s,e);
+    if((l>e)||(r<s))  {return 0;}
+    if((l<=s)&&(e<=r)){return t[n];}
+    m=(s+e)/2;
+    return query(2*n,s,m,l,r)+query(2*n+1,m+1,e,l,r);
+}
+```
+```
+$ ./test > test.txt
+5 1 2 # number of element, query
+1 2 3 4 5
+2 1 3   # 1+2+3=6
+1 1 3 1 # {2,3,4,4,5}
+2 1 3   # 2+3+4=9
+
+$ cat test.txt
+6
+9
+```
+### 3.3.3 오프라인 쿼리
+#### 오프라인 쿼리
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct unode{ // update request
+    int       i;
+    long long v;
+};
+struct qnode{ // query
+    int i; // 원본 순서
+    int k; // 적용된 쿼리 개수(정렬 기준)
+    int l;
+    int r;
+    long long int q; // 쿼리 결과
+};
+
+long long int* A; // 원본 배열
+long long int* T; // 구간합 트리
+struct unode* U; // 업데이트 배열
+struct qnode* Q; // 쿼리 배열
+
+void           init(int n,int s,int e);
+void         update(int n,int s,int e,int i,long long int v);
+long long int query(int n,int s,int e,int l,int r);
+int compare_i(const void* x,const void* y); // qsort: 쿼리 순서 오름차순
+int compare_k(const void* x,const void* y); // qsort: 쿼리 개수 오름차순
+
+int main(void){
+    int j; int p; // loop variable
+    int n; int m;
+    int o; // operation type
+    int u=0; // length of update array
+    int q=0; // length of query array
+
+    // 세그먼트 트리 초기화
+    scanf("%d",&n);
+    A=(long long int*)malloc(sizeof(long long int)*(n+1));
+    T=(long long int*)malloc(sizeof(long long int)*(4*(n+1)));
+    for(j=0;j<n;j++){scanf("%lld",&A[j]);}
+    init(1,0,n-1);
+
+    // 쿼리 배열 초기화
+    scanf("%d",&m);
+    U=(struct unode*)malloc(sizeof(struct unode)*m);
+    Q=(struct qnode*)malloc(sizeof(struct qnode)*m);
+    for(j=0;j<m;j++){
+        scanf("%d",&o);
+        if(o==1){scanf("%d %lld", &U[u].i,&U[u].v);                   u++;}
+        else    {scanf("%d %d %d",&Q[q].k,&Q[q].l,&Q[q].r); Q[q].i=q; q++;}
+    }
+    qsort(&Q[0],q,sizeof(struct qnode),compare_k);
+
+    // 쿼리 수행
+    p=0;
+    for(j=0;j<q;j++){
+        while(p<Q[j].k){update(1,0,n-1,U[p].i-1,U[p].v); A[U[p].i-1]=U[p].v; p++;}
+        Q[j].q=query(1,0,n-1,Q[j].l-1,Q[j].r-1);
+    }
+
+    // 쿼리 결과 출력
+    qsort(&Q[0],q,sizeof(struct qnode),compare_i); // 쿼리 순서 복원
+    for(j=0;j<q;j++){printf("%lld\n",Q[j].q);}
+}
+
+void init(int n,int s,int e){
+    int m; // middle
+    if(s==e){T[n]=A[s]; return;}
+    m=(s+e)/2;
+    init(2*n,  s,  m);      // lchild
+    init(2*n+1,m+1,e);      // rchild
+    T[n]=T[n*2]+T[n*2+1]; // 구간합
+}
+void update(int n,int s,int e,int i,long long v){
+    int m; // middle
+    if((i<s)||(i>e)){return;}
+    if(s==e){T[n]=v; return;}
+    m=(s+e)/2;
+    update(2*n,  s,  m,i,v); // lchild
+    update(2*n+1,m+1,e,i,v); // rchild
+    T[n]=T[n*2]+T[n*2+1];    // 구간합
+}
+long long query(int n,int s,int e,int l,int r){
+    int m; // middle
+    if((l>e)||(r<s))    {return 0;}
+    if(((l<=s)&&(e<=r))){return T[n];}
+    m=(s+e)/2;
+    return query(2*n,s,m,l,r)+query(2*n+1,m+1,e,l,r);
+}
+int compare_i(const void* x,const void* y){
+    if((((struct qnode*)x)->i)<(((struct qnode*)y)->i)){return -1;}
+    if((((struct qnode*)x)->i)>(((struct qnode*)y)->i)){return  1;}
+    return 0;
+}
+int compare_k(const void* x,const void* y){
+    if((((struct qnode*)x)->k)<(((struct qnode*)y)->k)){return -1;}
+    if((((struct qnode*)x)->k)>(((struct qnode*)y)->k)){return  1;}
+    return 0;
+}
+```
+#### mo's
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct query{
+    int i; // 순서 원본
+    int l;
+    int r;
+};
+
+int B;
+int A[1000001]; // 원본 배열
+int C[1000001]; // count
+int R[1000001]; // result
+int I = 0;
+struct query Q[100001];
+
+int compare(const void* a, const void* b);
+
+int main(void){
+    int j;
+    int n;   int m;
+    int l=1; int r=0;
+    int s;   int e;
+
+    scanf("%d",&n);
+    B=1; while(B*B<=n){B++;} B--; // sqrt(n)
+    for(j=1;j<=n;j++){scanf("%d",&A[j]);}
+
+    scanf("%d",&m);
+    for(j=0;j<m;j++){Q[j].i=j;scanf("%d %d",&Q[j].l,&Q[j].r);}
+    qsort(&Q[0],m,sizeof(struct query),compare);
+    
+    for(j=0;j<m;j++){
+        s=Q[j].l;
+        e=Q[j].r;
+        while(l>s){if((  C[A[--l]]++)==0){I++;}}
+        while(r<e){if((  C[A[++r]]++)==0){I++;}}
+        while(l<s){if((--C[A[l++]]  )==0){I--;}}
+        while(r>e){if((--C[A[r--]]  )==0){I--;}}
+        R[Q[j].i]=I;
+    }
+    
+    for(j=0;j<m;j++){printf("%d\n",R[j]);}
+}
+int compare(const void* a,const void* b){
+    if((((struct query*)a)->l/B)!=(((struct query*)b)->l/B)){
+    return (((struct query*)a)->l/B)-(((struct query*)b)->l/B);}
+    if((((struct query*)a)->l/B)%2==0){
+    return (((struct query*)a)->r)-  (((struct query*)b)->r);}
+    return (((struct query*)b)->r)-  (((struct query*)a)->r);
+}
+```
