@@ -7,6 +7,12 @@ struct graph{
     int** adjs;
 };
 ```
+#### 격자그래프
+```C
+struct graph{
+    int** adjs;
+};
+```
 #### 인접리스트
 ```C
 #include<stdio.h>
@@ -311,6 +317,89 @@ $ ./test
 3 4
 bfs: 0 1 2 4 3
 ```
+### 4.1.3 격자그래프 탐색
+#### BFS
+```C
+#include<stdio.h>
+
+struct node{
+    int r;
+    int c;
+};
+
+int n;
+int m;
+int adjs[1000][1000]; // grid
+int vist[1000][1000]; // 방문 상태
+struct node d[4]={
+    {-1, 0},
+    { 1, 0},
+    { 0,-1},
+    { 0, 1}
+};
+
+struct node q[1000001]; // queue
+int s;                  // front of queue
+int e;                  // rear  of queue
+
+void bfs(int r,int c);
+
+int main(void){
+    int j;
+    int k;
+    scanf("%d %d",&n,&m);
+    for(j=0;j<n;j++){for(k=0;k<m;k++){scanf("%1d",&adjs[j][k]);}}
+    bfs(0,0);
+    
+    if(vist[n-1][m-1]==0){printf("-1");}
+    else                 {printf("%d",vist[n-1][m-1]);}
+}
+
+void bfs(int r,int c){
+    int k;
+    struct node u; // current node
+    struct node v; // next node
+    q[e  ].r=r;    // enqueue
+    q[e++].c=c;    // enqueue
+    vist[r][c]=1;
+    while(s<e){
+        u.r=q[s  ].r; // dequeue
+        u.c=q[s++].c; // dequeue
+        for(k=0;k<4;k++){
+            v.r=u.r+d[k].r;
+            v.c=u.c+d[k].c;
+            if((v.r>=0&&v.r<n)&&(v.c>=0&&v.c<m)){
+                if((adjs[v.r][v.c]==0)&&(vist[v.r][v.c]==0)){
+                    vist[v.r][v.c]=vist[u.r][u.c]+1;
+                    q[e  ].r=v.r; // enqueue
+                    q[e++].c=v.c; // enqueue
+                }
+            }
+        }
+    }
+}
+```
+```
+$ ./test
+6 4
+0000
+1110
+1000
+0000
+0111
+0000
+15
+```
+```
+$ ./test
+4 4
+0100
+1100
+0000
+0000
+-1
+```
+
 
 
 
@@ -696,12 +785,277 @@ $ cat test.txt
 7       15      12      6       0
 ```
 <!-- #### 벨만-포드 -->
-<!-- ### 4.2.2 신장트리 -->
+### 4.2.2 신장트리
+#### 신장트리 입력 예제
+<img src="./static/PS622-MST.png">
+
 <!-- #### Kruskal I -->
-<!-- #### Kruskal II -->
+#### Kruskal II
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct edge{
+    int u;
+    int v;
+    int w;
+};
+struct graph{
+    int n;
+    int e;
+    int*         pare; // 분리집합
+    struct edge* edgs;
+};
+
+int compare(const void* u,const void* v); // 간선 배열 오름차순
+void kruskal(struct graph* g);
+int  getroot(struct graph* g,int u);
+void   unify(struct graph* g,int u,int v);
+void    init(struct graph* g,int n,int e);
+void   clean(struct graph* g);
+
+
+int main(void){
+    int j;
+    int n; int e; scanf("%d %d",&n,&e);
+    int u; int v; int w;
+    struct graph g;
+    init(&g,n,e);
+    for(j=0;j<e;j++){
+        scanf("%d %d %d",&u,&v,&w);
+        g.edgs[j].u=u;
+        g.edgs[j].v=v;
+        g.edgs[j].w=w;
+    }
+    kruskal(&g);
+    clean(&g);
+}
+
+int compare(const void* u,const void* v){
+    if((((struct edge*)u)->w)<(((struct edge*)v)->w)){return -1;}
+    if((((struct edge*)u)->w)>(((struct edge*)v)->w)){return  1;}
+    return 0;
+}
+void kruskal(struct graph* g){
+    int j;
+    qsort(&g->edgs[0],g->e,sizeof(struct edge),compare);
+    for(j=0;j<g->e;j++){
+        if(getroot(g,g->edgs[j].u)!=getroot(g,g->edgs[j].v)){
+            unify(g,g->edgs[j].u,g->edgs[j].v);
+            printf("edge: %d %d, weight: %d\n",g->edgs[j].u,g->edgs[j].v,g->edgs[j].w);
+        }
+    }
+}
+int  getroot(struct graph* g,int u){
+    if(g->pare[u]==u){return u;}
+    else             {return g->pare[u]=getroot(g,g->pare[u]);}
+}
+void  unify(struct graph* g,int u,int v){
+    g->pare[getroot(g,u)]=getroot(g,v);
+}
+void    init(struct graph* g,int n,int e){
+    int j;
+    g->n=n; g->pare=(int*)        malloc(sizeof(int)        *n);
+    g->e=e; g->edgs=(struct edge*)malloc(sizeof(struct edge)*e);
+    for(j=0;j<n;j++){g->pare[j]=j;}
+}
+void   clean(struct graph* g){
+    free(g->pare);
+    free(g->edgs);
+}
+```
+```
+$ ./test > test.txt
+7 11
+0 1 3
+0 2 17
+0 3 6
+1 3 5
+1 6 12
+2 4 10
+2 5 8
+3 4 9
+4 5 4
+4 6 2
+5 6 14
+
+$ cat test.txt
+edge: 4 6, weight: 2
+edge: 0 1, weight: 3
+edge: 4 5, weight: 4
+edge: 1 3, weight: 5
+edge: 2 5, weight: 8
+edge: 3 4, weight: 9
+```
 <!-- #### 프림 -->
 
 
 
-<!-- ## 4.3 고급 그래프 아키텍처 -->
+## 4.3 고급 그래프 아키텍처
+### 4.3.1 다진 트리 과제
+#### 분리집합
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+int* p; // parent
+
+int getroot(int q);
+void  unify(int u,int v);
+
+int main(void){
+    int j;
+    int n; int q; scanf("%d %d",&n,&q);
+    int o; int u; int v;
+    p=(int*)malloc(sizeof(int)*n);
+    for(j=0;j<n;j++){p[j]=j;}
+    for(j=0;j<q;j++){
+        scanf("%d %d %d",&o,&u,&v);
+        if(o==1){
+            if(getroot(u)==getroot(v)){printf("YES\n");}
+            else                      {printf("NO\n");}
+        }
+        if(o==2){
+            unify(u,v);
+        }
+    }
+    free(p);
+}
+
+int getroot(int q){
+    if(p[q]==q){return q;}
+    else       {return p[q]=getroot(p[q]);}
+}
+void  unify(int u,int v){
+    p[getroot(u)]=getroot(v);
+}
+```
+```
+$ ./test > test.txt
+5 3 # number of element, query
+1 1 2
+2 1 2
+1 1 2
+
+$ cat test.txt
+NO
+YES
+```
+### 4.3.2 DAG
+#### 위상정렬 입력 예제
+<img src="./static/PS631-tsort.png">
+
+#### 위상정렬
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    int v;
+    struct node* next;
+};
+struct graph{
+    int n;
+    struct node** adjs;
+    int*          ideg; // 진입 차수
+};
+
+void  tsort(struct graph* g); // topological sort
+void   init(struct graph* g,int n);
+void  clean(struct graph* g);
+void insert(struct graph* g,int u,int v);
+
+int main(void){
+    int j;
+    int n; int e; scanf("%d %d",&n,&e);
+    int u; int v;
+    struct graph g;
+    init(&g,n+1); // 사전순 출력 확장시 1부터 시작(힙)
+    for(j=0;j<e;j++){scanf("%d %d",&u,&v); insert(&g,u,v);}
+    tsort(&g);
+    clean(&g);
+}
+
+void tsort(struct graph* g){
+    int j;          // loop variable
+    int q[g->n];    // queue
+    int f=0;        // front
+    int r=0;        // rear
+    int d;          // node(dequeue)
+    struct node* c; // node(인접리스트 포인터)
+    
+    // enqueue
+    for(j=1;j<g->n;j++){if(g->ideg[j]==0){q[r++]=j;}}
+
+    while(f<r){
+        d=q[f++]; // dequeue
+        printf("%d ",d);
+        c=g->adjs[d];
+        while((c=c->next)!=NULL){
+            g->ideg[c->v]-=1; // 진입 차수 갱신
+            if(g->ideg[c->v]==0){q[r++]=c->v;} // enqueue
+        }
+    }
+}
+void   init(struct graph* g,int n){
+    int j;
+    g->n=n;
+    g->adjs=(struct node**)malloc(sizeof(struct node*)*n);
+    g->ideg=(int*)        malloc(sizeof(int)*         n);
+    for(j=0;j<n;j++){
+        g->adjs[j]=(struct node*)malloc(sizeof(struct node));
+        g->adjs[j]->v=j;
+        g->adjs[j]->next=NULL;
+        g->ideg[j]=0;
+    }
+}
+void  clean(struct graph* g){
+    int j;
+    struct node* d;
+    struct node* f; // free
+    for(j=0;j<g->n;j++){
+        d=g->adjs[j];
+        while(d!=NULL){
+            f=d;
+            d=d->next;
+            free(f);
+        }
+    }
+    free(g->adjs);
+    free(g->ideg);
+}
+void insert(struct graph* g,int u,int v){
+    // 인접리스트 조작
+    struct node* n=(struct node*)malloc(sizeof(struct node));
+    n->v=v;
+    n->next=g->adjs[u]->next;
+    g->adjs[u]->next=n;
+
+    // 진입차수 갱신
+    g->ideg[v]+=1;
+}
+```
+```
+$ ./test > test.txt
+10 13 # number of node, edge
+1 3
+1 4
+2 4
+2 5
+2 10
+3 6
+3 7
+4 6
+5 7
+6 9
+6 10
+7 9
+8 10
+
+$ cat test.txt
+1 2 8 3 5 4 7 6 10 9 
+```
+
+
+
 <!-- ## 4.4 네트워크 모델링 및 최적화 -->
