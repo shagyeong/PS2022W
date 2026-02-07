@@ -250,3 +250,5 @@
 |16287|<span style="background-color:#27e2a4">P5</span>|C|2026-01-31|Parcel|DP,중간에서만나기|
 |6549 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-31|히스토그램에서 가장 큰 직사각형|스택|
 |2618 |<span style="background-color:#27e2a4">P5</span>|C|2026-02-01|경찰차|DP,역추적|
+|15824|<span style="background-color:#ec9a00">G2</span>|C|2026-02-07|너 봄에는 캡사이신이 맛있단다|조합론,분할정복거듭제곱|
+|16565|<span style="background-color:#ec9a00">G2</span>|C|2026-02-07|N포커|DP,조합론|
