@@ -394,7 +394,9 @@ void gapsort(int* a,int s,int e,int g){
 #include<stdlib.h>
 void qsort(void* base,size_t nmemb,size_t size,int(*compar)(const void*,const void*));
 ```
-#### qsort()
+compar: 음수, 0, 양수 리턴 함수 포인터  
+#### qsort(): 기본 문법
+명시적 대소 비교 결과 리턴  
 ```C
 #include<stdio.h>
 #include<stdlib.h>
@@ -413,7 +415,7 @@ int main(void){
 
 int compare(const void* u,const void* v){
     if((*((int*)u))<(*((int*)v))){return -1;}
-    if((*((int*)u))>(*((int*)v))){return 1;}
+    if((*((int*)u))>(*((int*)v))){return  1;}
     return 0;
 }
 ```
@@ -422,6 +424,32 @@ $ ./test
 10
 32 21 14 10 22 45 53 42 16 24
 10 14 16 21 22 24 32 42 45 53 
+```
+#### qsort(): 오름차순 및 내림차순
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+int asc(const void* u,const void* v){return *((int*)u)-*((int*)v);}
+int dsc(const void* u,const void* v){return *((int*)v)-*((int*)u);}
+
+int main(void){
+    int j;
+    int n; scanf("%d",&n);
+    int* a=(int*)malloc(sizeof(int)*n);
+    for(j=0;j<n;j++){scanf("%d",&a[j]);}
+
+    qsort(&a[0],n,sizeof(int),asc); for(j=0;j<n;j++){printf("%d ",a[j]);} printf("\n");
+    qsort(&a[0],n,sizeof(int),dsc); for(j=0;j<n;j++){printf("%d ",a[j]);} printf("\n");
+    free(a);
+}
+```
+```
+$ ./test
+10
+32 21 14 10 22 45 53 42 16 24
+10 14 16 21 22 24 32 42 45 53 
+53 45 42 32 24 22 21 16 14 10 
 ```
 #### qsort(): tie breaking rule
 ```C
