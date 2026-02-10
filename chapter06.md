@@ -201,26 +201,25 @@ $\mathrm{LCM}=A\times B\div \mathrm{GCD}(A,B)$
 ```C
 #include<stdio.h>
 
+void euclid(int u,int v);
+
 int main(void){
-    unsigned int A;
-    unsigned int B;
-    unsigned int a;
-    unsigned int b;
-    unsigned int t; // tmp
-    A=24; B=18;
-    a=A;
-    b=B;
-    while(a%b!=0){
-        t=a;
-        a=b;
-        b=t%b;
-    }
-    printf("GCD: %u\n",b);
-    printf("LCM: %u\n",A*B/b);
+    int u; int v; scanf("%d %d",&u,&v);
+    euclid(u,v);
+}
+
+void euclid(int u,int v){
+    int a=u;
+    int b=v;
+    int t;
+    while(a%b!=0){t=a;a=b;b=t%b;}
+    printf("GCD: %d\n",b);
+    printf("LCM: %d\n",u*v/b);
 }
 ```
 ```
 $ ./test
+24 18
 GCD: 6
 LCM: 72
 ```
@@ -228,46 +227,51 @@ LCM: 72
 #### 소인수분해
 ```C
 #include<stdio.h>
-#include<math.h>
+#include<stdlib.h>
+
+void factorize(int n);
 
 int main(void){
-    int j; // loop variable
-    int p; // prime number
-    int n;
-    int q; // quotient
-    int e; // exponential: 소인수 차수
-    int s=0; // sqrt(n)+1
+    int n; scanf("%d",&n);
+    factorize(n);
+}
 
-    scanf("%d",&n);
+void factorize(int n){
+    int j; int k;
+    int s=1; // sqrt(n)
+    int* a;
+    int d; // dummy
+    int e; // 소인수 차수
+
+    // 소인수 배열 확보
     while(s*s<=n){s++;}
-
-    int a[s+1];
-    for(j=0;j<=s;j++){a[j]=j;}
-    for(p=2;p<=s;p++){
-        if(a[p]!=p)              {continue;}
-        else{for(j=p*p;j<=s;j+=p){a[j]=0;}} // 합성수 마크
-    }
-
-    q=n;
+    a=(int*)malloc(sizeof(int)*(s+1));
+    for(j=0;j<=s;j++){a[j]=1;}
     for(j=2;j<=s;j++){
-        if(a[j]!=0){
-            e=0;
-            if(q%a[j]==0){
-                while(q%a[j]==0){
-                    q/=a[j];
-                    e+=1;
-                }
-                printf("(%d^%d) x ", a[j], e);
-            }
-        }
+        if(a[j]==0){continue;}
+        else{for(k=j*j;k<=s;k+=j){a[k]=0;}}
     }
-    if(q>1){printf("(%d^1)\n",q);}
+
+    // 소인수분해
+    d=n;
+    for(j=2;j<=s;j++){
+    if(a[j]==1){
+        e=0;
+        while(d%j==0){d/=j; e+=1;}
+        if(e!=0){printf("(%d^%d)",j,e);}
+    }}
+    if(d>1){printf("(%d^1)",d);}
+    free(a);
 }
 ```
 ```
 $ ./test
-60
-(2^2)(3^1)(5^1)
+120
+(2^3)(3^1)(5^1)
+
+$ ./test
+23
+(23^1)
 ```
 #### 오일러 Φ 함수
 오일러피함수: $n$에대해 $1$~$n$의 자연수 중 서로소 개수 리턴  
