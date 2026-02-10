@@ -109,6 +109,115 @@ fib(14)=377
 
 ## 7.2 DP
 ### 7.2.1 기본 점화식 설계
+#### 구간합
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct array{
+    int  n;
+    int* a;
+    int* s;
+};
+
+void  init(struct array* a,int n);
+int  query(struct array* a,int u,int v);
+
+int main(void){
+    int j;
+    int n; int m; scanf("%d %d",&n,&m);
+    int u; int v;
+    struct array a;
+    a.a=(int*)malloc(sizeof(int)*(n+1)); // 구간합: 1-based index
+    a.s=(int*)malloc(sizeof(int)*(n+1));
+    for(j=1;j<=n;j++){scanf("%d",&a.a[j]);}
+    init(&a,n+1);
+
+    for(j=0;j<m;j++){
+        scanf("%d %d",&u,&v);
+        printf("%d\n",query(&a,u,v));
+    }
+    free(a.a);
+    free(a.s);
+}
+
+void  init(struct array* a,int n){
+    int j;
+    a->n=n;
+    a->s[0]=0;
+    for(j=1;j<n;j++){a->s[j]=a->s[j-1]+a->a[j];}
+}
+int  query(struct array* a,int u,int v){
+    return a->s[v]-a->s[u-1];
+}
+```
+```
+$ ./test > test.txt
+5 3
+1 2 3 4 5
+1 5
+1 3
+3 5
+
+$ cat test.txt
+14 # 1+2+3+4+5
+6  # 1+2+3
+12 # 3+4+5
+```
+#### 환형 구간합
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct array{
+    int  n;
+    int* a;
+    int* s;
+};
+
+void  init(struct array* a,int n);
+int  query(struct array* a,int u,int v);
+
+int main(void){
+    int j;
+    int n; int m; scanf("%d %d",&n,&m);
+    int u; int v;
+    struct array a;
+    a.a=(int*)malloc(sizeof(int)*(2*n+1));
+    a.s=(int*)malloc(sizeof(int)*(2*n+1));
+    for(j=1;j<=n;j++){scanf("%d",&a.a[j]); a.a[j+n]=a.a[j];}
+    init(&a,2*n+1);
+
+    for(j=0;j<m;j++){
+        scanf("%d %d",&u,&v);
+        printf("%d\n",query(&a,u,v));
+    }
+    free(a.a);
+    free(a.s);
+}
+
+void  init(struct array* a,int n){
+    int j;
+    a->n=n;
+    a->s[0]=0;
+    for(j=1;j<n;j++){a->s[j]=a->s[j-1]+a->a[j];}
+}
+int  query(struct array* a,int u,int v){
+    if(u<=v){return a->s[v]           -a->s[u-1];}
+    else    {return a->s[v+(a->n-1)/2]-a->s[u-1];}
+}
+```
+```
+$ ./test > test.txt
+5 1
+1 2 3 4 5
+2 4
+4 2
+
+$ cat test.txt
+9  # 2+3+4
+12 # 4+5+1+2
+```
 #### 선형시간 피보나치수
 재귀: $\mathbf{O}(2^n)$  
 DP: $\mathbf{O}(n)$  
