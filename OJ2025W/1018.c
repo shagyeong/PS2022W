@@ -1,37 +1,29 @@
-//1018: 체스판 다시 칠하기(브루트포스 알고리즘)
+// S3 1018: 체스판 다시 칠하기(브루트포스)
 #include<stdio.h>
+#include<stdlib.h>
 
 int main(void){
-    int ans = 64;
-    int count;
-    char nl;
-    int i, j, x, y;
-    int n, m; scanf("%d %d", &n, &m);
-    char plate[n][m];
+    char l; // 개행
+    int j; int k;
+    int n; int m; scanf("%d %d",&n,&m); scanf("%c",&l);
+    int r; int c;
+    int t; // toggle
+    int a=32; // answer
+    char** grid=(char**)malloc(sizeof(char*)*n);
+    char*  data=(char*) malloc(sizeof(char) *n*m);
+    for(j=0;j<n;j++){grid[j]=data+(m*j);}
+    for(j=0;j<n;j++){for(k=0;k<m;k++){scanf("%1c",&grid[j][k]);}scanf("%c",&l);}
 
-    scanf("%c", &nl);
-    for(i = 0; i < n; i++){
-        for(j = 0; j < m; j++){
-            scanf("%c", &plate[i][j]);
-        }scanf("%c", &nl);//개행 문자 입력 처리
-    }
-    
-    for(i = 0; i <= n - 8; i++){
-        for(j = 0; j <= m - 8; j++){
-            count = 0;
-            for(x = i; x < i + 8; x++){
-                for(y = j; y < j + 8; y++){
-                    if((x + y)%2 == 0){
-                        count = (plate[x][y] == 'W')?(count + 1):count;
-                    }
-                    else{
-                        count = (plate[x][y] == 'B')?(count + 1):count;
-                    }
-                }
-            }
-            count = (count < 64 - count)?count:(64-count);
-            ans = (count < ans)?count:ans;
-        }
-    }
-    printf("%d", ans);
+    for(j=0;j<=n-8;j++){for(k=0;k<=m-8;k++){
+        t=0;
+    for(r=j;r< j+8;r++){for(c=k;c< k+8;c++){
+        if(r%2==0){t+=(c%2==0)?((grid[r][c]=='B')?0:1):((grid[r][c]=='W')?0:1);}
+        else      {t+=(c%2==0)?((grid[r][c]=='B')?1:0):((grid[r][c]=='W')?1:0);}
+        }}
+        t=(t>32)?(64-t):t;
+        a=(a<t)?a:t;
+    }}
+    printf("%d",a);
+    free(data);
+    free(grid);
 }

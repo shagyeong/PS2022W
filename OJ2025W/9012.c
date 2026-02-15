@@ -1,44 +1,24 @@
-//9012: 괄호(자료 구조, 문자열, 스택)
+// S4 9012: 괄호(스택)
 #include<stdio.h>
-void vps(char ps[51]);
+#include<stdlib.h>
+#include<string.h>
 
 int main(void){
-    int n; scanf("%d", &n);
-    char buf[n][51];
-    for(int i = 0; i < n; i++){
-        scanf("%s", buf[i]);
-    }
-    for(int i = 0; i < n; i++){
-        vps(buf[i]);
-    }
-}
-void vps(char ps[51]){
-    int flag = 1;
-    int l = 0; int r = 0;
-    for(int i = 0; i < 51; i++){
-        if(ps[i] == '\0'){
-            if(l != r){
-                flag = 0;
-            }
-            break;
+    int j; int k;
+    int n; scanf("%d",&n);
+    int t; // top of stack
+    int l;   // length of string
+    char s[51]; // string
+
+    for(j=0;j<n;j++){
+        scanf("%s",s);
+        l=(int)strlen(s);
+        t=0;
+        for(k=0;k<l;k++){
+            if(s[k]=='('){t++;}
+            else{if(--t<0){t=-1; break;}}
         }
-        if(ps[i] == '('){
-            l++;
-        }
-        else{
-            if(l == r){
-                flag = 0;
-                break;
-            }
-            else{
-                r++;
-            }
-        }
-    }
-    if(flag == 1){
-        printf("YES\n");
-    }
-    else{
-        printf("NO\n");
+        if(t==0){printf("YES\n");}
+        else    {printf("NO\n");}
     }
 }

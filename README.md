@@ -69,11 +69,11 @@
 |1181 |<span style="background-color:#435f7a">S5</span>|C|2025-02-17|단어 정렬|문자열,정렬|
 |10814|<span style="background-color:#435f7a">S5</span>|C|2025-02-17|나이순 정렬|정렬|
 |11650|<span style="background-color:#435f7a">S5</span>|C|2025-02-17|좌표 정렬하기|정렬|
-|1018 |<span style="background-color:#435f7a">S3</span>|C|2025-02-17|체스판 다시 칠하기|브루트포스|
+|1018 |<span style="background-color:#435f7a">S3</span>|C|2025-02-17<br>2026-02-15|체스판 다시 칠하기|브루트포스|
 |1920 |<span style="background-color:#435f7a">S4</span>|C|2025-02-17|수 찾기|정렬,이분탐색,해시|
-|9012 |<span style="background-color:#435f7a">S4</span>|C|2025-02-17|괄호|문자열,스택|
+|9012 |<span style="background-color:#435f7a">S4</span>|C|2025-02-17<br>2026-02-15|괄호|문자열,스택|
 |10816|<span style="background-color:#435f7a">S4</span>|C|2025-02-18|숫자 카드 2|정렬,이분탐색,해시|
-|2164 |<span style="background-color:#435f7a">S4</span>|C|2025-02-18|카드 2|큐|
+|2164 |<span style="background-color:#435f7a">S4</span>|C|2025-02-18<br>2026-02-15|카드 2|큐|
 |4153 |<span style="background-color:#ad5600">B3</span>|C|2025-02-18|직각삼각형|기하학|
 |11723|<span style="background-color:#435f7a">S5</span>|C|2025-02-18|집합|비트마스킹|
 |1003 |<span style="background-color:#435f7a">S3</span>|C|2025-02-18|피보나치 함수|DP|
