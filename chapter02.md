@@ -305,8 +305,98 @@ $ ./test
 10 14 16 21 22 24 32 42 45 53
 -1
 ```
-<!-- ### 2.2.3 상수시간 탐색 -->
-<!-- #### 해시 -->
+### 2.2.3 상수시간 탐색
+#### 해시
+선형시간 문자 배열 ID 조회  
+```C
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+# define N 50003
+
+struct node{
+    char* s;
+    int v;
+    struct node* next;
+};
+struct hash{
+    int n; // hash size
+    struct node** t;
+};
+
+int    hash(char* s);
+void   init(struct hash* h,int n);
+void  clean(struct hash* h);
+void insert(struct hash* h,char* s);
+int   query(struct hash* h,char* s);
+
+int main(void){
+    int j;
+    int n; int m; scanf("%d %d",&n,&m);
+    char*  q=(char*) malloc(sizeof(char) *20);
+    struct hash h;
+    init(&h,N);
+
+    for(j=0;j<n;j++){scanf("%s",q);insert(&h,q);}
+    for(j=0;j<m;j++){scanf("%s",q);printf("%d\n",query(&h,q));}
+
+    clean(&h);
+    free(q);
+}
+
+int    hash(char* s){
+    int h=5381;
+    while(*s!='\0'){h=((h<<5)+h)+*s++;}
+    return h&0x7FFFFFFF;
+}
+void   init(struct hash* h,int n){
+    h->n=n;
+    h->t=(struct node**)calloc(n,sizeof(struct node*));
+}
+void  clean(struct hash* h){
+    int j;
+    struct node* d;
+    struct node* f;
+    for(j=0;j<h->n;j++){
+        d=h->t[j];
+        while(d!=NULL){
+            f=d;
+            d=d->next;
+            free(f);
+        }
+    }
+    free(h->t);
+}
+void insert(struct hash* h,char* s){
+    int v=hash(s);
+    int i=v%h->n;
+    struct node* n=(struct node*)malloc(sizeof(struct node));
+    n->s=s;
+    n->v=v;
+    n->next=h->t[i]; // chaining
+    h->t[i]=n;
+}
+int   query(struct hash* h,char* s){
+    int v=hash(s);
+    int i=v%h->n;
+    struct node* d=h->t[i];
+    while(d!=NULL){
+        if((d->v==v)&&strcmp(d->s,s)==0){return d->v;}
+        d=d->next;
+    }
+    return -1;
+}
+```
+```
+$ ./test
+3 3 # number of node, query
+abc def ghi
+abc def ghi
+193485963
+193489332
+193492701
+```
 
 
 
