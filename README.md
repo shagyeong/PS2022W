@@ -256,3 +256,9 @@
 |1157 |<span style="background-color:#ad5600">B1</span>|C|2026-02-15|단어 공부|문자열|
 |1316 |<span style="background-color:#435f7a">S5</span>|C|2026-02-15|그룹 단어 체커|문자열|
 |10773|<span style="background-color:#435f7a">S4</span>|C|2026-02-15|제로|스택|
+|2579 |<span style="background-color:#435f7a">S3</span>|C|2026-02-16|계단 오르기|DP|
+|1149 |<span style="background-color:#435f7a">S1</span>|C|2026-02-16|RGB거리|DP|
+|1932 |<span style="background-color:#435f7a">S1</span>|C|2026-02-16|정수 삼각형|DP|
+|1904 |<span style="background-color:#435f7a">S3</span>|C|2026-02-16|01타일|DP|
+|2293 |<span style="background-color:#ec9a00">G4</span>|C|2026-02-16|동전 1|DP|
+|11057|<span style="background-color:#435f7a">S1</span>|C|2026-02-16|오르막 수|DP|
