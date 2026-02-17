@@ -1,10 +1,9 @@
-// S3 15654: N과 M 5(재귀,백트래킹)
+// S3 15656: N과 M 7(재귀,백트래킹)
 #include<stdio.h>
 #include<stdlib.h>
 
 int a[9]; // 원본 배열
 int t[9];
-int v[9]; // 방문 상태 관리
 int n;
 int m;
 int asc(const void* u,const void* v);
@@ -22,17 +21,8 @@ int main(void){
 int asc(const void* u,const void* v){
     return *((int*)u)-*((int*)v);
 }
-
 void backtrack(int d){
     int j;
     if(d==m){for(j=0;j<m;j++){printf("%d ",t[j]);} printf("\n"); return;}
-
-    for(j=0;j<n;j++){
-        if(v[j]==0){
-            v[j]=1;
-            t[d]=a[j];
-            backtrack(d+1);
-            v[j]=0;
-        }
-    }
+    else    {for(j=0;j<n;j++){t[d]=a[j];backtrack(d+1);}}
 }

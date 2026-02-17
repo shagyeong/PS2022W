@@ -1,4 +1,4 @@
-// S3 15654: N과 M 5(재귀,백트래킹)
+// S2 15663: N과 M 9(재귀,백트래킹)
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -25,11 +25,13 @@ int asc(const void* u,const void* v){
 
 void backtrack(int d){
     int j;
+    int p=-1; // prev
     if(d==m){for(j=0;j<m;j++){printf("%d ",t[j]);} printf("\n"); return;}
 
     for(j=0;j<n;j++){
-        if(v[j]==0){
+        if((v[j]==0)&&(a[j]!=p)){
             v[j]=1;
+            p=a[j];
             t[d]=a[j];
             backtrack(d+1);
             v[j]=0;

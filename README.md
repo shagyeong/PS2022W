@@ -264,3 +264,12 @@
 |11057|<span style="background-color:#435f7a">S1</span>|C|2026-02-16|오르막 수|DP|
 |2696 |<span style="background-color:#ec9a00">G2</span>|C|2026-02-17|중앙값 구하기|힙|
 |2225 |<span style="background-color:#ec9a00">G5</span>|C|2026-02-17|합분해|DP,조합론|
+|15649|<span style="background-color:#435f7a">S3</span>|C|2026-02-17|N과 M 1|재귀,백트래킹|
+|15651|<span style="background-color:#435f7a">S3</span>|C|2026-02-17|N과 M 3|재귀,백트래킹|
+|15655|<span style="background-color:#435f7a">S3</span>|C|2026-02-17|N과 M 6|재귀,백트래킹|
+|15656|<span style="background-color:#435f7a">S3</span>|C|2026-02-17|N과 M 7|재귀,백트래킹|
+|15657|<span style="background-color:#435f7a">S3</span>|C|2026-02-17|N과 M 8|재귀, 백트래킹|
+|15665|<span style="background-color:#435f7a">S2</span>|C|2026-02-17|N과 M 11|재귀,백트래킹|
+|15666|<span style="background-color:#435f7a">S2</span>|C|2026-02-17|N과 M 12|재귀,백트래킹|
+|15664 |<span style="background-color:#435f7a">S2</span>|C|2026-02-17|N과 M 10|재귀,백트래킹|
+|15663 |<span style="background-color:#435f7a">S2</span>|C|2026-02-17|N과 M 9|재귀,백트래킹|

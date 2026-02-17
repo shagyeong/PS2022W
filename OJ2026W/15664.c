@@ -1,14 +1,13 @@
-// S3 15654: N과 M 5(재귀,백트래킹)
+// S2 15664: N과 M 10(재귀,백트래킹)
 #include<stdio.h>
 #include<stdlib.h>
 
 int a[9]; // 원본 배열
 int t[9];
-int v[9]; // 방문 상태 관리
 int n;
 int m;
 int asc(const void* u,const void* v);
-void backtrack(int d);
+void backtrack(int d,int s);
 
 int main(void){
     int j;
@@ -16,23 +15,21 @@ int main(void){
     for(j=0;j<n;j++){scanf("%d",&a[j]);}
     for(j=n;j<9;j++){a[j]=10001;} // INF
     qsort(a,n,sizeof(int),asc);
-    backtrack(0);
+    backtrack(0,0);
 }
 
 int asc(const void* u,const void* v){
     return *((int*)u)-*((int*)v);
 }
-
-void backtrack(int d){
+void backtrack(int d,int s){
     int j;
-    if(d==m){for(j=0;j<m;j++){printf("%d ",t[j]);} printf("\n"); return;}
-
-    for(j=0;j<n;j++){
-        if(v[j]==0){
-            v[j]=1;
+    int p=-1; // prev
+    if(d==m){for(j=0;j<m;j++){printf("%d ",t[j]);}printf("\n");return;}
+    for(j=s;j<n;j++){
+        if(a[j]!=p){
             t[d]=a[j];
-            backtrack(d+1);
-            v[j]=0;
+            p=a[j];
+            backtrack(d+1,j+1);
         }
     }
 }
