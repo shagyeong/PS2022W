@@ -262,3 +262,5 @@
 |1904 |<span style="background-color:#435f7a">S3</span>|C|2026-02-16|01타일|DP|
 |2293 |<span style="background-color:#ec9a00">G4</span>|C|2026-02-16|동전 1|DP|
 |11057|<span style="background-color:#435f7a">S1</span>|C|2026-02-16|오르막 수|DP|
+|2696 |<span style="background-color:#ec9a00">G2</span>|C|2026-02-17|중앙값 구하기|힙|
+|2225 |<span style="background-color:#ec9a00">G5</span>|C|2026-02-17|합분해|DP,조합론|
