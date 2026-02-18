@@ -58,7 +58,7 @@
 |1419 |<span style="background-color:#ec9a00">G5</span>|C|2025-02-14|등차수열의 합|애드혹|
 |1112 |<span style="background-color:#ec9a00">G3</span>|C|2025-02-14|진법 변환|정수론|
 |1015 |<span style="background-color:#435f7a">S4</span>|C|2025-02-14|수열 정렬|정렬|
-|1158 |<span style="background-color:#435f7a">S4</span>|C|2025-02-17|요세푸스 문제|큐|
+|1158 |<span style="background-color:#435f7a">S4</span>|C|2025-02-17<br>2026-02-18|요세푸스 문제|큐|
 |11654|<span style="background-color:#96cc00">N5</span>|C|2025-02-17|아스키 코드||
 |25083|<span style="background-color:#96cc00">N5</span>|C|2025-02-17|새싹||
 |27866|<span style="background-color:#96cc00">N5</span>|C|2025-02-17|문자와 문자열|문자열|
