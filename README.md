@@ -160,7 +160,7 @@
 |1185 |<span style="background-color:#27e2a4">P4</span>|C|2026-01-06|유럽여행|그래프,MST|
 |1715 |<span style="background-color:#ec9a00">G4</span>|C|2026-01-07|카드 정렬하기|힙|
 |20040|<span style="background-color:#ec9a00">G4</span>|C|2026-01-07|사이클 게임|분리집합|
-|12015|<span style="background-color:#ec9a00">G2</span>|C|2026-01-07|책정리|LIS,이분탐색|
+|12015|<span style="background-color:#ec9a00">G2</span>|C|2026-01-07|가장 긴 증가하는 부분 수열 2|LIS,이분탐색|
 |1818 |<span style="background-color:#ec9a00">G2</span>|C|2026-01-07|책정리|LIS,이분탐색|
 |2565 |<span style="background-color:#ec9a00">G5</span>|C|2026-01-07|전깃줄|LIS,정렬|
 |1363 |<span style="background-color:#ec9a00">G2</span>|C|2026-01-07|꼬인 전깃줄|LIS,정렬|
@@ -278,3 +278,7 @@
 |9461 |<span style="background-color:#435f7a">S3</span>|C|2026-02-17|파도반 수열|DP|
 |1912 |<span style="background-color:#435f7a">S2</span>|C|2026-02-17|연속합|DP|
 |2156 |<span style="background-color:#435f7a">S1</span>|C|2026-02-17|포도주 시식|DP|
+|10844|<span style="background-color:#435f7a">S1</span>|C|2026-02-18|쉬운 계단 수|DP|
+|12738|<span style="background-color:#ec9a00">G2</span>|C|2026-02-18|가장 긴 증가하는 부분 수열 3|LIS,이분탐색|
+|14002 |<span style="background-color:#ec9a00">G4</span>|C|2026-02-18|가장 긴 증가하는 부분 수열 4|LIS|
+|11055|<span style="background-color:#435f7a">S2</span>|C|2026-02-18|가장 큰 증가하는 부분 수열|MSIS|
