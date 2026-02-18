@@ -404,70 +404,77 @@ LCS: G_MORN.
 #### LIS
 LIS: longest increasing subsequence  
 #### 이분 탐색 LIS
-LIS 길이 작성 루프  
-|a[j]|i|p|
-|---|---|---|
-|2|**-1**|{0}|
-|1|0|{0,0}|
-|4|**-1**|{0,0,1}|
-|5|**-1**|{0,0,1,2}|
-|3|1|{0,0,1,2,1}|
+길이 작성 루프  
+|a[j]|i|t[]|p[]|s|
+|---|---|---|---|---|
+| |  |{}|{}|0|
+|2|-1|{2}|{0}|0++|
+|1| 0|{1}|{0,0}|1|
+|4|-1|{1,4}|{0,0,1}|1++|
+|5|-1|{1,4,5}|{0,0,1,2}|2++|
+|3| 1|{1,3,5}|{0,0,1,2,1}|3|
 
 역추적 루프  
-|p[j]|e|a[j]|q[j]|
+|a[j]|p[j]|e|b[]|
 |---|---|---|---|
-|p[4]=1|2|a[4]=3||
-|p[3]=2|2--|a[3]=5|**q[2]=5**|
-|p[2]=1|1--|a[2]=4|**q[1]=4**|
-|p[1]=0|0--|a[1]=1|**q[0]=1**|
-|p[0]=0|-1 |a[0]=2||
+|||2|{}|
+|3|1|2|{}|
+|5|2|2--|{5}|
+|4|1|1--|{4,5}|
+|1|0|0--|{1,4,5}|
+|2|0|-1|{1,4,5}|
 
 ```C
 #include<stdio.h>
+#include<stdlib.h>
 
 int main(void){
-    int j; // loop variable
-    int n=5;
-    int a[5]={2,1,4,5,3};
-    int t[5]; // tmp: LIS 길이 작성
-    int p[5]; // position: 역추적
-    int q[5]; // 역추적 결과 저장
-    int s=0; // length
-    int l;   // left
-    int m;   // middle
-    int r;   // right
-    int i;   // location
-    int e;   // end: 역추적
-    
+    int j;
+    int n; scanf("%d",&n);
+    int* a=(int*)malloc(sizeof(int)*n); // 원본 배열
+    int* b;                             // LIS (역추적 결과) 저장
+    int* t=(int*)malloc(sizeof(int)*n); // LIS 길이 작성
+    int* p=(int*)malloc(sizeof(int)*n); // 역추적용 위치 기록
+    int s=0; // length of LIS
+    int l; int m; int r; // 이분탐색
+    int i; // location
+    int e; // end: LIS 작성
+    for(j=0;j<n;j++){scanf("%d",&a[j]);}
+
     // LIS 길이 작성
     for(j=0;j<n;j++){
         l=0;
         r=s-1;
         i=-1;
-        while(l<=r){
+        while(l<=r){ // t[]에서 a[j]보다 작지 않은 엘리먼트가 존재하면 위치를 i에 저장
             m=(l+r)/2;
-            if(t[m]<a[j]){l=m+1;}
-            else         {i=m; r=m-1;}
+            if(a[j]<=t[m]){r=m-1; i=m;}
+            else          {l=m+1;}
         }
-        if(i==-1){p[j]=s; t[s++]=a[j];}
-        else     {p[j]=i; t[i  ]=a[j];}
-    }
-    
-    // 역추적
-    e=s-1;
-    for(j=n-1;j>=0;j--){
-        if(p[j]==e){q[e--]=a[j];}
+        if(i==-1){p[j]=s; t[s++]=a[j];} // LIS 연장
+        else     {p[j]=i; t[i  ]=a[j];} // 덮어쓰기
     }
 
+    // 역추적: LIS 작성
+    b=(int*)malloc(sizeof(int)*s);
+    e=s-1;
+    for(j=n-1;j>=0;j--){if(p[j]==e){b[e--]=a[j];}}
+
     // 결과 출력
-    printf("length: %d\nLIS: ",s);
-    for(j=0;j<s;j++){printf("%d ",q[j]);}printf("\n");
+    printf("%d\n",s);
+    for(j=0;j<s;j++){printf("%d ",b[j]);}
+    free(a);
+    free(b);
+    free(t);
+    free(p);
 }
 ```
 ```
 $ ./test
-length: 3
-LIS: 1 4 5 
+5
+2 1 4 5 3
+3     # length
+1 4 5 # LIS
 ```
 ### 7.2.4 배낭(knapsack)
 #### 0/1
