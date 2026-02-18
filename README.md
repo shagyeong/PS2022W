@@ -280,5 +280,6 @@
 |2156 |<span style="background-color:#435f7a">S1</span>|C|2026-02-17|포도주 시식|DP|
 |10844|<span style="background-color:#435f7a">S1</span>|C|2026-02-18|쉬운 계단 수|DP|
 |12738|<span style="background-color:#ec9a00">G2</span>|C|2026-02-18|가장 긴 증가하는 부분 수열 3|LIS,이분탐색|
-|14002 |<span style="background-color:#ec9a00">G4</span>|C|2026-02-18|가장 긴 증가하는 부분 수열 4|LIS|
+|14002|<span style="background-color:#ec9a00">G4</span>|C|2026-02-18|가장 긴 증가하는 부분 수열 4|LIS|
 |11055|<span style="background-color:#435f7a">S2</span>|C|2026-02-18|가장 큰 증가하는 부분 수열|MSIS|
+|16214|<span style="background-color:#00b4fc">D5</span>|C|2026-02-18|N과 M|정수론,분할정복거듭제곱,재귀,오일러피함수|
