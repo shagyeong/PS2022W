@@ -289,3 +289,4 @@
 |11054|<span style="background-color:#ec9a00">G4</span>|C|2026-02-19|가장 긴 바이토닉 부분 수열|LIS,DP|
 |2294 |<span style="background-color:#ec9a00">G5</span>|C|2026-02-19|동전 2|DP|
 |1520 |<span style="background-color:#ec9a00">G3</span>|C|2026-02-19|내리막길|DP,격자그래프|
+|11049 |<span style="background-color:#ec9a00">G3</span>|C|2026-02-19|행렬곱셈순서|DP|
