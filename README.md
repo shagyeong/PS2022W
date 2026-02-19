@@ -283,3 +283,9 @@
 |14002|<span style="background-color:#ec9a00">G4</span>|C|2026-02-18|가장 긴 증가하는 부분 수열 4|LIS|
 |11055|<span style="background-color:#435f7a">S2</span>|C|2026-02-18|가장 큰 증가하는 부분 수열|MSIS|
 |16214|<span style="background-color:#00b4fc">D5</span>|C|2026-02-18|N과 M|정수론,분할정복거듭제곱,재귀,오일러피함수|
+|17404|<span style="background-color:#ec9a00">G4</span>|C|2026-02-19|RGB거리 2|DP|
+|1256 |<span style="background-color:#ec9a00">G2</span>|C|2026-02-19|사전|DP,조합론|
+|7570 |<span style="background-color:#ec9a00">G2</span>|C|2026-02-19|줄세우기|DP|
+|11054|<span style="background-color:#ec9a00">G4</span>|C|2026-02-19|가장 긴 바이토닉 부분 수열|LIS,DP|
+|2294 |<span style="background-color:#ec9a00">G5</span>|C|2026-02-19|동전 2|DP|
+|1520 |<span style="background-color:#ec9a00">G3</span>|C|2026-02-19|내리막길|DP,격자그래프|
