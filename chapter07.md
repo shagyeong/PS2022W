@@ -18,7 +18,7 @@ int main(void){
 }
 
 int power(int b,int e){
-    if(b==0){return 1;} // b^0
+    if(e==0){return 1;} // b^0
     if(e==1){return b;} // b^1
     int t; // tmp
     if(e%2==0){t=power(b,e/2);     return t*t;}
@@ -330,8 +330,8 @@ $ ./test
 combintion(10,3)=120
 ```
 ### 7.2.2 LCS
-#### LCS
-LCS: longest common subsequence  
+#### Longest Common Subsequence
+subsequence: 연속할 필요 없음  
 $X=x_1,x_2,\cdots,x_m$  
 $Y=y_1,y_2,\cdots,y_n$  
 $\mathbf{M}_{ij}=\begin{cases}\mathbf{M}_{i-1,j-1}+1\qquad\qquad\cdots x_i=y_j\\\max(\mathbf{M}_{i,j-1},\mathbf{M}_{i-1,j})\quad\cdots x_i\neq y_j\end{cases}$  
@@ -345,60 +345,98 @@ $\mathbf{M}_{ij}=\begin{cases}\mathbf{M}_{i-1,j-1}+1\qquad\qquad\cdots x_i=y_j\\
 X: "BDE"  
 Y: "ABCD"  
 LCS: "BD"  
-#### LCS
+#### Longest Common Subsequence
 ```C
 #include<stdio.h>
-#include<string.h>
 #include<stdlib.h>
-
-void lcs(char* u,char* v);
+#include<string.h>
 
 int main(void){
-    char* u="GOOD_MORNING.";
-    char* v="GUTEN_MORGEN.";
-    lcs(u,v);
-}
-
-void lcs(char* u,char* v){
-    int j; int k;
+    int j;
+    int k=0;
+    char* u=(char*)malloc(sizeof(char)*101); scanf("%s",u);
+    char* v=(char*)malloc(sizeof(char)*101); scanf("%s",v);
+    char* s; // LCS
     int n=strlen(u);
     int m=strlen(v);
-    int t[n+1][m+1];
-    int d; // table value dummy
-    char* b; // 역추적 결과
-
-    // 테이블 초기화
+    int l; // length of LCS
+    int** t=(int**)malloc(sizeof(int*)*(n+1));
+    int*  d=(int*) malloc(sizeof(int) *(n+1)*(m+1));
+    for(j=0;j<=n;j++){t[j]=d+k; k+=(m+1);}
     for(j=0;j<=n;j++){t[j][0]=0;}
     for(j=0;j<=m;j++){t[0][j]=0;}
 
-    // 점화식
     for(j=1;j<=n;j++){
     for(k=1;k<=m;k++){
         if(u[j-1]==v[k-1]){t[j][k]=t[j-1][k-1]+1;}
-        else              {t[j][k]=(t[j][k-1]>t[j-1][k])?t[j][k-1]:t[j-1][k];}
+        else              {t[j][k]=t[j][k-1]>t[j-1][k]?t[j][k-1]:t[j-1][k];}
     }}
 
-    // 역추적
-    b=(char*)malloc(sizeof(char)*(t[n][m]+1));
-    for(j=0;j<t[n][m];j++){b++;}
-    *b='\0'; b--;
-    j=n; k=m;
-    while((j>=1)&&(k>=1)){
-        d=t[j][k];
-        if((d>t[j-1][k-1])&&(d>t[j-1][k])&&(d>t[j][k-1])){*b=u[j-1]; b--; j--; k--;}
-        else if((d==t[j][k-1])&&(d>t[j-1][k])){                                k--;}
-        else{                                                             j--;     }
+    l=t[n][m]; printf("%d\n",l);
+    s=(char*)malloc(sizeof(char)*(l+1)); s[l--]='\0';
+    while((n>=1)&&(m>=1)){
+        if(u[n-1]==v[m-1]){s[l--]=u[n-1]; n--; m--; continue;}
+        if(t[n-1][m]>t[n][m-1]){n--;}
+        else                   {m--;}
     }
-
-    // 결과 출력
-    printf("length: %d\n",t[n][m]);
-    printf("LCS: %s\n",++b);
+    printf("%s",s);
+    free(u); free(v); free(s);
+    free(d); free(t);
 }
 ```
 ```
 $ ./test
-length: 7
-LCS: G_MORN.
+good_morning.
+guten_morgen.
+7       # length
+g_morg. # LCS
+```
+#### Longest Common Substring
+substring: 연속해야 함  
+```C
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+int main(void){
+    int j;
+    int k=0;
+    char* u=(char*)malloc(sizeof(char)*101); scanf("%s",u);
+    char* v=(char*)malloc(sizeof(char)*101); scanf("%s",v);
+    char* s; // LCS
+    int n=strlen(u);
+    int m=strlen(v);
+    int l=0; // length of (current) LCS
+    int p=0; // position of (current) LCS
+    int** t=(int**)malloc(sizeof(int*)*(n+1));
+    int*  d=(int*) malloc(sizeof(int) *(n+1)*(m+1));
+    for(j=0;j<=n;j++){t[j]=d+k; k+=(m+1);}
+    for(j=0;j<=n;j++){t[j][0]=0;}
+    for(j=0;j<=m;j++){t[0][j]=0;}
+
+    for(j=1;j<=n;j++){
+    for(k=1;k<=m;k++){
+        if(u[j-1]==v[k-1]){
+            t[j][k]=t[j-1][k-1]+1;
+            if(l<t[j][k]){l=t[j][k]; p=j;}
+        }
+        else{t[j][k]=0;}
+    }}
+
+    printf("%d\n",l);
+    s=(char*)malloc(sizeof(char)*(l+1)); s[l]='\0';
+    for(j=0;j<l;j++){s[j]=u[p-l+j];}
+    printf("%s",s);
+    free(u); free(v); free(s);
+    free(d); free(t);
+}
+```
+```
+$ ./test
+ABRACADABRA
+ECADADABRBCRDARA
+5     # length of LCS
+ADABR # LCS
 ```
 ### 7.2.3 LIS
 #### LIS
