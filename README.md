@@ -295,3 +295,8 @@
 |1520 |<span style="background-color:#ec9a00">G3</span>|C|2026-02-19|내리막길|DP,격자그래프|
 |11049|<span style="background-color:#ec9a00">G3</span>|C|2026-02-19|행렬곱셈순서|DP|
 |5582 |<span style="background-color:#ec9a00">G5</span>|C|2026-02-19|공통 부분 문자열|LCS|
+|2437 |<span style="background-color:#ec9a00">G2</span>|C|2026-02-20|저울|그리디,정렬|
+|2812 |<span style="background-color:#ec9a00">G3</span>|C|2026-02-20|크게 만들기|그리디,스택|
+|2217 |<span style="background-color:#435f7a">S4</span>|C|2026-02-20|로프|그리디,정렬|
+|1789 |<span style="background-color:#435f7a">S5</span>|C|2026-02-20|수들의 합|그리디|
+|13305|<span style="background-color:#435f7a">S3</span>|C|2026-02-20|주유소|그리디|
