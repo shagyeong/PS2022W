@@ -300,3 +300,7 @@
 |2217 |<span style="background-color:#435f7a">S4</span>|C|2026-02-20|로프|그리디,정렬|
 |1789 |<span style="background-color:#435f7a">S5</span>|C|2026-02-20|수들의 합|그리디|
 |13305|<span style="background-color:#435f7a">S3</span>|C|2026-02-20|주유소|그리디|
+|1966 |<span style="background-color:#435f7a">S3</span>|C|2026-02-21|프린터 큐|구현,시뮬레이션,큐|
+|17413|<span style="background-color:#435f7a">S3</span>|C|2026-02-21|단어 뒤집기 2|구현,문자열,스택|
+|28438|<span style="background-color:#435f7a">S3</span>|C|2026-02-21|행련 연산|구현|
+|1515 |<span style="background-color:#435f7a">S2</span>|C|2026-02-21|수 이어쓰기|구현,문자열,브루트포스,그리디|
