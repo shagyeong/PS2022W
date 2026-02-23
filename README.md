@@ -304,3 +304,5 @@
 |17413|<span style="background-color:#435f7a">S3</span>|C|2026-02-21|단어 뒤집기 2|구현,문자열,스택|
 |28438|<span style="background-color:#435f7a">S3</span>|C|2026-02-21|행련 연산|구현|
 |1515 |<span style="background-color:#435f7a">S2</span>|C|2026-02-21|수 이어쓰기|구현,문자열,브루트포스,그리디|
+|13335|<span style="background-color:#435f7a">S1</span>|C|2026-02-23|트럭|구현,시뮤레이션,큐|
+|1713 |<span style="background-color:#435f7a">S1</span>|C|2026-02-23|후보 추천하기|구현,시뮬레이션|
