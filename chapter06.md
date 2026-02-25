@@ -237,31 +237,16 @@ int main(void){
 }
 
 void factorize(int n){
-    int j; int k;
-    int s=1; // sqrt(n)
-    int* a;
-    int d; // dummy
+    int j;
+    int s=1; while(s*s<=n){s++;}
+    int d=n; // dummy
     int e; // 소인수 차수
-
-    // 소인수 배열 확보
-    while(s*s<=n){s++;}
-    a=(int*)malloc(sizeof(int)*(s+1));
-    for(j=0;j<=s;j++){a[j]=1;}
     for(j=2;j<=s;j++){
-        if(a[j]==0){continue;}
-        else{for(k=j*j;k<=s;k+=j){a[k]=0;}}
-    }
-
-    // 소인수분해
-    d=n;
-    for(j=2;j<=s;j++){
-    if(a[j]==1){
         e=0;
         while(d%j==0){d/=j; e+=1;}
         if(e!=0){printf("(%d^%d)",j,e);}
-    }}
+    }
     if(d>1){printf("(%d^1)",d);}
-    free(a);
 }
 ```
 ```
