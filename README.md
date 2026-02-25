@@ -307,3 +307,4 @@
 |13335|<span style="background-color:#435f7a">S1</span>|C|2026-02-23|트럭|구현,시뮤레이션,큐|
 |1713 |<span style="background-color:#435f7a">S1</span>|C|2026-02-23|후보 추천하기|구현,시뮬레이션|
 |1417 |<span style="background-color:#435f7a">S5</span>|C|2026-02-24|국회의원 선거|구현,시뮬레이션,힙|
+|31860|<span style="background-color:#435f7a">S2</span>|C|2026-02-25|열심히 일하는 중|시뮬레이션,힙|
