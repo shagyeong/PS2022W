@@ -308,3 +308,5 @@
 |1713 |<span style="background-color:#435f7a">S1</span>|C|2026-02-23|후보 추천하기|구현,시뮬레이션|
 |1417 |<span style="background-color:#435f7a">S5</span>|C|2026-02-24|국회의원 선거|구현,시뮬레이션,힙|
 |31860|<span style="background-color:#435f7a">S2</span>|C|2026-02-25|열심히 일하는 중|시뮬레이션,힙|
+|18870|<span style="background-color:#435f7a">S2</span>|C|2026-02-27|좌표 압축|정렬|
+|1781 |<span style="background-color:#ec9a00">G2</span>|C|2026-02-27|컵라면|그리디,정렬,힙|
