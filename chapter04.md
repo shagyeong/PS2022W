@@ -554,7 +554,7 @@ expanded: 4, distance: 0 8 5 13 7
 expanded: 1, distance: 0 8 5 9 7 
 expanded: 3, distance: 0 8 5 9 7 
 ```
-#### 데이크스트라: 정적 간선 풀, 힙
+#### 데이크스트라: 정적 간선 풀, 힙, 역추적
 ```C
 #include<stdio.h>
 #include<stdlib.h>
@@ -574,13 +574,15 @@ struct graph{
     int n;
     int*         adjs;
     int*         dist;
+    int*         pare; // 역추적
     struct hode* heap;
     struct node* pool;
     int i; // number of heap item
     int p; // pool index
 };
 
-void   dijkstra(struct graph* g,int s);
+void   dijkstra(struct graph* g,int s); // src
+void  backtrack(struct graph* g,int d); // dst
 void       init(struct graph* g,int n,int e);
 void      clean(struct graph* g);
 void     insert(struct graph* g,int u,int v,int w);
@@ -596,7 +598,11 @@ int main(void){
     init(&g,n,e);
     for(j=0;j<e;j++){scanf("%d %d %d",&u,&v,&w);insert(&g,u,v,w);}
     dijkstra(&g,s);
-    for(j=0;j<n;j++){printf("%d ",g.dist[j]);}
+    for(j=0;j<n;j++){
+        printf("cost(%d to %d): %d\t",s,j,g.dist[j]);
+        printf("path: "); backtrack(&g,j);
+        printf("\n");
+    }
     clean(&g);
 }
 
@@ -612,11 +618,17 @@ void   dijkstra(struct graph* g,int s){
         while(n!=0){
             if(g->dist[h.v]+g->pool[n].w<g->dist[g->pool[n].v]){
                 g->dist[g->pool[n].v]=g->dist[h.v]+g->pool[n].w;
+                g->pare[g->pool[n].v]=h.v;
                 push(g,g->pool[n].v,g->dist[g->pool[n].v]);
             }
             n=g->pool[n].next;
         }
     }
+}
+void  backtrack(struct graph* g,int d){
+    if(d==-1){return;}
+    backtrack(g,g->pare[d]);
+    printf("%d ",d);
 }
 void       init(struct graph* g,int n,int e){
     int j;
@@ -625,16 +637,19 @@ void       init(struct graph* g,int n,int e){
     g->p=1;
     g->adjs=(int*)malloc(sizeof(int)*n);
     g->dist=(int*)malloc(sizeof(int)*n);
+    g->pare=(int*)malloc(sizeof(int)*n);
     g->heap=(struct hode*)malloc(sizeof(struct hode)*(2*e+1));
     g->pool=(struct node*)malloc(sizeof(struct node)*(e+1));
     for(j=0;j<n;j++){
         g->adjs[j]=0;
         g->dist[j]=INF;
+        g->pare[j]=-1;
     }
 }
 void      clean(struct graph* g){
     free(g->adjs);
     free(g->dist);
+    free(g->pare);
     free(g->heap);
     free(g->pool);
 }
@@ -692,7 +707,11 @@ $ ./test > test.txt
 4 3 6
 
 $ cat test.txt
-0 8 5 9 7 
+cost(0 to 0): 0 path: 0 
+cost(0 to 1): 8 path: 0 2 1 
+cost(0 to 2): 5 path: 0 2 
+cost(0 to 3): 9 path: 0 2 1 3 
+cost(0 to 4): 7 path: 0 2 4 
 ```
 #### 플로이드-워셜
 ```C
