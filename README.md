@@ -311,3 +311,6 @@
 |18870|<span style="background-color:#435f7a">S2</span>|C|2026-02-27|좌표 압축|정렬|
 |1781 |<span style="background-color:#ec9a00">G2</span>|C|2026-02-27|컵라면|그리디,정렬,힙|
 |4195 |<span style="background-color:#ec9a00">G2</span>|C|2026-03-02|친구 네트워크|해시,분리집합|
+|2517 |<span style="background-color:#27e2a4">P4</span>|C|2026-03-03|달리기|세그먼트트리,정렬,좌표압축|
+|11779|<span style="background-color:#ec9a00">G3</span>|C|2026-03-03|최소비용 구하기 2|데이크스트라,역추적|
+|2325 |<span style="background-color:#27e2a4">P5</span>|C|2026-03-03|개코전쟁|데이크스트라,역추적|
