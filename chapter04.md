@@ -150,90 +150,84 @@ $\because\mathbf{A}\mathbf{A}_{i,j}=\displaystyle\sum_{m=0}^{n-1}\mathbf{A}_{i,m
 #include<stdio.h>
 #include<stdlib.h>
 
-#define NOTVIST 0
-#define PROCESS 1
-#define ALLDONE 2
+#define NO 0
+#define IN 1
+#define OK 2
 
 struct node{
     int v;
-    struct node* next;
+    int next;
 };
 struct graph{
     int n;
-    struct node** adjs;
-    int*          vist;
+    int e;
+    int p;
+    int*         adjs;
+    int*         vist;
+    struct node* pool;
 };
 
 void    dfs(struct graph* g,int s);
-void   init(struct graph* g,int n);
+void   init(struct graph* g,int n,int e);
 void  clean(struct graph* g);
 void insert(struct graph* g,int u,int v);
 
 int main(void){
     int j;
     int n; int e; scanf("%d %d",&n,&e);
-    int s; scanf("%d",&s);
+    int s;        scanf("%d",&s);
     int u; int v;
     struct graph g;
-    init(&g,n);
+    init(&g,n,2*e); // 2*e: 무향그래프
     for(j=0;j<e;j++){
         scanf("%d %d",&u,&v);
         insert(&g,u,v);
         insert(&g,v,u);
-    };
+    }
     dfs(&g,s);
     clean(&g);
 }
 
 void    dfs(struct graph* g,int s){
-    struct node* d;
+    int d;
     printf("%d ",s);
     d=g->adjs[s];
-    g->vist[s]=PROCESS;
-    while((d=d->next)!=NULL){if(g->vist[d->v]==NOTVIST){dfs(g,d->v);}}
-    g->vist[s]=ALLDONE;
+    g->vist[s]=IN;
+    while(d!=-1){
+        if(g->vist[g->pool[d].v]==NO){dfs(g,g->pool[d].v);}
+        d=g->pool[d].next;
+    }
+    g->vist[s]=OK;
 }
-void   init(struct graph* g,int n){
+void   init(struct graph* g,int n,int e){
     int j;
     g->n=n;
-    g->adjs=(struct node**)malloc(sizeof(struct node*)*n);
-    g->vist=         (int*)malloc(sizeof(int)         *n);
+    g->e=e;
+    g->p=0;
+    g->adjs=(int*)malloc(sizeof(int)*n);
+    g->vist=(int*)malloc(sizeof(int)*n);
+    g->pool=(struct node*)malloc(sizeof(struct node)*e);
     for(j=0;j<n;j++){
-        g->adjs[j]=(struct node*)malloc(sizeof(struct node));
-        g->adjs[j]->v=j;
-        g->adjs[j]->next=NULL;
-        g->vist[j]=NOTVIST;
+        g->adjs[j]=-1;
+        g->vist[j]=NO;
     }
 }
 void  clean(struct graph* g){
-    int j;
-    struct node* d;
-    struct node* f; // free
-    for(j=0;j<g->n;j++){
-        d=g->adjs[j];
-        while(d!=NULL){
-            f=d;
-            d=d->next;
-            free(f);
-        }
-    }
     free(g->adjs);
+    free(g->vist);
+    free(g->pool);
 }
-void insert(struct graph* g,int u,int v){ // DFS 검증: 사전순 이웃 노드
-    struct node* d;
-    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
-    d=g->adjs[u];
-    while((d->next!=NULL)&&(v>(d->next->v))){d=d->next;}
-    n->v=v;
-    n->next=d->next;
-    d->next=n;
+void insert(struct graph* g,int u,int v){
+    g->pool[g->p].v=v;
+    g->pool[g->p].next=g->adjs[u];
+    g->adjs[u]=g->p++;
 }
 ```
 ```
 $ ./test
 5 8 # number of node, edge
 0   # start
-0 1 
+0 1
 0 2
 0 4
 1 2
@@ -241,24 +235,25 @@ $ ./test
 2 3
 2 4
 3 4
-dfs: 0 1 2 3 4 
+0 4 3 2 1
 ```
 #### DFS: 스택
 ```C
 void    dfs(struct graph* g,int s){
-    struct node* d;
+    int  d;
     int* a=(int*)malloc(sizeof(int)*(g->n)); // stack
     int  t=0; // top of stack
     a[t++]=s; // push
-    g->vist[s]=ALLDONE;
+    g->vist[s]=OK;
     while(t>0){
-        d=g->adjs[a[--t]]; // pop
-        printf("%d ",d->v);
-        while((d=d->next)!=NULL){
-            if(g->vist[d->v]==NOTVIST){
-                g->vist[d->v]=ALLDONE;
-                a[t++]=d->v; // push
+        d=a[--t]; printf("%d ",d); // pop
+        d=g->adjs[d];
+        while(d!=-1){
+            if(g->vist[g->pool[d].v]==NO){
+                g->vist[g->pool[d].v]=OK;
+                a[t++]=g->pool[d].v; // push
             }
+            d=g->pool[d].next;
         }
     }
     free(a);
@@ -276,7 +271,7 @@ $ ./test
 2 3
 2 4
 3 4
-dfs: 0 4 3 2 1 # 사전순 탐색 없음(인접리스트 역순)
+0 1 3 2 4
 ```
 #### BFS
 <img src="./static/PS612-BFS.png">
@@ -284,20 +279,21 @@ dfs: 0 4 3 2 1 # 사전순 탐색 없음(인접리스트 역순)
 #### BFS: 큐
 ```C
 void    bfs(struct graph* g,int s){
-    struct node* d;
-    int* q=(int*)malloc(sizeof(int)*(g->n)); // queue
-    int f=0; // front of stack
-    int r=0; // rear  of stack
+    int  d;
+    int* q=(int*)malloc(sizeof(int)*(g->n));
+    int f=0;
+    int r=0;
     q[r++]=s; // enqueue
-    g->vist[s]=ALLDONE;
+    g->vist[s]=OK;
     while(f<r){
-        d=g->adjs[q[f++]]; // dequeue
-        printf("%d ",d->v);
-        while((d=d->next)!=NULL){
-            if(g->vist[d->v]==NOTVIST){
-                g->vist[d->v]=ALLDONE;
-                q[r++]=d->v; // enqueue
+        d=q[f++]; printf("%d ",d); // pop
+        d=g->adjs[d];
+        while(d!=-1){
+            if(g->vist[g->pool[d].v]==NO){
+                g->vist[g->pool[d].v]=OK;
+                q[r++]=g->pool[d].v; // push
             }
+            d=g->pool[d].next;
         }
     }
     free(q);
@@ -315,7 +311,7 @@ $ ./test
 2 3
 2 4
 3 4
-bfs: 0 1 2 4 3
+bfs: 0 4 2 1 3
 ```
 ### 4.1.3 격자그래프 탐색
 #### BFS
@@ -418,7 +414,7 @@ $ ./test
 |$S=\{A,C,E\}$|0|8|5|**13**|7|D: $\min(14,7+6)$|
 |$S=\{A,C,E,B\}$|0|8|5|**9**|7|C: $\min(5,8+2)$<br>D: $\min(13,8+1)$|
 |$S=\{A,C,E,B,D\}$|0|8|5|9|7|E: $\min(7,9+4)$|
-#### 데이크스트라
+#### 데이크스트라: 인접리스트, 순차탐색
 ```C
 #include<stdio.h>
 #include<stdlib.h>
@@ -554,7 +550,7 @@ expanded: 4, distance: 0 8 5 13 7
 expanded: 1, distance: 0 8 5 9 7 
 expanded: 3, distance: 0 8 5 9 7 
 ```
-#### 데이크스트라: 정적 간선 풀, 힙, 역추적
+#### 데이크스트라: 정적간선풀, 힙, 역추적
 ```C
 #include<stdio.h>
 #include<stdlib.h>
@@ -744,7 +740,7 @@ int main(void){
     for(k=0;k<g->n;k++){
         if(g->dist[j][k]==INF){printf("INF\t");}
         else                  {printf("%d\t",g->dist[j][k]);}
-    }
+    }}
     
     clean(&g);
 }
@@ -809,7 +805,7 @@ $ cat test.txt
 <img src="./static/PS622-MST.png">
 
 <!-- #### Kruskal I -->
-#### Kruskal II
+#### MST: Kruskal II
 ```C
 #include<stdio.h>
 #include<stdlib.h>
