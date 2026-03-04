@@ -956,6 +956,116 @@ $ cat test.txt
 NO
 YES
 ```
+#### 트리 지름
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+#define NO 0
+#define OK 1
+
+struct node{
+    int v;
+    int w;
+    int next;
+};
+struct graph{
+    int n;
+    int e;
+    int p;
+    int*         adjs;
+    int*         vist;
+    int*         dist;
+    struct node* pool;
+};
+
+void    dfs(struct graph* g,int s,int a); // acc: 누적 가중치
+void   init(struct graph* g,int n,int e);
+void  clean(struct graph* g);
+void insert(struct graph* g,int u,int v,int w);
+
+int main(void){
+    int j;
+    int n; scanf("%d",&n);
+    int e=n-1;
+    int s=1; // 임의의 점
+    int u; int v; int w;
+    int m; // max
+    int i; // index of max
+    struct graph g;
+    init(&g,n+1,2*e); // n+1: 1-based 과제, 2*e: 무향그래프
+    for(j=0;j<e;j++){
+        scanf("%d %d %d",&u,&v,&w);
+        insert(&g,u,v,w);
+        insert(&g,v,u,w);
+    }
+
+    dfs(&g,s,0); m=0; i=1;
+    for(j=1;j<=n;j++){if(m<g.dist[j]){m=g.dist[j]; i=j;}}
+    for(j=1;j<=n;j++){g.dist[j]=0; g.vist[j]=NO;} // dfs 필드 초기화
+
+    dfs(&g,i,0); m=0;
+    for(j=1;j<=n;j++){if(m<g.dist[j]){m=g.dist[j];}}
+    
+    printf("%d",m);
+    clean(&g);
+}
+
+void    dfs(struct graph* g,int s,int a){
+    int d;
+    d=g->adjs[s];
+    g->vist[s]=OK;
+    g->dist[s]=a;
+    while(d!=-1){
+        if(g->vist[g->pool[d].v]==NO){dfs(g,g->pool[d].v,a+g->pool[d].w);}
+        d=g->pool[d].next;
+    }
+    g->vist[s]=OK;
+}
+void   init(struct graph* g,int n,int e){
+    int j;
+    g->n=n;
+    g->e=e;
+    g->p=0;
+    g->adjs=(int*)malloc(sizeof(int)*n);
+    g->vist=(int*)malloc(sizeof(int)*n);
+    g->dist=(int*)malloc(sizeof(int)*n);
+    g->pool=(struct node*)malloc(sizeof(struct node)*e);
+    for(j=0;j<n;j++){
+        g->adjs[j]=-1;
+        g->dist[j]=0;
+        g->vist[j]=NO;
+    }
+}
+void  clean(struct graph* g){
+    free(g->adjs);
+    free(g->vist);
+    free(g->dist);
+    free(g->pool);
+}
+void insert(struct graph* g,int u,int v,int w){
+    g->pool[g->p].v=v;
+    g->pool[g->p].w=w;
+    g->pool[g->p].next=g->adjs[u];
+    g->adjs[u]=g->p++;
+}
+```
+```
+$ ./test
+12 # number of node
+1 2 3
+1 3 2
+2 4 5
+3 5 11
+3 6 9
+4 7 1
+4 8 7
+5 9 15
+5 10 4
+6 11 6
+6 12 10
+45
+```
 ### 4.3.2 DAG
 #### 위상정렬 입력 예제
 <img src="./static/PS631-tsort.png">
