@@ -314,3 +314,5 @@
 |2517 |<span style="background-color:#27e2a4">P4</span>|C|2026-03-03|달리기|세그먼트트리,정렬,좌표압축|
 |11779|<span style="background-color:#ec9a00">G3</span>|C|2026-03-03|최소비용 구하기 2|데이크스트라,역추적|
 |2325 |<span style="background-color:#27e2a4">P5</span>|C|2026-03-03|개코전쟁|데이크스트라,역추적|
+|1922 |<span style="background-color:#ec9a00">G4</span>|C|2026-03-04|네트워크 연결|MST|
+|1655 |<span style="background-color:#ec9a00">G2</span>|C|2026-03-04|가운데를 말해요|힙|
