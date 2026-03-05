@@ -151,8 +151,7 @@ $\because\mathbf{A}\mathbf{A}_{i,j}=\displaystyle\sum_{m=0}^{n-1}\mathbf{A}_{i,m
 #include<stdlib.h>
 
 #define NO 0
-#define IN 1
-#define OK 2
+#define OK 1
 
 struct node{
     int v;
@@ -192,12 +191,11 @@ void    dfs(struct graph* g,int s){
     int d;
     printf("%d ",s);
     d=g->adjs[s];
-    g->vist[s]=IN;
+    g->vist[s]=OK;
     while(d!=-1){
         if(g->vist[g->pool[d].v]==NO){dfs(g,g->pool[d].v);}
         d=g->pool[d].next;
     }
-    g->vist[s]=OK;
 }
 void   init(struct graph* g,int n,int e){
     int j;
