@@ -114,41 +114,20 @@ fib(14)=377
 #include<stdio.h>
 #include<stdlib.h>
 
-struct array{
-    int  n;
-    int* a;
-    int* s;
-};
-
-void  init(struct array* a,int n);
-int  query(struct array* a,int u,int v);
-
 int main(void){
     int j;
     int n; int m; scanf("%d %d",&n,&m);
     int u; int v;
-    struct array a;
-    a.a=(int*)malloc(sizeof(int)*(n+1)); // 구간합: 1-based index
-    a.s=(int*)malloc(sizeof(int)*(n+1));
-    for(j=1;j<=n;j++){scanf("%d",&a.a[j]);}
-    init(&a,n+1);
+
+    int* a=(int*)malloc(sizeof(int)*(n+1)); a[0]=0;
+    int* s=(int*)malloc(sizeof(int)*(n+1)); s[0]=0;
+    for(j=1;j<=n;j++){scanf("%d",&a[j]);}
+    for(j=1;j<=n;j++){s[j]=s[j-1]+a[j];}
 
     for(j=0;j<m;j++){
         scanf("%d %d",&u,&v);
-        printf("%d\n",query(&a,u,v));
+        printf("%d\n",s[v]-s[u-1]);
     }
-    free(a.a);
-    free(a.s);
-}
-
-void  init(struct array* a,int n){
-    int j;
-    a->n=n;
-    a->s[0]=0;
-    for(j=1;j<n;j++){a->s[j]=a->s[j-1]+a->a[j];}
-}
-int  query(struct array* a,int u,int v){
-    return a->s[v]-a->s[u-1];
 }
 ```
 ```
@@ -160,7 +139,7 @@ $ ./test > test.txt
 3 5
 
 $ cat test.txt
-14 # 1+2+3+4+5
+15 # 1+2+3+4+5
 6  # 1+2+3
 12 # 3+4+5
 ```
@@ -169,47 +148,26 @@ $ cat test.txt
 #include<stdio.h>
 #include<stdlib.h>
 
-struct array{
-    int  n;
-    int* a;
-    int* s;
-};
-
-void  init(struct array* a,int n);
-int  query(struct array* a,int u,int v);
-
 int main(void){
     int j;
     int n; int m; scanf("%d %d",&n,&m);
     int u; int v;
-    struct array a;
-    a.a=(int*)malloc(sizeof(int)*(2*n+1));
-    a.s=(int*)malloc(sizeof(int)*(2*n+1));
-    for(j=1;j<=n;j++){scanf("%d",&a.a[j]); a.a[j+n]=a.a[j];}
-    init(&a,2*n+1);
+
+    int* a=(int*)malloc(sizeof(int)*(2*n+1)); a[0]=0;
+    int* s=(int*)malloc(sizeof(int)*(2*n+1)); s[0]=0;
+    for(j=1;j<=n;  j++){scanf("%d",&v);a[j]=v;a[j+n]=v;}
+    for(j=1;j<=2*n;j++){s[j]=s[j-1]+a[j];}
 
     for(j=0;j<m;j++){
         scanf("%d %d",&u,&v);
-        printf("%d\n",query(&a,u,v));
+        if(u<=v){printf("%d\n",s[v]  -s[u-1]);}
+        else    {printf("%d\n",s[v+n]-s[u-1]);}
     }
-    free(a.a);
-    free(a.s);
-}
-
-void  init(struct array* a,int n){
-    int j;
-    a->n=n;
-    a->s[0]=0;
-    for(j=1;j<n;j++){a->s[j]=a->s[j-1]+a->a[j];}
-}
-int  query(struct array* a,int u,int v){
-    if(u<=v){return a->s[v]           -a->s[u-1];}
-    else    {return a->s[v+(a->n-1)/2]-a->s[u-1];}
 }
 ```
 ```
 $ ./test > test.txt
-5 1
+5 2
 1 2 3 4 5
 2 4
 4 2
@@ -249,53 +207,46 @@ $ ./test
 55
 ```
 #### 거스름돈 구성
-그리디(모듈로 기반) 접근이 유효하지 않은 경우 DP로 접근  
-단, 아래 과제는 그리디로도 해결 가능함  
+n종류 동전으로 m원 구성  
 ```C
 #include<stdio.h>
 #include<stdlib.h>
 
-#define INF 100001
+#define INF 10001
 
 int main(void){
-    int j;
-    int n; scanf("%d",&n);
-    if(n<=5){
-        if(n==1){printf("-1");}
-        if(n==2){printf( "1");}
-        if(n==3){printf("-1");}
-        if(n==4){printf( "2");}
-        if(n==5){printf( "1");}
-    }
-    else{
-        // 테이블 초기화
-        int* t=(int*)malloc(sizeof(int)*(n+1));
-        for(j=0;j<=n;j++){t[j]=INF;}
-        t[0]=0;
-     // t[1]=INF;
-        t[2]=1;
-     // t[3]=INF;
-        t[4]=2;
-        t[5]=1;
+    int j; int k;
+    int n; scanf("%d",&n); // number of coins
+    int m; scanf("%d",&m); // goal price
+    int* a=(int*)malloc(sizeof(int)*n); // coins
+    int* t=(int*)malloc(sizeof(int)*(m+1));
 
-        // 점화식
-        for(j=6;j<=n;j++){t[j]=(t[j-2]<t[j-5])?(t[j-2]+1):(t[j-5]+1);}
+    for(j=0;j<n ;j++){scanf("%d",&a[j]);}
+    for(j=1;j<=m;j++){t[j]=INF;}
+    t[0]=0;
 
-        // 결과 출력
-        printf("%d",t[n]);
-        free(t);
+    for(j=0;j<n;j++){
+        for(k=a[j];k<=m;k++){ // j번째 
+            if(t[k-a[j]]!=INF){
+                t[k]=(t[k]<t[k-a[j]]+1)?(t[k]):(t[k-a[j]]+1);
+            }
+        }
     }
+
+    if(t[m]==INF){printf("-1");}
+    else         {printf("%d",t[m]);}
+    free(a);
+    free(t);
 }
 ```
 ```
 $ ./test
-13
+3 15 # number of coins, goal price
+1
 5
-```
-```
-$ ./test
-14
-4
+12
+
+3 # 5 + 5 + 5
 ```
 #### 이항계수
 $\mathbf{C}^0_0=1,\ \mathbf{C}^k_0=1,\ \mathbf{C}^k_k=1$  
