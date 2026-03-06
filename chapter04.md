@@ -284,12 +284,12 @@ void    bfs(struct graph* g,int s){
     q[r++]=s; // enqueue
     g->vist[s]=OK;
     while(f<r){
-        d=q[f++]; printf("%d ",d); // pop
+        d=q[f++]; printf("%d ",d); // dequeue
         d=g->adjs[d];
         while(d!=-1){
             if(g->vist[g->pool[d].v]==NO){
                 g->vist[g->pool[d].v]=OK;
-                q[r++]=g->pool[d].v; // push
+                q[r++]=g->pool[d].v; // enqueue
             }
             d=g->pool[d].next;
         }
@@ -314,63 +314,89 @@ bfs: 0 4 2 1 3
 ### 4.1.3 격자그래프 탐색
 #### BFS
 ```C
+
 #include<stdio.h>
+#include<stdlib.h>
 
 struct node{
     int r;
     int c;
 };
-
-int n;
-int m;
-int adjs[1000][1000]; // grid
-int vist[1000][1000]; // 방문 상태
-struct node d[4]={
-    {-1, 0},
-    { 1, 0},
-    { 0,-1},
-    { 0, 1}
+struct graph{
+    int n;
+    int m;
+    int** grid;
+    int** dist;
+    int*  data;
+    int*  zero;
 };
 
-struct node q[1000001]; // queue
-int s;                  // front of queue
-int e;                  // rear  of queue
-
-void bfs(int r,int c);
+void   bfs(struct graph* g,int r,int c);
+void  init(struct graph* g,int n,int m);
+void clean(struct graph* g);
 
 int main(void){
-    int j;
-    int k;
-    scanf("%d %d",&n,&m);
-    for(j=0;j<n;j++){for(k=0;k<m;k++){scanf("%1d",&adjs[j][k]);}}
-    bfs(0,0);
-    
-    if(vist[n-1][m-1]==0){printf("-1");}
-    else                 {printf("%d",vist[n-1][m-1]);}
+    int j; int k;
+    int n; int m; scanf("%d %d",&n,&m);
+    struct graph g;
+
+    init(&g,n,m);
+    for(j=0;j<n;j++){for(k=0;k<m;k++){
+        scanf("%1d",&g.grid[j][k]);
+        g.dist[j][k]=0;
+    }}
+
+    bfs(&g,0,0);
+    if(g.dist[n-1][m-1]==0){printf("-1");}
+    else                   {printf("%d",g.dist[n-1][m-1]);}
 }
 
-void bfs(int r,int c){
-    int k;
+void   bfs(struct graph* g,int r,int c){
+    int j;
+    struct node d[4]={{-1,0},{1,0},{0,-1},{0,1}}; // directions
+    struct node* q=(struct node*)malloc(sizeof(struct node)*(g->n*g->m+1)); // queue
+    int s=0;                                                                // front of queue
+    int e=0;                                                                // rear  of queue
     struct node u; // current node
     struct node v; // next node
-    q[e  ].r=r;    // enqueue
-    q[e++].c=c;    // enqueue
-    vist[r][c]=1;
+
+    q[e  ].r=r; // enqueue
+    q[e++].c=c; // enqueue
+    g->dist[r][c]=1;
     while(s<e){
         u.r=q[s  ].r; // dequeue
         u.c=q[s++].c; // dequeue
-        for(k=0;k<4;k++){
-            v.r=u.r+d[k].r;
-            v.c=u.c+d[k].c;
-            if((v.r>=0&&v.r<n)&&(v.c>=0&&v.c<m)){
-                if((adjs[v.r][v.c]==0)&&(vist[v.r][v.c]==0)){
-                    vist[v.r][v.c]=vist[u.r][u.c]+1;
-                    q[e  ].r=v.r; // enqueue
-                    q[e++].c=v.c; // enqueue
-                }
-            }
+        for(j=0;j<4;j++){
+            v.r=u.r+d[j].r;
+            v.c=u.c+d[j].c;
+            if(((0<=v.r)&&(v.r<g->n))&&((0<=v.c)&&(v.c<g->m))){
+            if((g->grid[v.r][v.c]==0)&&(g->dist[v.r][v.c]==0)){
+                g->dist[v.r][v.c]=g->dist[u.r][u.c]+1; // 거리 갱신
+                q[e  ].r=v.r; // enqueue
+                q[e++].c=v.c; // enqueue
+            }}
         }
     }
+}
+void  init(struct graph* g,int n,int m){
+    int j; int k=0;
+    g->n=n;
+    g->m=m;
+    g->grid=(int**)malloc(sizeof(int*)*n);
+    g->dist=(int**)malloc(sizeof(int*)*n);
+    g->data=(int*) malloc(sizeof(int)* n*m);
+    g->zero=(int*) malloc(sizeof(int)* n*m);
+    for(j=0;j<n;j++){
+        g->grid[j]=g->data+k;
+        g->dist[j]=g->zero+k;
+        k+=m;
+    }
+}
+void clean(struct graph* g){
+    free(g->data);
+    free(g->zero);
+    free(g->grid);
+    free(g->dist);
 }
 ```
 ```
