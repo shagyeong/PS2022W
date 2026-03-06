@@ -317,3 +317,7 @@
 |1922 |<span style="background-color:#ec9a00">G4</span>|C|2026-03-04|네트워크 연결|MST|
 |1655 |<span style="background-color:#ec9a00">G2</span>|C|2026-03-04|가운데를 말해요|힙|
 |2307 |<span style="background-color:#ec9a00">G1</span>|C|2026-03-05|도로검문|데이크스트라,역추적|
+|1976 |<span style="background-color:#ec9a00">G4</span>|C|2026-03-06|여행 가자|분리집합|
+|2178 |<span style="background-color:#435f7a">S1</span>|C|2026-03-06|미로 탐색|격자그래프,BFS|
+|2667 |<span style="background-color:#435f7a">S1</span>|C|2026-03-06|단지번호붙이기|격자그래프,BFS|
+|1012 |<span style="background-color:#435f7a">S2</span>|C|2026-03-06|유기농 배추|격자그래프,BFS|
