@@ -309,55 +309,50 @@ search(7): -1
 #include<stdio.h>
 #include<stdlib.h>
 
-int*           a; // 원본 배열
-long long int* t; // 구간합 트리
+int* a; // 원본 배열
+int* t; // 구간합 트리
 
-void           init(int n,int s,int e);
-void         update(int n,int s,int e,int i,int v);
-long long int query(int n,int s,int e,int l,int r);
+void   init(int n,int s,int e);
+void update(int n,int s,int e,int i,int v);
+int   query(int n,int s,int e,int l,int r);
 
 int main(void){
-    int j; // loop variable
+    int j;
     int n; int m; scanf("%d %d",&n,&m);
     int o; int b; int c;
-    a=(int*)          malloc(sizeof(int)            *(n+1));
-    t=(long long int*)malloc(sizeof(long long int)*4*(n+1));
-
-    for(j=0;j<n;j++){scanf("%d",&a[j]);}
-    init(1,0,n-1);
+    a=(int*)malloc(sizeof(int)*(n+1));
+    t=(int*)malloc(sizeof(int)*(n+1)*4);
+    for(j=1;j<=n;j++){scanf("%d",&a[j]);}
+    init(1,1,n);
 
     for(j=0;j<m;j++){
         scanf("%d %d %d",&o,&b,&c);
-        if(o==1){update(1,0,n-1,b-1,c); a[b-1]=c;}
-        else    {printf("%lld\n",query(1,0,n-1,b-1,c-1));}
+        if(o==1){update(1,1,n,b,c); a[b]=c;}
+        else    {printf("%d\n",query(1,1,n,b,c));}
     }
-
     free(a);
     free(t);
 }
 
 void init(int n,int s,int e){
-    int m; // middle
     if(s==e){t[n]=a[s]; return;}
-    m=(s+e)/2;
+    int m=(s+e)/2;
     init(2*n,  s,  m);      // lchild
     init(2*n+1,m+1,e);      // rchild
     t[n]=t[2*n]+t[2*n+1]; // 구간합
 }
 void update(int n,int s,int e,int i,int v){
-    int m; // middle
-    if((i<s)||(i>e)){return;}
+    if((i<s)||(e<i)){return;}
     if(s==e){t[n]=v; return;}
-    m=(s+e)/2;
+    int m=(s+e)/2;
     update(2*n,  s,  m,i,v); // lchild
     update(2*n+1,m+1,e,i,v); // rchild
     t[n]=t[2*n]+t[2*n+1];    // 구간합
 }
-long long int query(int n,int s,int e,int l,int r){
-    int m; // middle
-    if((l>e)||(r<s))    {return 0;}
-    if(((l<=s)&&(e<=r))){return t[n];}
-    m=(s+e)/2;
+int query(int n,int s,int e,int l,int r){
+    if((r< s)||(e< l)){return 0;}
+    if((l<=s)&&(e<=r)){return t[n];}
+    int m=(s+e)/2;
     return query(2*n,s,m,l,r)+query(2*n+1,m+1,e,l,r);
 }
 ```
