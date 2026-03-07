@@ -15,9 +15,6 @@ struct graph{
 ```
 #### 인접리스트
 ```C
-#include<stdio.h>
-#include<stdlib.h>
-
 struct node{
     int v;
     int w;
@@ -27,64 +24,6 @@ struct graph{
     int n;
     struct node** adjs;
 };
-
-void   init(struct graph* g,int n);
-void  clean(struct graph* g);
-void insert(struct graph* g,int u,int v,int w);
-
-int main(void){
-    int j;
-    int n; int e; scanf("%d %d",&n,&e);
-    int u; int v; int w;
-    struct graph g;
-    init(&g,n);
-    for(j=0;j<e;j++){scanf("%d %d %d",&u,&v,&w);insert(&g,u,v,w);};
-    clean(&g);
-}
-
-void   init(struct graph* g,int n){
-    int j;
-    g->n=n;
-    g->adjs=(struct node**)malloc(sizeof(struct node*)*n);
-    for(j=0;j<n;j++){
-        g->adjs[j]=(struct node*)malloc(sizeof(struct node));
-        g->adjs[j]->v=j;
-        g->adjs[j]->w=0;
-        g->adjs[j]->next=NULL;
-    }
-}
-void  clean(struct graph* g){
-    int j;
-    struct node* d;
-    struct node* f; // free
-    for(j=0;j<g->n;j++){
-        d=g->adjs[j];
-        while(d!=NULL){
-            f=d;
-            d=d->next;
-            free(f);
-        }
-    }
-    free(g->adjs);
-}
-void insert(struct graph* g,int u,int v,int w){
-    struct node* n=(struct node*)malloc(sizeof(struct node));
-    n->v=v;
-    n->w=w;
-    n->next=g->adjs[u]->next;
-    g->adjs[u]->next=n;
-}
-// insert: 사전순 이웃 노드
-// void insert(struct graph* g,int u,int v,int w){
-//     struct node* d;
-//     struct node* n=(struct node*)malloc(sizeof(struct node)); // new
-//     d=g->adjs[u];
-//     while((d->next!=NULL)&&(v>(d->next->v))){d=d->next;}
-//     n->v=v;
-//     n->w=w;
-//     n->next=d->next;
-//     d->next=n;
-// }
 ```
 #### 정적간선풀
 ```C
@@ -438,143 +377,7 @@ $ ./test
 |$S=\{A,C,E\}$|0|8|5|**13**|7|D: $\min(14,7+6)$|
 |$S=\{A,C,E,B\}$|0|8|5|**9**|7|C: $\min(5,8+2)$<br>D: $\min(13,8+1)$|
 |$S=\{A,C,E,B,D\}$|0|8|5|9|7|E: $\min(7,9+4)$|
-#### 데이크스트라: 인접리스트, 순차탐색
-```C
-#include<stdio.h>
-#include<stdlib.h>
-
-#define INF 1000000000
-#define NOTVIST 0
-#define ALLDONE 1
-
-struct node{
-    int v;
-    int w;
-    struct node* next;
-};
-struct graph{
-    int n;
-    struct node** adjs;
-    int*          dist;
-    int*          vist;
-};
-
-void dijkstra(struct graph* g,int s);
-void     init(struct graph* g,int n);
-void    clean(struct graph* g);
-void   insert(struct graph* g,int u,int v,int w);
-
-int main(void){
-    int j;
-    int n; int e; scanf("%d %d",&n,&e);
-    int s; scanf("%d",&s);
-    int u; int v; int w;
-    struct graph g;
-    init(&g,n);
-    for(j=0;j<e;j++){scanf("%d %d %d",&u,&v,&w);insert(&g,u,v,w);}
-    dijkstra(&g,s);
-    clean(&g);
-}
-
-void dijkstra(struct graph* g,int u){
-    int j;   // loop variable
-    int k;   // loop variable
-    int i=u; // min distance index
-    int d;   // min distance value
-    struct node* b;
-    g->dist[u]=0;
-
-    for(j=0;j<g->n;j++){
-        // 방문되지 않은 노드 중 비용이 가장 낮은 노드 찾기
-        d=INF;
-        for(k=0;k<g->n;k++){
-            if((g->dist[k]<d)&&(g->vist[k]==NOTVIST)){
-                i=k;
-                d=g->dist[k];
-            }
-        }
-        b=g->adjs[i];
-        d=g->dist[i];
-        g->vist[i]=ALLDONE;
-
-        // dist[]<-min(dist[],dist[]+dist[][])
-        while((b=b->next)!=NULL){
-            if((d+b->w)<(g->dist[b->v])){
-                g->dist[b->v]=d+b->w;
-            }
-        }
-
-        // // 확장 과정 출력
-        // printf("expanded: %d, distance: ",i);
-        // for(int x=0;x<g->n;x++){
-        //     if(g->dist[x]==INF){printf("INF ");}
-        //     else               {printf("%d ",g->dist[x]);}
-        // }
-        // printf("\n");
-    }
-}
-void   init(struct graph* g,int n){
-    int j;
-    g->n=n;
-    g->adjs=(struct node**)malloc(sizeof(struct node*)*n);
-    g->dist=         (int*)malloc(sizeof(int)*n);
-    g->vist=         (int*)malloc(sizeof(int)*n);
-    for(j=0;j<n;j++){
-        g->adjs[j]=(struct node*)malloc(sizeof(struct node));
-        g->adjs[j]->v=j;
-        g->adjs[j]->w=0;
-        g->adjs[j]->next=NULL;
-        g->dist[j]=INF;
-        g->vist[j]=NOTVIST;
-    }
-}
-void  clean(struct graph* g){
-    int j;
-    struct node* d;
-    struct node* f; // free
-    for(j=0;j<g->n;j++){
-        d=g->adjs[j];
-        while(d!=NULL){
-            f=d;
-            d=d->next;
-            free(f);
-        }
-    }
-    free(g->adjs);
-    free(g->dist);
-    free(g->vist);
-}
-void insert(struct graph* g,int u,int v,int w){
-    struct node* n=(struct node*)malloc(sizeof(struct node));
-    n->v=v;
-    n->w=w;
-    n->next=g->adjs[u]->next;
-    g->adjs[u]->next=n;
-}
-```
-```
-$ ./test > test.txt
-5 10 # number of node, edge
-0   # start
-0 1 10
-0 2 5
-1 2 2
-1 3 1
-2 1 3
-2 3 9
-2 4 2
-3 4 4
-4 0 7
-4 3 6
-
-$ cat test.txt
-expanded: 0, distance: 0 10 5 INF INF 
-expanded: 2, distance: 0 8 5 14 7 
-expanded: 4, distance: 0 8 5 13 7 
-expanded: 1, distance: 0 8 5 9 7 
-expanded: 3, distance: 0 8 5 9 7 
-```
-#### 데이크스트라: 정적간선풀, 힙, 역추적
+#### 데이크스트라: 힙, 역추적
 ```C
 #include<stdio.h>
 #include<stdlib.h>
@@ -1101,16 +904,19 @@ $ ./test
 
 struct node{
     int v;
-    struct node* next;
+    int next;
 };
 struct graph{
     int n;
-    struct node** adjs;
-    int*          ideg; // 진입 차수
+    int e;
+    int p;
+    int*         adjs;
+    int*         ideg; // 진입차수
+    struct node* pool;
 };
 
-void  tsort(struct graph* g); // topological sort
-void   init(struct graph* g,int n);
+void  tsort(struct graph* g);
+void   init(struct graph* g,int n,int e);
 void  clean(struct graph* g);
 void insert(struct graph* g,int u,int v);
 
@@ -1119,69 +925,51 @@ int main(void){
     int n; int e; scanf("%d %d",&n,&e);
     int u; int v;
     struct graph g;
-    init(&g,n+1); // 사전순 출력 확장시 1부터 시작(힙)
+    init(&g,n+1,e); // n+1: 1-based
     for(j=0;j<e;j++){scanf("%d %d",&u,&v); insert(&g,u,v);}
     tsort(&g);
     clean(&g);
 }
 
-void tsort(struct graph* g){
-    int j;          // loop variable
-    int q[g->n];    // queue
-    int f=0;        // front
-    int r=0;        // rear
-    int d;          // node(dequeue)
-    struct node* c; // node(인접리스트 포인터)
-    
-    // enqueue
-    for(j=1;j<g->n;j++){if(g->ideg[j]==0){q[r++]=j;}}
-
+void  tsort(struct graph* g){
+    int j;
+    int* q=(int*)malloc(sizeof(int)*g->n); // queue
+    int f=0; // front of queue
+    int r=0; // rear  of queue
+    int d;
+    for(j=1;j<g->n;j++){if(g->ideg[j]==0){q[r++]=j;}} // j=1: 1-based
     while(f<r){
-        d=q[f++]; // dequeue
-        printf("%d ",d);
-        c=g->adjs[d];
-        while((c=c->next)!=NULL){
-            g->ideg[c->v]-=1; // 진입 차수 갱신
-            if(g->ideg[c->v]==0){q[r++]=c->v;} // enqueue
+        d=q[f++]; printf("%d ",d);
+        d=g->adjs[d];
+        while(d!=-1){
+            if((g->ideg[g->pool[d].v]-=1)==0){q[r++]=g->pool[d].v;}
+            d=g->pool[d].next;
         }
     }
 }
-void   init(struct graph* g,int n){
+void   init(struct graph* g,int n,int e){
     int j;
     g->n=n;
-    g->adjs=(struct node**)malloc(sizeof(struct node*)*n);
-    g->ideg=(int*)        malloc(sizeof(int)*         n);
+    g->e=e;
+    g->p=0;
+    g->adjs=(int*)malloc(sizeof(int)*n);
+    g->ideg=(int*)malloc(sizeof(int)*n);
+    g->pool=(struct node*)malloc(sizeof(struct node)*e);
     for(j=0;j<n;j++){
-        g->adjs[j]=(struct node*)malloc(sizeof(struct node));
-        g->adjs[j]->v=j;
-        g->adjs[j]->next=NULL;
+        g->adjs[j]=-1;
         g->ideg[j]=0;
     }
 }
 void  clean(struct graph* g){
-    int j;
-    struct node* d;
-    struct node* f; // free
-    for(j=0;j<g->n;j++){
-        d=g->adjs[j];
-        while(d!=NULL){
-            f=d;
-            d=d->next;
-            free(f);
-        }
-    }
     free(g->adjs);
     free(g->ideg);
+    free(g->pool);
 }
 void insert(struct graph* g,int u,int v){
-    // 인접리스트 조작
-    struct node* n=(struct node*)malloc(sizeof(struct node));
-    n->v=v;
-    n->next=g->adjs[u]->next;
-    g->adjs[u]->next=n;
-
-    // 진입차수 갱신
-    g->ideg[v]+=1;
+    g->pool[g->p].v=v;
+    g->pool[g->p].next=g->adjs[u];
+    g->adjs[u]=(g->p)++;
+    g->ideg[v]++; // 진입차수 갱신
 }
 ```
 ```
