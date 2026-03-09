@@ -321,3 +321,4 @@
 |2178 |<span style="background-color:#435f7a">S1</span>|C|2026-03-06|미로 탐색|격자그래프,BFS|
 |2667 |<span style="background-color:#435f7a">S1</span>|C|2026-03-06|단지번호붙이기|격자그래프,BFS|
 |1012 |<span style="background-color:#435f7a">S2</span>|C|2026-03-06|유기농 배추|격자그래프,BFS|
+|2367 |<span style="background-color:#27e2a4">P4</span>|C|2026-03-10|파티|유량|
