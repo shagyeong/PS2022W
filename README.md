@@ -199,7 +199,7 @@
 |13926|<span style="background-color:#00b4fc">D5</span>|C|2026-01-15|GCD(n,k)=1|오일러피함수,밀러-라빈,폴라드로|
 |4149 |<span style="background-color:#27e2a4">P1</span>|C|2026-01-15|큰 수 소인수분해|밀러-라빈,폴라드로|
 |10854|<span style="background-color:#27e2a4">P1</span>|C|2026-01-15|Divisions(약수 개수 구하기)|밀러-라빈,폴라드로,소인수분해|
-|2150 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-15|Strongly Connected Component|강결합컴포넌트|
+|2150 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-15|Strongly Connected Component|SCC|
 |13549|<span style="background-color:#ec9a00">G5</span>|C|2026-01-15|숨바꼭질 3|0-1BFS|
 |1865 |<span style="background-color:#ec9a00">G3</span>|C|2026-01-15|웜홀|벨만-포드|
 |11266|<span style="background-color:#27e2a4">P4</span>|C|2026-01-15|단절점|단절점,BFS|
@@ -211,7 +211,7 @@
 |15681|<span style="background-color:#ec9a00">G5</span>|C|2026-01-16|트리와 쿼리|재귀,트리DP,DFS|
 |1761 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-16|정점들의 거리|희소배열,LCA,트리DP|
 |5052 |<span style="background-color:#ec9a00">G4</span>|C|2026-01-16|전화번호 목록|트라이|
-|11280|<span style="background-color:#27e2a4">P4</span>|C|2026-01-17|2-SAT - 3|강결합컴포넌트,2-SAT|
+|11280|<span style="background-color:#27e2a4">P4</span>|C|2026-01-17|2-SAT - 3|SCC,2-SAT|
 |9466 |<span style="background-color:#ec9a00">G3</span>|C|2026-01-18|팀 프로젝트|DFS|
 |2623 |<span style="background-color:#ec9a00">G3</span>|C|2026-01-19|음악프로그램|DAG,위상정렬|
 |1806 |<span style="background-color:#ec9a00">G4</span>|C|2026-01-19|부분합|누적합,투포인터|
@@ -229,7 +229,7 @@
 |2887 |<span style="background-color:#27e2a4">P5</span>|C|2026-01-22|행성 터널|MST,정렬|
 |12100|<span style="background-color:#ec9a00">G1</span>|C|2026-01-22|2048|재귀,브루트포스,시뮬레이션,백트래킹|
 |14286|<span style="background-color:#27e2a4">P3</span>|C|2026-01-23|간선 끊어가기 2|유량,최대유량최소컷정리|
-|11281|<span style="background-color:#27e2a4">P3</span>|C|2026-01-23|2-SAT - 4|강결합컴포넌트,2-SAT,역추적|
+|11281|<span style="background-color:#27e2a4">P3</span>|C|2026-01-23|2-SAT - 4|SCC,2-SAT,역추적|
 |11438|<span style="background-color:#27e2a4">P5</span>|C|2026-01-23|LCA 2|희소배열,LCA,트리DP|
 |16978|<span style="background-color:#27e2a4">P4</span>|C|2026-01-24|수열과 쿼리 22|세그먼트트리,오프라인쿼리|
 |13925|<span style="background-color:#00b4fc">D5</span>|C|2026-01-24|수열과 쿼리 13|느리게갱신되는세그먼트트리|
@@ -322,3 +322,6 @@
 |2667 |<span style="background-color:#435f7a">S1</span>|C|2026-03-06|단지번호붙이기|격자그래프,BFS|
 |1012 |<span style="background-color:#435f7a">S2</span>|C|2026-03-06|유기농 배추|격자그래프,BFS|
 |2367 |<span style="background-color:#27e2a4">P4</span>|C|2026-03-10|파티|유량|
+|4196 |<span style="background-color:#27e2a4">P4</span>|C|2026-03-13|도미노|SCC,DAG,위상정렬|
+|1506 |<span style="background-color:#27e2a4">P5</span>|C|2026-03-13|경찰서|SCC|
+|3648 |<span style="background-color:#27e2a4">P3</span>|C|2026-03-13|아이돌|SCC,2-SAT|
