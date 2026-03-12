@@ -82,7 +82,7 @@ void insert(struct graph* g,int u,int v,int w){
 $\mathbf{A}^k_{i,j}$: 노드 $i$에서 $j$로 $k$개의 간선을 거치는 경로 개수(unweighted graph)  
 $\because\mathbf{A}\mathbf{A}_{i,j}=\displaystyle\sum_{m=0}^{n-1}\mathbf{A}_{i,m}\times\mathbf{A}_{m,j}$  
 #### DFS
-<img src="./static/PS612-DFS.png">
+<img src="./static/PS412-DFS.png">
 
 #### DFS: 재귀
 ```C
@@ -211,7 +211,7 @@ $ ./test
 0 1 3 2 4
 ```
 #### BFS
-<img src="./static/PS612-BFS.png">
+<img src="./static/PS412-BFS.png">
 
 #### BFS: 큐
 ```C
@@ -364,7 +364,7 @@ $ ./test
 ## 4.2 가중치그래프 최적해
 ### 4.2.1 최단경로
 #### 최단경로 예제
-<img src="./static/PS621-shortestpath.png">
+<img src="./static/PS421-shortestpath.png">
 
 #### 데이크스트라
 시작점: A  
@@ -628,7 +628,7 @@ $ cat test.txt
 <!-- #### 벨만-포드 -->
 ### 4.2.2 신장트리
 #### 신장트리 입력 예제
-<img src="./static/PS622-MST.png">
+<img src="./static/PS422-MST.png">
 
 <!-- #### Kruskal I -->
 #### MST: Kruskal II
@@ -894,7 +894,7 @@ $ ./test
 ```
 ### 4.3.2 DAG
 #### 위상정렬 입력 예제
-<img src="./static/PS631-tsort.png">
+<img src="./static/PS432-tsort.png">
 
 #### 위상정렬
 ```C
@@ -990,6 +990,280 @@ $ ./test > test.txt
 
 $ cat test.txt
 1 2 8 3 5 4 7 6 10 9 
+```
+### 4.3.3 SCC
+#### SCC 입력 예제
+<img src="./static/PS433-SCC.png">
+
+#### SCC
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    int v;
+    int next;
+};
+struct scc{
+    int  n; // number of node
+    int* a; // array of node number
+};
+
+int n; // number of node
+int e; // number of edge
+int p; // pool index
+int s; // number of scc
+int c; // clock
+int t; // top of stack
+int*         adjs;
+int*         dfns;
+int*         lows;
+int*         isin;
+int*         stck;
+struct node* pool;
+struct scc*  sccs;
+
+void   init(void);
+void  clean(void);
+void insert(int u,int v);
+void tarjan(int u);
+
+int main(void){
+    int j; int k;
+    scanf("%d %d",&n,&e);
+    int u; int v;
+    
+    n+=1; init();  // 1-based
+    n-=1;
+    for(j=0;j< e;j++){scanf("%d %d",&u,&v); insert(u,v);}
+    for(j=1;j<=n;j++){if(dfns[j]==0){tarjan(j);}}
+    for(j=0;j< s;j++){for(k=0;k<sccs[j].n;k++){printf("%d ",sccs[j].a[k]);}printf("\n");}
+    clean();
+}
+
+void   init(void){
+    int j;
+    p=0;
+    s=0;
+    c=0;
+    t=0;
+    adjs=(int*)malloc(sizeof(int)*n);
+    dfns=(int*)malloc(sizeof(int)*n);
+    lows=(int*)malloc(sizeof(int)*n);
+    isin=(int*)malloc(sizeof(int)*n);
+    stck=(int*)malloc(sizeof(int)*n);
+    pool=(struct node*)malloc(sizeof(struct node)*e);
+    sccs=(struct scc*) malloc(sizeof(struct scc) *n);
+    for(j=0;j<n;j++){
+        adjs[j]=-1;
+        dfns[j]=0;
+        lows[j]=0;
+        isin[j]=0;
+    }
+}
+void  clean(void){
+    int j;
+    for(j=0;j<s;j++){free(sccs[j].a);}
+    free(adjs);
+    free(dfns);
+    free(lows);
+    free(isin);
+    free(stck);
+    free(pool);
+    free(sccs);
+}
+void insert(int u,int v){
+    pool[p].v=v;
+    pool[p].next=adjs[u];
+    adjs[u]=p++;
+}
+void tarjan(int u){
+    int j; int k=0;
+    int b; int v;
+
+    dfns[u]=++c;
+    lows[u]=  c;
+    stck[t++]=u;
+    isin[u]=  1;
+
+    b=adjs[u];
+    while(b!=-1){
+        v=pool[b].v;
+        if(dfns[v]==0){
+            tarjan(v);
+            if(lows[v]<lows[u]){lows[u]=lows[v];}
+        }
+        else if(isin[v]!=0){
+            if(dfns[v]<lows[u]){lows[u]=dfns[v];}
+        }
+        b=pool[b].next;
+    }
+    if(lows[u]==dfns[u]){
+        j=t; while(1){k++; if(stck[--j]==u){break;}}
+        sccs[s].n=0;
+        sccs[s].a=(int*)malloc(sizeof(int)*k);
+        while(1){
+            v=stck[--t]; isin[v]=0;
+            sccs[s].a[sccs[s].n++]=v;
+            if(v==u){break;}
+        }
+        s++;
+    }
+}
+```
+```
+$ ./test > test.txt
+7 9 # number of node, edge
+1 4
+4 5
+5 1
+1 6
+6 7
+2 7
+7 3
+3 7
+7 2
+$ cat test.txt
+3 2 7 
+6 
+5 4 1 
+```
+#### 2-SAT
+$(A\lor B)\equiv((\lnot A \rightarrow B)\land(\lnot B \rightarrow A))$  
+논리합과 동치인 함의 수식을 directed graph로 모델링  
+만족(수식을 참으로 만들 수 있음): 각 SCC에 $X_i, \lnot X_i$가 동시에 존재하지 않는다  
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    int v;
+    int next;
+};
+
+int n; // number of node
+int e; // number of edge
+int p; // pool index
+int s; // number of scc
+int c; // clock
+int t; // top of stack
+int*         adjs;
+int*         dfns;
+int*         lows;
+int*         isin;
+int*         stck;
+int*         sccs; // 노드별 scc id
+struct node* pool;
+
+void   init(void);
+void  clean(void);
+void insert(int u,int v);
+void tarjan(int u);
+
+int main(void){
+    int j;
+    scanf("%d %d",&n,&e);
+    int x; int u; // x, not x
+    int y; int v; // y, not y    
+    n=2*n+1;   e*=2; init();  // 1-based
+    n=(n-1)/2; e/=2;
+    
+    for(j=0;j<e;j++){
+        scanf("%d %d",&x,&y);
+        if(x>0){u=n+x;}else{u=-x; x=n-x;}
+        if(y>0){v=n+y;}else{v=-y; y=n-y;}
+        insert(u,y); // not x -> y
+        insert(v,x); // not y -> x
+    }
+
+    for(j=1;j<=2*n;j++){if(dfns[j]==0){tarjan(j);}}
+    for(j=1;j<=n;  j++){
+        if(sccs[j]==sccs[j+n]){
+            printf("0");
+            clean();
+            return 0;
+        }
+    }
+    printf("1");
+    clean();
+    return 0;
+}
+
+void   init(void){
+    int j;
+    p=0;
+    s=0;
+    c=0;
+    t=0;
+    adjs=(int*)malloc(sizeof(int)*n);
+    dfns=(int*)malloc(sizeof(int)*n);
+    lows=(int*)malloc(sizeof(int)*n);
+    isin=(int*)malloc(sizeof(int)*n);
+    stck=(int*)malloc(sizeof(int)*n);
+    sccs=(int*)malloc(sizeof(int)*n);
+    pool=(struct node*)malloc(sizeof(struct node)*e);
+    for(j=0;j<n;j++){
+        adjs[j]=-1;
+        dfns[j]=0;
+        lows[j]=0;
+        isin[j]=0;
+        sccs[j]=-1;
+    }
+}
+void  clean(void){
+    free(adjs);
+    free(dfns);
+    free(lows);
+    free(isin);
+    free(stck);
+    free(sccs);
+    free(pool);
+}
+void insert(int u,int v){
+    pool[p].v=v;
+    pool[p].next=adjs[u];
+    adjs[u]=p++;
+}
+void tarjan(int u){
+    int b; int v;
+
+    dfns[u]=++c;
+    lows[u]=  c;
+    stck[t++]=u;
+    isin[u]=  1;
+
+    b=adjs[u];
+    while(b!=-1){
+        v=pool[b].v;
+        if(dfns[v]==0){
+            tarjan(v);
+            if(lows[v]<lows[u]){lows[u]=lows[v];}
+        }
+        else if(isin[v]!=0){
+            if(dfns[v]<lows[u]){lows[u]=dfns[v];}
+        }
+        b=pool[b].next;
+    }
+    if(lows[u]==dfns[u]){
+        while(1){
+            v=stck[--t];
+            isin[v]=0;
+            sccs[v]=s;
+            if(v==u){break;}
+        }
+        s++;
+    }
+}
+```
+#### 2-SAT 역추적
+```C
+void backtrack(void){
+    int j;
+    for(j=1;j<=n;j++){
+        if(sccs[j]<sccs[j+n]){printf("1 ");}
+        else                 {printf("0 ");}
+    }
+}
 ```
 
 
