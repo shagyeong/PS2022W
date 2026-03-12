@@ -1,126 +1,123 @@
-// P5 2150: Strongly Connected Component(강결합컴포넌트)
+// P5 2150: Strongly Connected Component(SCC)
+// 정적간선풀 재채점
 #include<stdio.h>
 #include<stdlib.h>
 
-#define N 10001
-
-int d[N]; // dfn
-int l[N]; // low
-int i[N]; // isin: j번째 노드가 스택에 있는가
-int c; // clock
-
-int s[N];
-int t; // top of stack
-
 struct node{
-    int v; // value: 0 ~ N-1, 인접리스트 인덱스 겸용
-    struct node* next;
-};
-struct graph{
-    int n; // number of node
-    int s; // number of sccs
-    struct node* adjs[N];
-    struct scc*  sccs[N];
+    int v;
+    int next;
 };
 struct scc{
-    int n; // number of node
-    int* a; // array of node value
+    int  n; // number of node
+    int* a; // array of node number
 };
 
-void   init(struct graph* g,int n);
-void insert(struct graph* g,int u,int v);
-void tarjan(struct graph* g,int u);
-int compare_scc(const void* u,const void* v);
-int compare_int(const void* u,const void* v);
+int n; // number of node
+int e; // number of edge
+int p; // pool index
+int s; // number of scc
+int c; // clock
+int t; // top of stack
+int*         adjs;
+int*         dfns;
+int*         lows;
+int*         isin;
+int*         stck;
+struct node* pool;
+struct scc*  sccs;
+
+void   init(void);
+void  clean(void);
+void insert(int u,int v);
+void tarjan(int u);
+
+int asc_scc(const void* u,const void* v){return ((struct scc*)u)->a[0]-((struct scc*)v)->a[0];}
+int asc_int(const void* u,const void* v){return *((int*)u)-*((int*)v);}
 
 int main(void){
-    int j;
-    int k;
-    int n; int e; scanf("%d %d",&n,&e);
+    int j; int k;
+    scanf("%d %d",&n,&e);
     int u; int v;
-    struct graph g;
-    init(&g,n+1); // n+1: 1부터 시작하는 과제 환경
-    for(j=0;j<e;j++){scanf("%d %d",&u,&v);insert(&g,u,v);}
-
-    c= 0; // clock 초기화
-    t=-1; // top 포인터 초기화
-    for(j=1;j<=n;j++){d[j]=0;i[j]=0;}
-    for(j=1;j<=n;j++){if(d[j]==0){tarjan(&g,j);}}
-
-    // 출력조건: 정렬
-    for(j=0;j<g.s;j++){
-        qsort(&(g.sccs[j]->a[0]),g.sccs[j]->n,sizeof(int),compare_int);
-    }
-    qsort(&(g.sccs[0]),g.s,sizeof(struct scc*),compare_scc);
-
-    printf("%d\n",g.s);
-    for(j=0;j<g.s;j++){
-        for(k=0;k<g.sccs[j]->n;k++){
-            printf("%d ",g.sccs[j]->a[k]);
-        }
-        printf("-1\n");
-    }
-}
-
-void   init(struct graph* g,int n){
-    int j;
-    g->n=n;
-    g->s=0;
-    for(j=0;j<n;j++){
-        g->sccs[j]=NULL;
-        g->adjs[j]=(struct node*)malloc(sizeof(struct node));
-        g->adjs[j]->v   =j;
-        g->adjs[j]->next=NULL;
-    }
-}
-void insert(struct graph* g,int u,int v){
-    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
-    n->v=v;
-    n->next=g->adjs[u]->next;
-    g->adjs[u]->next=n;
-}
-void tarjan(struct graph* g,int u){
-    struct node* b;
-    struct scc* n; // new
-    int v;
-    int j; // tmp index
-    int k=0; // count
     
-    d[u]=++c;
-    l[u]=  c;
-    s[++t]=u; i[u]=1; // push
+    n+=1; init();  // 1-based
+    n-=1;
+    for(j=0;j< e;j++){scanf("%d %d",&u,&v); insert(u,v);}
+    for(j=1;j<=n;j++){if(dfns[j]==0){tarjan(j);}}
 
-    b=g->adjs[u];
-    while((b=b->next)!=NULL){
-        v=b->v;
-        if(d[v]==0){
-            tarjan(g,v);
-            if(l[v]<l[u]){l[u]=l[v];}
-        }
-        else if(i[v]!=0){
-            if(d[v]<l[u]){l[u]=d[v];}
-        }
+    for(j=0;j< s;j++){qsort(sccs[j].a,sccs[j].n,sizeof(int),asc_int);}
+    qsort(sccs,s,sizeof(struct scc),asc_scc);
+
+    printf("%d\n",s);
+    for(j=0;j< s;j++){for(k=0;k<sccs[j].n;k++){printf("%d ",sccs[j].a[k]);}printf("-1\n");}
+    clean();
+}
+
+void   init(void){
+    int j;
+    p=0;
+    s=0;
+    c=0;
+    t=0;
+    adjs=(int*)malloc(sizeof(int)*n);
+    dfns=(int*)malloc(sizeof(int)*n);
+    lows=(int*)malloc(sizeof(int)*n);
+    isin=(int*)malloc(sizeof(int)*n);
+    stck=(int*)malloc(sizeof(int)*n);
+    pool=(struct node*)malloc(sizeof(struct node)*e);
+    sccs=(struct scc*) malloc(sizeof(struct scc) *n);
+    for(j=0;j<n;j++){
+        adjs[j]=-1;
+        dfns[j]=0;
+        lows[j]=0;
+        isin[j]=0;
     }
-    if(l[u]==d[u]){
-        n=(struct scc*)malloc(sizeof(struct scc));
-        j=t; while(1){k++;if(s[j--]==u){break;}}
-        n->n=0;
-        n->a=(int*)malloc(sizeof(int)*k);
+}
+void  clean(void){
+    int j;
+    for(j=0;j<s;j++){free(sccs[j].a);}
+    free(adjs);
+    free(dfns);
+    free(lows);
+    free(isin);
+    free(stck);
+    free(pool);
+    free(sccs);
+}
+void insert(int u,int v){
+    pool[p].v=v;
+    pool[p].next=adjs[u];
+    adjs[u]=p++;
+}
+void tarjan(int u){
+    int j; int k=0;
+    int b; int v;
+
+    dfns[u]=++c;
+    lows[u]=  c;
+    stck[t++]=u;
+    isin[u]=  1;
+
+    b=adjs[u];
+    while(b!=-1){
+        v=pool[b].v;
+        if(dfns[v]==0){
+            tarjan(v);
+            if(lows[v]<lows[u]){lows[u]=lows[v];}
+        }
+        else if(isin[v]!=0){
+            if(dfns[v]<lows[u]){lows[u]=dfns[v];}
+        }
+        b=pool[b].next;
+    }
+    if(lows[u]==dfns[u]){
+        j=t; while(1){k++; if(stck[--j]==u){break;}}
+        sccs[s].n=0;
+        sccs[s].a=(int*)malloc(sizeof(int)*k);
         while(1){
-            v=s[t--]; i[v]=0; // pop
-            n->a[n->n++]=v;
+            v=stck[--t]; isin[v]=0;
+            sccs[s].a[sccs[s].n++]=v;
             if(v==u){break;}
         }
-        g->sccs[g->s++]=n;
+        s++;
     }
-}
-int compare_scc(const void* u,const void* v){
-    if((*((struct scc**)u))->a[0]<(*((struct scc**)v))->a[0]){return -1;}
-    if((*((struct scc**)u))->a[0]>(*((struct scc**)v))->a[0]){return 1;}
-    return 0;
-}
-int compare_int(const void* u,const void* v){
-    if((*((int*)u))<(*((int*)v))){return -1;}
-    if((*((int*)u))>(*((int*)v))){return 1;}
-    return 0;
 }
