@@ -325,3 +325,5 @@
 |4196 |<span style="background-color:#27e2a4">P4</span>|C|2026-03-13|도미노|SCC,DAG,위상정렬|
 |1506 |<span style="background-color:#27e2a4">P5</span>|C|2026-03-13|경찰서|SCC|
 |3648 |<span style="background-color:#27e2a4">P3</span>|C|2026-03-13|아이돌|SCC,2-SAT|
+|14426 |<span style="background-color:#435f7a">S1</span>|C|2026-03-13|접두사 찾기|트라이|
+|16934 |<span style="background-color:#ec9a00">G3</span>|C|2026-03-13|게임 닉네임|트라이,해시|
