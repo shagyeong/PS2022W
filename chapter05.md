@@ -1,7 +1,55 @@
 # 5장 문자열
-## 5.1 파싱
-### 5.1.1 기초 분리 및 변환
-#### 구분자 처리: strtok()
+## 5.1 문자 배열 조작
+### 5.1.1 str/mem 함수군
+#### 주요 str/mem 함수군
+```C
+#include<string.h>
+
+size_t strlen(const char* s);
+int    strcmp(const char* s1,const char* s2);
+char*  strcpy(char* dest,const char* src);
+char*  strcat(char* dest,const char* src);
+char*  strtok(char* str,const char* delim);
+
+void* memset(void* s,int c,size_t n);
+```
+#### strlen()
+```C
+int n; scanf("%d",&n);
+char* a=(char*)malloc(sizeof(char)*n);
+size_t l=strlen(a);
+```
+#### strcmp()
+음수 리턴: s1이 사전순으로 앞섬  
+0 리턴: 일치  
+양수 리턴: s2가 사전순으로 앞섬  
+```C
+// 사전순 정렬
+int compare(const void* u,const void* v){return strcmp(*((char**)u),*((char**)v));}
+```
+#### strcpy()
+```C
+int n; scanf("%d",&n);
+char* a=(char*)malloc(sizeof(char)*n);
+char* b=(char*)malloc(sizeof(char)*n);
+scanf("%s",a);
+strcpy(b,a);
+```
+#### strcat()
+```C
+int n; scanf("%d",&n);
+char* a=(char*)malloc(sizeof(char)*n);
+char* b=(char*)malloc(sizeof(char)*n);
+scanf("%s",a);
+scanf("%s",b);
+strcat(b,a);
+```
+```
+$ ./test
+abc def # a, b
+defabc  # print b
+```
+#### strtok()
 ```C
 #include<stdio.h>
 #include<string.h>
@@ -40,131 +88,85 @@ Kim
 Lee
 Park
 ```
-#### 공백없는 격자그래프
+#### memset()
 ```C
-#include<stdio.h>
-#include<stdlib.h>
-
-int main(void){
-    int j; int k;
-    int r; int c; scanf("%d %d",&r,&c);
-    int** g=(int**)malloc(sizeof(int*)*r);
-    int*  d=(int*) malloc(sizeof(int) *r*c);
-    for(j=0;j<r;j++){g[j]=d+(c*j);}
-    for(j=0;j<r;j++){for(k=0;k<c;k++){scanf("%1d",&g[j][k]);}}
-    for(j=0;j<r;j++){for(k=0;k<c;k++){printf("%d ",g[j][k]);}printf("\n");}
-    free(d);
-    free(g);
-}
-```
-```
-$ ./test
-2 3
-010
-111
-0 1 0 
-1 1 1 
+int n; scanf("%d",&n);
+char* a=(char*)malloc(sizeof(char)*n);
+memset(a,0b00000000,sizeof(char)*n);
 ```
 
 
 
-## 5.2 문자열 분석
-### 5.2.3 접두사 조작
-#### 트라이: 소문자 알파벳 환경
+## 5.2 접두사 조작
+### 5.2.1 트라이
+#### 접두사 탐색
 ```C
 #include<stdio.h>
 #include<stdlib.h>
 
 #define N 26 // 소문자 알파벳 환경
+#define L 10001 // 문자열 최대 길이
 
-struct trie{
-    struct node* r;
-};
-struct node{
-    struct node* c[N];
-    int          f; // flag: isend
-};
+struct trie{struct node* r;};
+struct node{struct node* c[N];};
 
 void   init(struct trie* t);
-void insert(struct trie* t,char* s); // trie, character array
+void insert(struct trie* t,char* s);
 int  search(struct trie* t,char* s);
 
 int main(void){
+    int j;
+    int n; int m; scanf("%d %d",&n,&m);
+    char s[L];
     struct trie t;
     init(&t);
-    char s[10]="abcdef";
-    insert(&t,s);
-    printf("%s: %d\n",s,    search(&t,s));
-    printf("%s: %d\n","abc",search(&t,"abc"));
+    for(j=0;j<n;j++){scanf("%s",s);insert(&t,s);}
+    for(j=0;j<m;j++){scanf("%s",s);printf("%d ",search(&t,s));}
 }
 
 void   init(struct trie* t){
     int j;
     t->r=(struct node*)malloc(sizeof(struct node));
-    t->r->f=0;
     for(j=0;j<N;j++){t->r->c[j]=NULL;}
 }
 void insert(struct trie* t,char* s){
-    int j=0; // loop variable
+    int j; // loop variable
     int i; // index
     struct node* d=t->r;
     for(j=0;s[j]!='\0';j++){
-        i=s[j]-'a'; // 97~122 -> 0~25
+        i=s[j]-'a';
         if(d->c[i]==NULL){
             d->c[i]=(struct node*)malloc(sizeof(struct node));
-            d->c[i]->f=0; // is not end
             for(int x=0;x<N;x++){d->c[i]->c[x]=NULL;}
         }
         d=d->c[i];
     }
-    d->f=1;
 }
 int  search(struct trie* t,char* s){
     int j; // loop variable
     int i; // index
     struct node* d=t->r;
     for(j=0;s[j]!='\0';j++){
-        i=s[j]-'a'; // 97~122 -> 0~25
-        if(d->c[i]==NULL){return 0;}
+        i=s[j]-'a';
+        if(d->c[i]==NULL){return j;}
         d=d->c[i];
     }
-    return d->f;
+    return j;
 }
 ```
 ```
 $ ./test
-abcdef: 1
-abc: 0
+2 5 # number of node, query
+abcd efgh
+abcd ab efgh e x
+4 2 4 1 0 
 ```
-#### 접두사 탐색
-```C
-int  search(struct trie* t,char* s){
-    int j; // loop variable
-    int i; // index
-    struct node* d=t->r;
-    for(j=0;s[j]!='\0';j++){
-        i=s[j]-'a'; // 97~122 -> 0~25
-        if(d->c[i]==NULL){return 0;}
-        d=d->c[i];
-        if(d->f==1){return 1;}
-    }
-    return 1; // 루프 break 없음: 접두사
-}
-```
-```
-$ ./test
-abcdef: 1
-abc: 1
-```
-### 5.2.4 접미사 조작
-#### strcmp()
-```C
-#include<string.h>
 
-int strcmp(const char* s1,const char* s2);
-```
-사전순 내림차순  
-#### 접미사 배열: 사전순 정렬
+
+
+## 5.3 접미사 조작
+### 5.3.1 접미사 배열
+#### 이차로그시간 접미사 배열: 정렬
 ```C
 #include<stdio.h>
 #include<stdlib.h>
@@ -209,4 +211,4 @@ yeong
 
 
 
-<!-- ## 5.3 패턴 매칭 -->
+<!-- ## 5.4 패턴 매칭 -->
