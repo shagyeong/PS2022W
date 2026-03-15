@@ -1265,6 +1265,380 @@ void backtrack(void){
     }
 }
 ```
+### 4.3.4 연결성
+#### 단절점 입력 예제
+<img src="./static/PS434-articulationpoint.png">
+
+#### 단절점
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    int v;
+    int next;
+};
+struct graph{
+    int n; // number of node
+    int e; // number of edge
+    int a; // number of articular point
+    int c; // clock
+    int p; // pool index
+    int* adjs;
+    int* vist;
+    int* dist;
+    int* arti;
+    struct node* pool;
+};
+
+void   init(struct graph* g,int n,int e);
+void  clean(struct graph* g);
+void insert(struct graph* g,int u,int v);
+void    dfs(struct graph* g,int u,int f); // f: isroot flag
+
+int main(void){
+    int j;
+    int n; int e; scanf("%d %d",&n,&e);
+    int u; int v;
+    struct graph g;
+    init(&g,n+1,2*e); // 1-based, undirected
+    for(j=0;j<e;j++){
+        scanf("%d %d",&u,&v);
+        insert(&g,u,v);
+        insert(&g,v,u);
+    }
+    for(j=1;j<=n;j++){if(g.vist[j]==0){dfs(&g,j,1);}}
+    printf("%d\n",g.a);
+    for(j=1;j<=n;j++){if(g.arti[j]==1){printf("%d ",j);}}
+    clean(&g);
+}
+
+void   init(struct graph* g,int n,int e){
+    int j;
+    g->n=n;
+    g->e=e;
+    g->a=0;
+    g->c=0;
+    g->p=0;
+    g->adjs=(int*)malloc(sizeof(int)*n);
+    g->vist=(int*)malloc(sizeof(int)*n);
+    g->dist=(int*)malloc(sizeof(int)*n);
+    g->arti=(int*)malloc(sizeof(int)*n);
+    g->pool=(struct node*)malloc(sizeof(struct node)*e);
+    for(j=0;j<n;j++){
+        g->adjs[j]=-1;
+        g->vist[j]=0;
+        g->dist[j]=e+1; // INF: unweighted graph
+        g->arti[j]=0;
+    }
+}
+void  clean(struct graph* g){
+    free(g->adjs);
+    free(g->vist);
+    free(g->dist);
+    free(g->arti);
+    free(g->pool);
+}
+void insert(struct graph* g,int u,int v){
+    g->pool[g->p].v=v;;
+    g->pool[g->p].next=g->adjs[u];
+    g->adjs[u]=g->p++;
+}
+void    dfs(struct graph* g,int u,int f){
+    int k=0; // number of child node
+    int d=g->adjs[u];
+    int v;
+    g->vist[u]=++g->c;
+    g->dist[u]=  g->c;
+    while(d!=-1){
+        v=g->pool[d].v;
+        if(g->vist[v]==0){
+            k+=1;
+            dfs(g,v,0);
+            if(g->dist[u]>g->dist[v]){g->dist[u]=g->dist[v];}
+            if((f==0)&&(g->dist[v]>=g->vist[u])&&(g->arti[u]==0)){
+                g->arti[u]=1;
+                g->a+=1;
+            }
+        }
+        else{if(g->dist[u]>g->vist[v]){g->dist[u]=g->vist[v];}}
+        d=g->pool[d].next;
+    }
+    if((f==1)&&(k>=2)&&(g->arti[u]==0)){
+        g->arti[u]=1;
+        g->a+=1;
+    }
+}
+```
+```
+$ ./test > test.txt
+7 7
+1 4
+4 5
+5 1
+1 6
+6 7
+2 7
+7 3
+
+$ cat test.txt
+3
+1 6 7 
+```
+#### 단절선 입력 예제
+<img src="./static/PS434-bridge.png">
+
+#### 단절선
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    int v;
+    int next;
+};
+struct edge{
+    int u;
+    int v;
+};
+struct graph{
+    int n; // number of node
+    int e; // number of edge
+    int a; // number of articular point
+    int c; // clock
+    int p; // pool index
+    int* adjs;
+    int* vist;
+    int* dist;
+    struct edge* arti;
+    struct node* pool;
+};
+
+void   init(struct graph* g,int n,int e);
+void  clean(struct graph* g);
+void insert(struct graph* g,int u,int v);
+void    dfs(struct graph* g,int u,int p); // p: parent
+
+int main(void){
+    int j;
+    int n; int e; scanf("%d %d",&n,&e);
+    int u; int v;
+    struct graph g;
+    init(&g,n+1,2*e); // 1-based, undirected
+    for(j=0;j<e;j++){
+        scanf("%d %d",&u,&v);
+        insert(&g,u,v);
+        insert(&g,v,u);
+    }
+    for(j=1;j<=n;j++){if(g.vist[j]==0){dfs(&g,j,0);}}
+    printf("%d\n",g.a);
+    for(j=0;j<g.a;j++){printf("%d %d\n",g.arti[j].u,g.arti[j].v);}
+    clean(&g);
+}
+
+void   init(struct graph* g,int n,int e){
+    int j;
+    g->n=n;
+    g->e=e;
+    g->a=0;
+    g->c=0;
+    g->p=0;
+    g->adjs=(int*)malloc(sizeof(int)*n);
+    g->vist=(int*)malloc(sizeof(int)*n);
+    g->dist=(int*)malloc(sizeof(int)*n);
+    g->arti=(struct edge*)malloc(sizeof(struct edge)*n);
+    g->pool=(struct node*)malloc(sizeof(struct node)*e);
+    for(j=0;j<n;j++){
+        g->adjs[j]=-1;
+        g->vist[j]=0;
+        g->dist[j]=e+1; // INF: unweighted graph
+    }
+}
+void  clean(struct graph* g){
+    free(g->adjs);
+    free(g->vist);
+    free(g->dist);
+    free(g->arti);
+    free(g->pool);
+}
+void insert(struct graph* g,int u,int v){
+    g->pool[g->p].v=v;;
+    g->pool[g->p].next=g->adjs[u];
+    g->adjs[u]=g->p++;
+}
+void    dfs(struct graph* g,int u,int p){
+    int d=g->adjs[u];
+    int v;
+    g->vist[u]=++g->c;
+    g->dist[u]=  g->c;
+    while(d!=-1){
+        v=g->pool[d].v;
+        if(v==p){d=g->pool[d].next; continue;}
+        if(g->vist[v]==0){
+            dfs(g,v,u);
+            if(g->dist[v]<g->dist[u]){g->dist[u]=g->dist[v];}
+            if(g->dist[v]>g->vist[u]){
+                g->arti[g->a  ].u=(u<v)?u:v;
+                g->arti[g->a++].v=(u<v)?v:u;
+            }
+        }
+        else{if(g->dist[u]>g->vist[v]){g->dist[u]=g->vist[v];}}
+        d=g->pool[d].next;
+    }
+}
+```
+```
+$ ./test > test.txt
+7 8
+1 4
+4 5
+5 1
+1 6
+6 7
+2 7
+7 3
+2 3
+
+$ cat test.txt
+2
+6 7
+1 6
+```
+#### 선인장 판정 입력 예제
+|cactus|not cactus|
+|---|---|
+|<img src="./static/PS434-cactus.png">|<img src="./static/PS434-notcactus.png">|
+#### 선인장
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    int v;
+    int next;
+};
+struct graph{
+    int n; // number of node
+    int e; // number of edge
+    int a; // number of articular point
+    int c; // clock
+    int f; // flag: iscactus
+    int p; // pool index
+    int* adjs;
+    int* vist;
+    int* dist;
+    int* arti;
+    int* cycl;
+    struct node* pool;
+};
+
+void   init(struct graph* g,int n,int e);
+void  clean(struct graph* g);
+void insert(struct graph* g,int u,int v);
+void    dfs(struct graph* g,int u,int p); // p: parent
+
+int main(void){
+    int j;
+    int n; int e; scanf("%d %d",&n,&e);
+    int u; int v;
+    struct graph g;
+    init(&g,n+1,2*e); // 1-based, undirected
+    for(j=0;j<e;j++){
+        scanf("%d %d",&u,&v);
+        insert(&g,u,v);
+        insert(&g,v,u);
+    }
+    for(j=1;j<=n;j++){if(g.vist[j]==0){dfs(&g,j,0);}}
+    if(g.f==1){printf("Cactus");}
+    else      {printf("Not cactus");}
+    clean(&g);
+}
+
+void   init(struct graph* g,int n,int e){
+    int j;
+    g->n=n;
+    g->e=e;
+    g->a=0;
+    g->c=0;
+    g->f=1;
+    g->p=0;
+    g->adjs=(int*)malloc(sizeof(int)*n);
+    g->vist=(int*)malloc(sizeof(int)*n);
+    g->dist=(int*)malloc(sizeof(int)*n);
+    g->arti=(int*)malloc(sizeof(int)*n);
+    g->cycl=(int*)malloc(sizeof(int)*n);
+    g->pool=(struct node*)malloc(sizeof(struct node)*e);
+    for(j=0;j<n;j++){
+        g->adjs[j]=-1;
+        g->vist[j]=0;
+        g->dist[j]=e+1; // INF: unweighted graph
+        g->arti[j]=0;
+        g->cycl[j]=0;
+    }
+}
+void  clean(struct graph* g){
+    free(g->adjs);
+    free(g->vist);
+    free(g->dist);
+    free(g->arti);
+    free(g->cycl);
+    free(g->pool);
+}
+void insert(struct graph* g,int u,int v){
+    g->pool[g->p].v=v;
+    g->pool[g->p].next=g->adjs[u];
+    g->adjs[u]=g->p++;
+}
+void    dfs(struct graph* g,int u,int p){
+    int d=g->adjs[u];
+    int v;
+    g->vist[u]=++g->c;
+    g->dist[u]=  g->c;
+    while(d!=-1){
+        v=g->pool[d].v;
+        if(v==p){d=g->pool[d].next; continue;}
+        if(g->vist[v]==0){
+            dfs(g,v,u);
+            if(g->cycl[v]>0){
+                if(g->arti[u]>0){g->f=0;}
+                g->arti[u]=1;
+            }
+            g->dist[u]=((g->dist[u])<(g->dist[v]))?(g->dist[u]):(g->dist[v]);
+            g->cycl[u]+=g->cycl[v];
+        }
+        else if(g->vist[v]<g->vist[u]){
+            if(g->arti[u]>0){g->f=0;}
+            g->arti[u]=1;
+            g->dist[u]=((g->dist[u])<(g->vist[v]))?g->dist[u]:g->vist[v];
+            g->cycl[u]++;
+            g->cycl[v]--;
+        }
+        d=g->pool[d].next;
+    }
+    if(g->cycl[u]>=2){g->f=0;}
+}
+```
+```
+$ ./test >> test.txt
+4 4
+1 2
+2 3
+3 1
+3 4
+
+$ ./test >> test.txt
+5 6
+1 2
+2 3
+3 1
+3 4
+4 5
+5 3
+
+$ cat test.txt
+Cactus
+Not cactus
+```
 
 
 
