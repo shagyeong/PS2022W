@@ -1,83 +1,97 @@
-// P4 11266: 단절점(단절점,BFS)
+// P4 11266: 단절점(단절점)
+// 간선풀 재채점
 #include<stdio.h>
 #include<stdlib.h>
 
-#define N 10001
-int c; // clock
-
 struct node{
     int v;
-    struct node* next;
+    int next;
 };
 struct graph{
     int n; // number of node
-    int a; // number of articular
-    struct node* adjs[N];
-    int          arti[N]; // articualr points: 0/1 toggle
-    int          vist[N];
-    int          dist[N];
+    int e; // number of edge
+    int a; // number of articular point
+    int c; // clock
+    int p; // pool index
+    int* adjs;
+    int* arti;
+    int* vist;
+    int* dist;
+    struct node* pool;
 };
 
-void   init(struct graph* g,int n);
+void   init(struct graph* g,int n,int e);
+void  clean(struct graph* g);
 void insert(struct graph* g,int u,int v);
-void    dfs(struct graph* g,int u,int f); // f: flag(isroot)
+void    dfs(struct graph* g,int u,int f); // f: isroot flag
 
 int main(void){
     int j;
     int n; int e; scanf("%d %d",&n,&e);
     int u; int v;
     struct graph g;
-    init(&g,n+1); // n_1: 1부터 시작하는 과제 환경
+    init(&g,n+1,2*e); // 1-based, undirected
     for(j=0;j<e;j++){
         scanf("%d %d",&u,&v);
         insert(&g,u,v);
         insert(&g,v,u);
     }
-
-    c=0; // clock 초기화
     for(j=1;j<=n;j++){if(g.vist[j]==0){dfs(&g,j,1);}}
-
     printf("%d\n",g.a);
     for(j=1;j<=n;j++){if(g.arti[j]==1){printf("%d ",j);}}
+    clean(&g);
 }
 
-void   init(struct graph* g,int n){
+void   init(struct graph* g,int n,int e){
     int j;
     g->n=n;
+    g->e=e;
     g->a=0;
+    g->c=0;
+    g->p=0;
+    g->adjs=(int*)malloc(sizeof(int)*n);
+    g->arti=(int*)malloc(sizeof(int)*n);
+    g->vist=(int*)malloc(sizeof(int)*n);
+    g->dist=(int*)malloc(sizeof(int)*n);
+    g->pool=(struct node*)malloc(sizeof(struct node)*e);
     for(j=0;j<n;j++){
+        g->adjs[j]=-1;
         g->arti[j]=0;
         g->vist[j]=0;
-        // g->dist[j]=INF;
-        g->adjs[j]=(struct node*)malloc(sizeof(struct node));
-        g->adjs[j]->v   =j;
-        g->adjs[j]->next=NULL;
-    }   
+        g->dist[j]=e+1; // INF: unweighted graph
+    }
+}
+void  clean(struct graph* g){
+    free(g->adjs);
+    free(g->arti);
+    free(g->vist);
+    free(g->dist);
+    free(g->pool);
 }
 void insert(struct graph* g,int u,int v){
-    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
-    n->v=v;
-    n->next=g->adjs[u]->next;
-    g->adjs[u]->next=n;
+    g->pool[g->p].v=v;;
+    g->pool[g->p].next=g->adjs[u];
+    g->adjs[u]=g->p++;
 }
-void dfs(struct graph* g,int u,int f){
-    int v;   // node number
+void    dfs(struct graph* g,int u,int f){
     int k=0; // number of child node
-    struct node* b=g->adjs[u];
-    g->vist[u]=++c;
-    g->dist[u]=  c;
-    while((b=b->next)!=NULL){
-        v=b->v;
+    int d=g->adjs[u];
+    int v;
+    g->vist[u]=++g->c;
+    g->dist[u]=  g->c;
+    while(d!=-1){
+        v=g->pool[d].v;
         if(g->vist[v]==0){
-            k++;
+            k+=1;
             dfs(g,v,0);
-            g->dist[u]=((g->dist[u])<(g->dist[v]))?(g->dist[u]):(g->dist[v]);
+            if(g->dist[u]>g->dist[v]){g->dist[u]=g->dist[v];}
             if((f==0)&&(g->dist[v]>=g->vist[u])&&(g->arti[u]==0)){
                 g->arti[u]=1;
                 g->a+=1;
             }
         }
-        else{g->dist[u]=((g->dist[u])<(g->vist[v]))?g->dist[u]:g->vist[v];}
+        else{if(g->dist[u]>g->vist[v]){g->dist[u]=g->vist[v];}}
+        d=g->pool[d].next;
     }
     if((f==1)&&(k>=2)&&(g->arti[u]==0)){
         g->arti[u]=1;
