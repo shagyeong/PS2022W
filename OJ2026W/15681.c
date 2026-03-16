@@ -1,71 +1,82 @@
-// G5 15681: 트리와 쿼리(재귀,트리DP,DFS)
+// G5 15681: 트리와 쿼리(트리DP,DFS)
+// 간선풀 재채점
 #include<stdio.h>
 #include<stdlib.h>
 
-#define N 100001
-#define NOTVIST 0
-#define PROCESS 1
-#define ALLDONE 2
+#define NO 0
+#define OK 1
 
 struct node{
-    int v; // value: 0 ~ N-1, 인접리스트 인덱스 겸용
-    struct node* next;
+    int v;
+    int next;
 };
 struct graph{
-    int n; // number of node
-    struct node* adjs[N];
-    int          vist[N];
-    int          subs[N]; // dp table: number of nodes(subtree)
+    int n;
+    int e;
+    int p;
+    int* adjs;
+    int* vist;
+    int* subs;
+    struct node* pool;
 };
 
-struct graph g;
-
-int     dfs(int s);
-void   init(int n);
-void insert(int u,int v); // u->v
+int     dfs(struct graph* g,int s);
+void   init(struct graph* g,int n,int e);
+void  clean(struct graph* g);
+void insert(struct graph* g,int u,int v);
 
 int main(void){
     int j;
     int n; int r; int q; scanf("%d %d %d",&n,&r,&q);
     int u; int v;
-    init(n+1); // n+1: 1부터 시작하는 과제 환경
+    struct graph g;
+    init(&g,n+1,2*n-2); // 1-based, tree
     for(j=0;j<n-1;j++){
         scanf("%d %d",&u,&v);
-        insert(u,v);
-        insert(v,u);
+        insert(&g,u,v);
+        insert(&g,v,u);
     }
-    dfs(r);
+    dfs(&g,r);
     for(j=0;j<q;j++){
         scanf("%d",&u);
         printf("%d\n",g.subs[u]);
     }
+    clean(&g);
 }
 
-int  dfs(int s){
-    struct node* b;
-    g.subs[s]=1; // memo
-    b=g.adjs[s];
-    g.vist[s]=PROCESS;
-    while((b=b->next)!=NULL){if(g.vist[b->v]==NOTVIST){
-        g.subs[s]+=dfs(b->v);
-    }}
-    g.vist[s]=ALLDONE;
-    return g.subs[s];
+int     dfs(struct graph* g,int s){
+    int d=g->adjs[s];
+    g->subs[s]=1;
+    g->vist[s]=OK;
+    while(d!=-1){
+        if(g->vist[g->pool[d].v]==NO){g->subs[s]+=dfs(g,g->pool[d].v);}
+        d=g->pool[d].next;
+    }
+    return g->subs[s];
 }
-void   init(int n){
+void   init(struct graph* g,int n,int e){
     int j;
-    g.n=n;
+    g->n=n;
+    g->e=e;
+    g->p=0;
+    g->adjs=(int*)malloc(sizeof(int)*n);
+    g->vist=(int*)malloc(sizeof(int)*n);
+    g->subs=(int*)malloc(sizeof(int)*n);
+    g->pool=(struct node*)malloc(sizeof(struct node)*e);
     for(j=0;j<n;j++){
-        g.adjs[j]=(struct node*)malloc(sizeof(struct node));
-        g.adjs[j]->v   =j;
-        g.adjs[j]->next=NULL;
-        g.vist[j]      =NOTVIST;
-        g.subs[j]      =0;
+        g->adjs[j]=-1;
+        g->vist[j]=NO;
+        g->subs[j]=0;
     }
 }
-void insert(int u,int v){
-    struct node* n=(struct node*)malloc(sizeof(struct node)); // new
-    n->v=v;
-    n->next=g.adjs[u]->next;
-    g.adjs[u]->next=n;
+void  clean(struct graph* g){
+    free(g->adjs);
+    free(g->vist);
+    free(g->subs);
+    free(g->pool);
+}
+void insert(struct graph* g,int u,int v){
+    g->pool[g->p].v=v;
+    g->pool[g->p].next=g->adjs[u];
+    g->adjs[u]=g->p++;
 }

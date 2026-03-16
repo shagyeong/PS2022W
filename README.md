@@ -330,3 +330,5 @@
 |16934 |<span style="background-color:#ec9a00">G3</span>|C|2026-03-13|게임 닉네임|트라이,해시|
 |29441 |<span style="background-color:#27e2a4">P3</span>|C|2026-03-14|XOR|트라이|
 |13505 |<span style="background-color:#27e2a4">P3</span>|C|2026-03-14|두 수 XOR|트라이|
+|33909 |<span style="background-color:#ad5600">B3</span>|C|2026-03-16|알파벳 블록||
+|33910 |<span style="background-color:#435f7a">S5</span>|C|2026-03-16|합의 최소|그리디|
