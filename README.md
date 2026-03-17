@@ -336,3 +336,5 @@
 |2213 |<span style="background-color:#ec9a00">G1</span>|C|2026-03-17|트리의 독립집합|트리DP,역추적|
 |15647|<span style="background-color:#27e2a4">P5</span>|C|2026-03-17|엠마도 바리스타|트리DP,리루팅|
 |33912|<span style="background-color:#435f7a">S2</span>|C|2026-03-17|N거리 건너기||
+|2098 |<span style="background-color:#ec9a00">G1</span>|C|2026-03-17|외판원 순회|TSP,비트필드DP|
+|1648 |<span style="background-color:#27e2a4">P3</span>|C|2026-03-17|격자판 채우기|비트필드DP|
