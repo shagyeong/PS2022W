@@ -469,46 +469,50 @@ $ ./test
 #### 0/1
 ```C
 #include<stdio.h>
+#include<stdlib.h>
 
-int knapsack(int* w,int* v,int n,int m);
+int* w;
+int* v;
+int** dp;
+int* _dp;
 
 int main(void){
-    int n=5; // 물건 개수
-    int m=7; // 최대 무게
-    int w[6]={0,4,6,4,3,5};
-    int v[6]={0,7,13,8,6,12};
-    printf("%d",knapsack(&w[0],&v[0],n,m));
-}
-
-int knapsack(int* w,int* v,int n,int m){
-    int j; int k; // loop variable
-    int t[++n][++m];
-    printf("weight\tvalue\n");
-    for(j=0;j<n;j++){
-        printf("%d\t%d\t",w[j],v[j]);
-        for(k=0;k<m;k++){
-            if(j==0||k==0){t[j][k]=0;} // 0행 및 0열 초기화
-            else if(w[j]<=k){          // 물건이 배낭 용량 이하인 경우
-                if((t[j-1][k])>(v[j]+t[j-1][k-w[j]])){t[j][k]=t[j-1][k];}
-                else                                 {t[j][k]=v[j]+t[j-1][k-w[j]];}
-            } 
-            else                                     {t[j][k]=t[j-1][k];}
-            printf("%d ", t[j][k]);
-        }
-        printf("\n");
-    }
-    return t[n-1][m-1];
+    int j; int k=0;
+    int n; int m; scanf("%d %d",&n,&m);
+    w=(int*)malloc(sizeof(int)*(n+1)); w[0]=0;
+    v=(int*)malloc(sizeof(int)*(n+1)); v[0]=0;
+    dp=(int**)malloc(sizeof(int*)*(n+1));
+    _dp=(int*)malloc(sizeof(int) *(n+1)*(m+1));
+    for(j=1;j<=n;j++){scanf("%d %d",&w[j],&v[j]);}
+    for(j=0;j<=n;j++){dp[j]=_dp+k; k+=(m+1);}
+    for(j=0;j<=n;j++){dp[j][0]=0;}
+    for(j=0;j<=m;j++){dp[0][j]=0;}
+    for(j=1;j<=n;j++){for(k=0;k<=m;k++){
+        if(w[j]>k){dp[j][k]=dp[j-1][k];}
+        else      {dp[j][k]=((dp[j-1][k])>(dp[j-1][k-w[j]]+v[j]))?(dp[j-1][k]):(dp[j-1][k-w[j]]+v[j]);}
+    }}
+    printf("%d",dp[n][m]);
+    free(w);
+    free(v);
+    free(_dp);
+    free(dp);
 }
 ```
+입력 예제  
+|weight|value|0|1|2|3|4|5|6|7|
+|---|---|---|---|---|---|---|---|---|---|
+|0| 0|0|0|0|0|0|0|0|0|
+|6|13|0|0|0|0|0|0|13|13|
+|4| 8|0|0|0|0|8|8|13|13|
+|3| 6|0|0|0|6|8|8|13|**14**|
+|5|12|0|0|0|6|8|12|13|14|
 ```
 $ ./test
-weight  value
-0       0       0 0 0 0 0 0 0 0 
-4       7       0 0 0 0 7 7 7 7 
-6       13      0 0 0 0 7 7 13 13 
-4       8       0 0 0 0 8 8 13 13 
-3       6       0 0 0 6 8 8 13 14 
-5       12      0 0 0 6 8 12 13 14 
+4 7
+6 13
+4 8
+3 6
+5 12
 14
 ```
 
