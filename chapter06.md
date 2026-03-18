@@ -445,6 +445,49 @@ $ ./test
 100
 40
 ```
+### 6.1.4 모듈로 곱셈 역원
+#### 모듈로 곱셈 역원
+$\mod(n\times i,d)\equiv 1$  
+$n$: 피제수  
+$d$: 제수  
+$i$: 모듈로 곱셈 역원  
+$\gcd(n,d)=1$(서로소)일 때 역원이 존재한다  
+#### 예제: 모듈로 곱셈 역원
+$\mod(2\times4,7)\equiv1$  
+$\mod((100\div2),7)\equiv\mod(100\times4,7)$  
+#### 페르마 소정리
+제수$d$가 소수인 경우만 사용 가능  
+$i=\mod(n^{d-2},d)$  
+분할정복거듭제곱 등으로 최적화 가능  
+```C
+int inverse(int n,int d){
+    int j;
+    int i=1; // inverse
+    for(j=0;j<d-2;j++){
+        i*=(n%d);
+        i%=d;
+    }
+    return i;
+}
+```
+#### 확장 유클리드 호제법
+```C
+int inverse(int n,int d){
+    int a=d;
+    int b=n;
+    int h=0; // 이전 단계
+    int i=1;
+    int t;
+    while(a%b!=0){
+        t=h-(a/b)*i;
+        h=i;
+        i=t;
+        t=a; a=b; b=t%b; // 유클리드 호제법
+    }
+    if(i<0){i+=d;}
+    return i;
+}
+```
 
 
 
