@@ -1,5 +1,4 @@
-// G5 12865: 평범한 배낭(DP, knapsack)
-// 1-based 재채점
+// S2 1535: 안녕(DP,배낭)
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -10,12 +9,14 @@ int* _dp;
 
 int main(void){
     int j; int k=0;
-    int n; int m; scanf("%d %d",&n,&m);
-    w=(int*)malloc(sizeof(int)*(n+1)); w[0]=0;
-    v=(int*)malloc(sizeof(int)*(n+1)); v[0]=0;
+    int n; scanf("%d",&n);
+    int m=99; // 100-1
+    w=(int*)malloc(sizeof(int)*(n+1));
+    v=(int*)malloc(sizeof(int)*(n+1));
     dp=(int**)malloc(sizeof(int*)*(n+1));
     _dp=(int*)malloc(sizeof(int) *(n+1)*(m+1));
-    for(j=1;j<=n;j++){scanf("%d %d",&w[j],&v[j]);}
+    w[0]=0; for(j=1;j<=n;j++){scanf("%d",&w[j]);}
+    v[0]=0; for(j=1;j<=n;j++){scanf("%d",&v[j]);}
     for(j=0;j<=n;j++){dp[j]=_dp+k; k+=(m+1);}
     for(j=0;j<=n;j++){dp[j][0]=0;}
     for(j=0;j<=m;j++){dp[0][j]=0;}

@@ -339,3 +339,15 @@
 |2098 |<span style="background-color:#ec9a00">G1</span>|C|2026-03-17|외판원 순회|TSP,비트필드DP|
 |1648 |<span style="background-color:#27e2a4">P3</span>|C|2026-03-17|격자판 채우기|비트필드DP|
 |1693 |<span style="background-color:#27e2a4">P2</span>|C|2026-03-17|트리 색칠하기|트리DP|
+|1535 |<span style="background-color:#435f7a">S2</span>|C|2026-03-18|안녕|DP,배낭|
+|2337 |<span style="background-color:#27e2a4">P3</span>|C|2026-03-18|트리 자르기|트리DP|
+|1772 |<span style="background-color:#27e2a4">P3</span>|C|2026-03-18|정원 정리|트리DP|
+|14267|<span style="background-color:#ec9a00">G4</span>|C|2026-03-18|회사 문화 1|트리DP|
+|33911|<span style="background-color:#435f7a">S3</span>|C|2026-03-18|특별상 눈치게임|브루트포스|
+|33913|<span style="background-color:#435f7a">S1</span>|C|2026-03-18|even하게 익은 SCON|조합론,분할정복거듭제곱|
+|33915|<span style="background-color:#ec9a00">G5</span>|C|2026-03-18|a=b xor c|조합론,DP,분할정복거듭제곱|
+|2941 |<span style="background-color:#435f7a">S5</span>|C|2026-03-18|크로아티아 알파벳|구현,문자열|
+|6930 |<span style="background-color:#ad5600">B2</span>|C|2026-03-19|Mod Inverse|모듈로곱셈역원|
+|15995|<span style="background-color:#ad5600">B2</span>|C|2026-03-19|잉여역수 구하기|모듈로곱셈역원|
+|11401|<span style="background-color:#ec9a00">G1</span>|C|2026-03-19|이항 계수 3|모듈로곱셈역원,페르마소정리,분할정복거듭제곱|
+|13977|<span style="background-color:#27e2a4">P5</span>|C|2026-03-19|이항 계수와 쿼리|모듈로곱셈역원,페르마소정리,분할정복거듭제곱|
