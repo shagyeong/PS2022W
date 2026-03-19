@@ -1,5 +1,4 @@
-// P5 11438: LCA 2(희소배열,LCA,트리DP)
-// 간선풀 재채점
+// G3 11437: LCA(희소배열,LCA,트리DP)
 #include<stdio.h>
 #include<stdlib.h>
 

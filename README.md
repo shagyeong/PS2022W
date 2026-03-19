@@ -351,3 +351,16 @@
 |15995|<span style="background-color:#ad5600">B2</span>|C|2026-03-19|잉여역수 구하기|모듈로곱셈역원|
 |11401|<span style="background-color:#ec9a00">G1</span>|C|2026-03-19|이항 계수 3|모듈로곱셈역원,페르마소정리,분할정복거듭제곱|
 |13977|<span style="background-color:#27e2a4">P5</span>|C|2026-03-19|이항 계수와 쿼리|모듈로곱셈역원,페르마소정리,분할정복거듭제곱|
+|1620 |<span style="background-color:#435f7a">S4</span>|C|2026-03-19|포켓몬마스터|해시|
+|2606 |<span style="background-color:#435f7a">S3</span>|C|2026-03-19|바이러스|DFS|
+|11725|<span style="background-color:#435f7a">S2</span>|C|2026-03-19|트리의 부모 찾기|DFS|
+|11660|<span style="background-color:#435f7a">S1</span>|C|2026-03-19|구간 합 구하기 5|DP,누적합|
+|11437|<span style="background-color:#ec9a00">G3</span>|C|2026-03-19|LCA|희소배열,LCA,트리DP|
+|13511|<span style="background-color:#27e2a4">P3</span>|C|2026-03-19|트리와 쿼리|희소배열,LCA|
+|11659|<span style="background-color:#435f7a">S3</span>|C|2026-03-19|구간 합 구하기 4|누적합|
+|10809|<span style="background-color:#ad5600">B2</span>|C|2026-03-20|알파벳 찾기|문자열|
+|2920 |<span style="background-color:#ad5600">B2</span>|C|2026-03-20|음계||
+|10250|<span style="background-color:#ad5600">B3</span>|C|2026-03-20|ACM 호텔||
+|31403|<span style="background-color:#ad5600">B4</span>|C|2026-03-20|A+B-C||
+|16953|<span style="background-color:#435f7a">S2</span>|C|2026-03-20|A->B|BFS|
+|14502|<span style="background-color:#ec9a00">G4</span>|C|2026-03-20|연구소|격자그래프,BFS,브루트포스|
