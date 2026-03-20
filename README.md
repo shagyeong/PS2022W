@@ -364,3 +364,17 @@
 |31403|<span style="background-color:#ad5600">B4</span>|C|2026-03-20|A+B-C||
 |16953|<span style="background-color:#435f7a">S2</span>|C|2026-03-20|A->B|BFS|
 |14502|<span style="background-color:#ec9a00">G4</span>|C|2026-03-20|연구소|격자그래프,BFS,브루트포스|
+|10870|<span style="background-color:#ad5600">B2</span>|C|2026-03-20|피보나치 수 5|재귀|
+|11729|<span style="background-color:#ec9a00">G5</span>|C|2026-03-20|하노이 탑 이동 순서|재귀|
+|9663 |<span style="background-color:#ec9a00">G4</span>|C|2026-03-20|N-Queen|브루트포스,백트래킹|
+|1182 |<span style="background-color:#435f7a">S2</span>|C|2026-03-20|부분수열의 합|브루트포스,백트래킹|
+|14888|<span style="background-color:#435f7a">S1</span>|C|2026-03-20|연산자 끼워넣기|브루트포스,백트래킹|
+|14889|<span style="background-color:#435f7a">S1</span>|C|2026-03-21|스타트와 링크|브루트포스,백트래킹|
+|2239 |<span style="background-color:#ec9a00">G4</span>|C|2026-03-21|스도쿠|백트래킹|
+|9465 |<span style="background-color:#435f7a">S1</span>|C|2026-03-21|스티커|DP|
+|2559 |<span style="background-color:#435f7a">S3</span>|C|2026-03-21|수열|누적합,투포인터,슬라이딩윈도우|
+|12891|<span style="background-color:#435f7a">S2</span>|C|2026-03-21|DNA 비밀번호|문자열,슬라이딩윈도우|
+|11003|<span style="background-color:#ec9a00">G1</span>|C|2026-03-21|최소값 찾기|투포인터,슬라이딩윈도우,데크최대값트릭|
+|15678|<span style="background-color:#27e2a4">P5</span>|C|2026-03-21|연세워터파크|DP,데크최대값트릭|
+|2231 |<span style="background-color:#ad5600">B2</span>|C|2026-03-21|분해합|브루트포스|
+|10989|<span style="background-color:#ad5600">B1</span>|C|2026-03-21|수 정렬하기 3|정렬|
