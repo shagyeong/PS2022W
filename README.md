@@ -378,3 +378,16 @@
 |15678|<span style="background-color:#27e2a4">P5</span>|C|2026-03-21|연세워터파크|DP,데크최대값트릭|
 |2231 |<span style="background-color:#ad5600">B2</span>|C|2026-03-21|분해합|브루트포스|
 |10989|<span style="background-color:#ad5600">B1</span>|C|2026-03-21|수 정렬하기 3|정렬|
+|2243 |<span style="background-color:#27e2a4">P5</span>|C|2026-03-21|사탕상자|이분탐색,세그먼트트리|
+|14942|<span style="background-color:#27e2a4">P5</span>|C|2026-03-21|개미|LCA|
+|17435|<span style="background-color:#ec9a00">G1</span>|C|2026-03-21|합성함수와 쿼리|희소배열|
+|3117 |<span style="background-color:#ec9a00">G1</span>|C|2026-03-21|YouTube|희소배열|
+|25206|<span style="background-color:#435f7a">S5</span>|C|2026-03-21|너의 평점은|문자열|
+|12904|<span style="background-color:#ec9a00">G5</span>|C|2026-03-21|A와 B|구현,문자열,그리디|
+|1213 |<span style="background-color:#435f7a">S3</span>|C|2026-03-21|팰린드롬 만들기|문자열,그리디|
+|9656 |<span style="background-color:#435f7a">S5</span>|C|2026-03-22|돌 게임 2|게임이론|
+|9657 |<span style="background-color:#435f7a">S3</span>|C|2026-03-22|돌 게임 3|게임이론,DP|
+|9658 |<span style="background-color:#435f7a">S3</span>|C|2026-03-22|돌 게임 4|게임이론,DP|
+|9659 |<span style="background-color:#435f7a">S3</span>|C|2026-03-22|돌 게임 5|게임이론|
+|9660 |<span style="background-color:#ec9a00">G5</span>|C|2026-03-22|돌 게임 6|게임이론|
+|9661 |<span style="background-color:#ec9a00">G2</span>|C|2026-03-22|돌 게임 7|게임이론|
