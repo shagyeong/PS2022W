@@ -48,6 +48,7 @@
 |10162|<span style="background-color:#ad5600">B3</span>|Python<br>C|2022-02-03<br>2026-02-20|전자레인지|그리디|
 |11034|<span style="background-color:#ad5600">B3</span>|Python<br>C|2022-02-28<br>2026-02-20|캥거루 세마리 2|그리디|
 |1026 |<span style="background-color:#435f7a">S4</span>|Python<br>C|2022-02-05<br>2026-02-20|보물|그리디,정렬|
+|9655 |<span style="background-color:#435f7a">S5</span>|Python<br>C|2022-03-01<br>2026-03-22|돌 게임|게임이론|
 #### OJ2025W
 |문제 번호|난이도|제출 언어|제출일|제목|과제 분류|
 |---|---|---|---|---|---|
