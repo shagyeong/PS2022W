@@ -392,3 +392,11 @@
 |9659 |<span style="background-color:#435f7a">S3</span>|C|2026-03-22|돌 게임 5|게임이론|
 |9660 |<span style="background-color:#ec9a00">G5</span>|C|2026-03-22|돌 게임 6|게임이론|
 |9661 |<span style="background-color:#ec9a00">G2</span>|C|2026-03-22|돌 게임 7|게임이론|
+|1002 |<span style="background-color:#435f7a">S3</span>|C|2026-03-22|터렛|기하학|
+|15829|<span style="background-color:#ad5600">B2</span>|C|2026-03-22|Hashing|해싱|
+|2869 |<span style="background-color:#ad5600">B1</span>|C|2026-03-22|달팽이는 올라가고 싶다||
+|14626|<span style="background-color:#ad5600">B1</span>|C|2026-03-22|ISBN|브루트포스|
+|28702|<span style="background-color:#ad5600">B1</span>|C|2026-03-22|FizzBuzz|문자열|
+|14503 |<span style="background-color:#ec9a00">G5</span>|C|2026-03-22|로봇 청소기|구현,시뮬레이션|
+|3190 |<span style="background-color:#ec9a00">G4</span>|C|2026-03-22|뱀|구현,시뮬레이션,큐|
+|1244 |<span style="background-color:#435f7a">S4</span>|C|2026-03-22|스위치 켜고 끄기|구현,시뮬레이션|
