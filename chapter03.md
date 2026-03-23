@@ -304,15 +304,28 @@ search(7): -1
 
 ## 3.3 구간 쿼리
 ### 3.3.1 구간 쿼리
-#### 기본 세그먼트트리: 구간합
+#### 세그먼트트리 입력 예제
+구간 [2,5] 쿼리시((2<=s)&&(e<=5))을 만족하는 노드  
+<img src="./static/PS331-segtree.png">
+
+#### 완전이진트리 성질
+부모 노드: $\mathrm{parent}(i)=\lfloor i/2 \rfloor$  
+원본 배열 길이가 $n$($2^k<n\leq2^{k+1}$)일 때 세그먼트트리 리프 노드: $2^{k+1},2^{k+1}+1, \cdots, 2^{k+1}+(n-1)$  
+<img src="./static/PS331-segreebuild.png">
+
+예제: 원본 배열 길이 $2^2<7\leq2^3$  
+세그먼트트리 리프 인덱스: $8\sim14$  
+$2^3,2^3+1,\cdots 2^3+(7-1)$  
+
+#### 구간합 세그먼트트리
 ```C
 #include<stdio.h>
 #include<stdlib.h>
 
 int* a; // 원본 배열
-int* t; // 구간합 트리
+int* t; // 세그먼트트리
 
-void   init(int n,int s,int e);
+void  build(int n,int s,int e);
 void update(int n,int s,int e,int i,int v);
 int   query(int n,int s,int e,int l,int r);
 
@@ -323,7 +336,7 @@ int main(void){
     a=(int*)malloc(sizeof(int)*(n+1));
     t=(int*)malloc(sizeof(int)*(n+1)*4);
     for(j=1;j<=n;j++){scanf("%d",&a[j]);}
-    init(1,1,n);
+    build(1,1,n);
 
     for(j=0;j<m;j++){
         scanf("%d %d %d",&o,&b,&c);
@@ -334,11 +347,11 @@ int main(void){
     free(t);
 }
 
-void init(int n,int s,int e){
+void  build(int n,int s,int e){
     if(s==e){t[n]=a[s]; return;}
     int m=(s+e)/2;
-    init(2*n,  s,  m);      // lchild
-    init(2*n+1,m+1,e);      // rchild
+    build(2*n,  s,  m);      // lchild
+    build(2*n+1,m+1,e);      // rchild
     t[n]=t[2*n]+t[2*n+1]; // 구간합
 }
 void update(int n,int s,int e,int i,int v){
@@ -349,7 +362,7 @@ void update(int n,int s,int e,int i,int v){
     update(2*n+1,m+1,e,i,v); // rchild
     t[n]=t[2*n]+t[2*n+1];    // 구간합
 }
-int query(int n,int s,int e,int l,int r){
+int   query(int n,int s,int e,int l,int r){
     if((r< s)||(e< l)){return 0;}
     if((l<=s)&&(e<=r)){return t[n];}
     int m=(s+e)/2;
@@ -358,15 +371,82 @@ int query(int n,int s,int e,int l,int r){
 ```
 ```
 $ ./test > test.txt
-5 3 # number of node, query
-1 2 3 4 5 # [*,1,2,3,4,5]
-2 2 4     #      2+3+4
-1 3 7     # [*,1,2,7,4,5]
-2 2 4     #      2+7+4
+7 3 # number of node, query
+1 2 3 4 5 6 7 # [*,1,2,3,4,5,6,7]
+2 2 5         # 2+3+4+5
+1 3 9         # [*,1,2,9,4,5,6,7]
+2 2 5         # 2+9+4+5
 
-$ cat test.txt
-9       # 2+3+4
-13      # 2+7+4
+$ cat  test.txt
+14 # 2+3+4+5
+20 # 2+9+4+5
+```
+#### 구간합 세그먼트 트리: 비재귀
+완전이진트리 성질을 이용해 반복문 기반으로 구현할 수 있다  
+```C
+#include<stdio.h>
+#include<stdlib.h>
+
+int* a; // 원본 배열
+int* t; // 세그먼트트리
+int n; // 원본 배열 길이
+int k; // 세그먼트트리 리프
+
+void   init(void);
+void  clean(void);
+void  build(void);
+void update(int i,int v);
+int   query(int l,int r);
+
+int main(void){
+    int j;
+    int q;
+    int o; int u; int v;
+    scanf("%d",&n); init();
+    scanf("%d",&q);
+    for(j=1;j<=n;j++){scanf("%d",&a[j]);} build();
+    for(j=0;j< q;j++){
+        scanf("%d %d %d",&o,&u,&v);
+        if(o==1){update(u,v);}
+        if(o==2){printf("%d\n",query(u,v));}
+    }
+    clean();
+}
+void   init(void){
+    k=1; while(k<n){k*=2;}
+    a=(int*)malloc(sizeof(int)*(n+1));
+    t=(int*)malloc(sizeof(int)*(k*2));
+}
+void  clean(void){
+    free(a);
+    free(t);    
+}
+void  build(void){
+    int j;
+    for(j=1;  j<=n;j++){t[k+(j-1)]=a[j];}
+    for(j=n+1;j<=k;j++){t[k+(j-1)]=0;}
+    for(j=k-1;j> 0;j--){t[j]=t[2*j]+t[2*j+1];}
+}
+void update(int i,int v){
+    i=k+i-1;
+    t[i]=v;
+    while(i>1){
+        i/=2;
+        t[i]=t[2*i]+t[2*i+1];
+    }
+}
+int   query(int l,int r){
+    int s=0;
+    l+=(k-1);
+    r+=(k-1);
+    while(l<=r){
+        if(l%2==1){s+=t[l++];}
+        if(r%2==0){s+=t[r--];}
+        l/=2;
+        r/=2;
+    }
+    return s;
+}
 ```
 #### 병합정렬트리
 부분배열에서 어떤 수보다 큰 원소 개수 출력  
