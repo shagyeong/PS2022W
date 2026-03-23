@@ -24,7 +24,12 @@ mkdir -p ./OJ2026W
 cp ./test.c "./OJ2026W/${PROB_NUM}.c"
 
 CURRENT_DATE=$(date +%Y-%m-%d)
-echo "|${PROB_NUM} |<span style=\"background-color:${COLOR}\">${TIER_CODE}</span>|C|${CURRENT_DATE}|${TITLE}|${TAGS}|" >> README.md
+
+PROB_FORMATTED=$(printf "%-5s" "$PROB_NUM")
+LINK_SUFFIX=""
+[ ${#PROB_NUM} -eq 4 ] && LINK_SUFFIX=" "
+
+echo "|[${PROB_FORMATTED}](./OJ2026W/${PROB_NUM}.c)${LINK_SUFFIX}|<span style=\"background-color:${COLOR}\">${TIER_CODE}</span>|C|${CURRENT_DATE}|${TITLE}|${TAGS}|" >> README.md
 
 : > test.c
-rm test
+rm -f test
