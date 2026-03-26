@@ -186,7 +186,7 @@
 |[2042 ](./OJ2026W/2042.c) |<span style="background-color:#ec9a00">G1</span>|C|2026-01-12|구간 합 구하기|세그먼트트리|
 |[11505](./OJ2026W/11505.c)|<span style="background-color:#ec9a00">G1</span>|C|2026-01-12|구간 곱 구하기|세그먼트트리|
 |[2357 ](./OJ2026W/2357.c) |<span style="background-color:#ec9a00">G1</span>|C|2026-01-13|최소값과 최대값|세그먼트트리|
-|[10868](./OJ2026W/10868.c)|<span style="background-color:#ec9a00">G1</span>|C|2026-01-13|최소값|세그먼트트리|
+|[10868](./OJ2026W/10868.c)|<span style="background-color:#ec9a00">G1</span>|C|2026-01-13|최소값|세그먼트트리,희소배열|
 |[13537](./OJ2026W/13537.c)|<span style="background-color:#27e2a4">P3</span>|C|2026-01-13|수열과 쿼리 1|세그먼트트리,병합정렬트리|
 |[10999](./OJ2026W/10999.c)|<span style="background-color:#27e2a4">P4</span>|C|2026-01-13|구간 합 구하기 2|느리게갱신되는세그먼트트리|
 |[16975](./OJ2026W/16975.c)|<span style="background-color:#27e2a4">P4</span>|C|2026-01-13|수열과 쿼리 21|느리게갱신되는세그먼트트리|
@@ -400,3 +400,4 @@
 |[14503](./OJ2026W/14503.c)|<span style="background-color:#ec9a00">G5</span>|C|2026-03-22|로봇 청소기|구현,시뮬레이션|
 |[3190 ](./OJ2026W/3190.c) |<span style="background-color:#ec9a00">G4</span>|C|2026-03-22|뱀|구현,시뮬레이션,큐|
 |[1244 ](./OJ2026W/1244.c) |<span style="background-color:#435f7a">S4</span>|C|2026-03-22|스위치 켜고 끄기|구현,시뮬레이션|
+|[1572 ](./OJ2026W/1572.c) |<span style="background-color:#27e2a4">P5</span>|C|2026-03-24|중앙값|이분탐색,세그먼트트리|
