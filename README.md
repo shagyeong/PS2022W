@@ -401,3 +401,7 @@
 |[3190 ](./OJ2026W/3190.c) |<span style="background-color:#ec9a00">G4</span>|C|2026-03-22|뱀|구현,시뮬레이션,큐|
 |[1244 ](./OJ2026W/1244.c) |<span style="background-color:#435f7a">S4</span>|C|2026-03-22|스위치 켜고 끄기|구현,시뮬레이션|
 |[1572 ](./OJ2026W/1572.c) |<span style="background-color:#27e2a4">P5</span>|C|2026-03-24|중앙값|이분탐색,세그먼트트리|
+|[15480](./OJ2026W/15480.c)|<span style="background-color:#27e2a4">P2</span>|C|2026-03-27|LCA와 쿼리|희소배열,LCA|
+|[1063 ](./OJ2026W/1063.c) |<span style="background-color:#435f7a">S3</span>|C|2026-03-27|킹|구현,시뮬레이션|
+|[1091 ](./OJ2026W/1091.c) |<span style="background-color:#ec9a00">G4</span>|C|2026-03-27|카드 섞기|구현,시뮬레이션|
+|[2638 ](./OJ2026W/2638.c) |<span style="background-color:#ec9a00">G3</span>|C|2026-03-27|치즈|시뮬레이션,BFS,격자그래프|
