@@ -405,3 +405,10 @@
 |[1063 ](./OJ2026W/1063.c) |<span style="background-color:#435f7a">S3</span>|C|2026-03-27|킹|구현,시뮬레이션|
 |[1091 ](./OJ2026W/1091.c) |<span style="background-color:#ec9a00">G4</span>|C|2026-03-27|카드 섞기|구현,시뮬레이션|
 |[2638 ](./OJ2026W/2638.c) |<span style="background-color:#ec9a00">G3</span>|C|2026-03-27|치즈|시뮬레이션,BFS,격자그래프|
+|[2630 ](./OJ2026W/2630.c) |<span style="background-color:#435f7a">S2</span>|C|2026-03-28|색종이 만들기|분할정복,재귀|
+|[1074 ](./OJ2026W/1074.c) |<span style="background-color:#ec9a00">G5</span>|C|2026-03-28|Z|분할정복,재귀|
+|[1992 ](./OJ2026W/1992.c) |<span style="background-color:#435f7a">S1</span>|C|2026-03-28|쿼드트리|분할정복,재귀|
+|[2776 ](./OJ2026W/2776.c) |<span style="background-color:#435f7a">S4</span>|C|2026-03-28|암기왕|이분탐색|
+|[20922](./OJ2026W/20922.c)|<span style="background-color:#435f7a">S1</span>|C|2026-03-28|겹치는 건 싫어|투포인터|
+|[33283](./OJ2026W/33283.c)|<span style="background-color:#27e2a4">P3</span>|C|2026-03-28|휴가 계획|MST,LCA|
+|[11758](./OJ2026W/11758.c)|<span style="background-color:#ec9a00">G5</span>|C|2026-03-28|CCW|기하학,CCW|
