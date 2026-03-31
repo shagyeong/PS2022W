@@ -211,4 +211,112 @@ yeong
 
 
 
-<!-- ## 5.4 패턴 매칭 -->
+## 5.4 패턴 매칭
+### 5.4.1 KMP
+#### 실패함수
+쿼리 문자열의 각 위치에서 가장 긴 진접두사인 동시에 진접미사인 부분의 길이  
+#### 실패함수
+k: 진접두사 오프셋  
+j: 쿼리 문자열 오프셋  
+```C
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+#define L 10002 // +2: '\n', '\0'(fgets: 공백 포함 문자열 대응)
+
+int* fail(char* q,int l);
+
+int main(void){
+    int j;
+    char* q=(char*)malloc(sizeof(char)*(L)); fgets(q,L,stdin);
+    int l=(int)strlen(q); l--; q[l]='\0';
+    int* f=fail(q,l);
+    for(j=0;j<l;j++){printf("%c\t",q[j]);} printf("\n");
+    for(j=0;j<l;j++){printf("%d\t",f[j]);} printf("\n");
+    free(f);
+    free(q);
+}
+
+int* fail(char* q,int l){
+    int j;
+    int k=0;
+    int* f=(int*)calloc(l,sizeof(int));
+    for(j=1;j<l;j++){
+        while((k>0)&&(q[j]!=q[k])){k=f[k-1];}
+        if(q[j]==q[k]){f[j]=++k;}
+    }
+    return f;
+}
+```
+```
+$ ./test
+abcxxxabcabc
+a       b       c       x       x       x       a       b       c       a       b       c
+0       0       0       0       0       0       1       2       3       1       2       3
+
+$ ./test
+ababac
+a       b       a       b       a       c
+0       0       1       2       3       0
+```
+#### KMP
+```C
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+#define L 10002 // +2: '\n', '\0'(fgets: 공백 포함 문자열 대응)
+
+void kmp(char* a,char* q);
+
+int main(void){
+    char* a=(char*)malloc(sizeof(char)*L);
+    char* q=(char*)malloc(sizeof(char)*L);
+    fgets(a,L,stdin); a[strlen(a)-1]='\0';
+    fgets(q,L,stdin); q[strlen(q)-1]='\0';
+    kmp(a,q);
+    free(a);
+    free(q);
+}
+
+void kmp(char* a,char* q){
+    int j;
+    int k;
+    int n=strlen(a);
+    int m=strlen(q);
+    int c=0; // 등장 횟수
+    int* r=(int*)calloc(n,sizeof(int)); // 등장 위치
+    int* f=(int*)calloc(m,sizeof(int)); // 실패함수
+
+    // 실패함수
+    k=0;
+    for(j=1;j<m;j++){
+        while((k>0)&&(q[j]!=q[k])){k=f[k-1];}
+        if(q[j]==q[k]){f[j]=++k;}
+    }
+    
+    // 매칭
+    k=0;
+    for(j=0;j<n;j++){
+        while((k>0)&&(a[j]!=q[k])){k=f[k-1];}
+        if(a[j]==q[k]){
+            if(k==m-1){r[c++]=j-m+2; k=f[k];} // 매치
+            else      {              k++;}
+        }
+    }
+
+    // 결과 출력
+    printf("%d\n",c);
+    for(j=0;j<c;j++){printf("%d ",r[j]);}
+    free(r);
+    free(f);
+}
+```
+```
+$ ./test
+longest proper prefix which is also a suffix
+fix
+2
+19 42 
+```
