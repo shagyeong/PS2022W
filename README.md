@@ -416,3 +416,5 @@
 |[5354 ](./OJ2026W/5354.c) |<span style="background-color:#ad5600">B3</span>|C|2026-03-29|J박스|구현|
 |[14940](./OJ2026W/14940.c)|<span style="background-color:#435f7a">S1</span>|C|2026-03-29|쉬운 최단거리|격자그래프,BFS|
 |[5670 ](./OJ2026W/5670.c) |<span style="background-color:#27e2a4">P4</span>|C|2026-03-30|휴대폰 자판|트라이|
+|[1305 ](./OJ2026W/1305.c) |<span style="background-color:#27e2a4">P4</span>|C|2026-03-31|광고|KMP|
+|[19585](./OJ2026W/19585.c)|<span style="background-color:#27e2a4">P3</span>|C|2026-03-31|전설|트라이,해시|
