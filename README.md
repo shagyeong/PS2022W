@@ -418,3 +418,6 @@
 |[5670 ](./OJ2026W/5670.c) |<span style="background-color:#27e2a4">P4</span>|C|2026-03-30|휴대폰 자판|트라이|
 |[1305 ](./OJ2026W/1305.c) |<span style="background-color:#27e2a4">P4</span>|C|2026-03-31|광고|KMP|
 |[19585](./OJ2026W/19585.c)|<span style="background-color:#27e2a4">P3</span>|C|2026-03-31|전설|트라이,해시|
+|[1676 ](./OJ2026W/1676.c) |<span style="background-color:#435f7a">S5</span>|C|2026-04-03|팩토리얼 0의 개수||
+|[4949 ](./OJ2026W/4949.c) |<span style="background-color:#435f7a">S4</span>|C|2026-04-03|균형잡힌 세상|스택|
+|[1654 ](./OJ2026W/1654.c) |<span style="background-color:#435f7a">S2</span>|C|2026-04-03|랜선 자르기|이분탐색,매개변수탐색|
