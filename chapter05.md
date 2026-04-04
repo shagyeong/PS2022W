@@ -320,3 +320,90 @@ fix
 2
 19 42 
 ```
+### 5.4.2 라빈-카프
+#### 라빈 카프: 롤링 해시
+$N^0q_0\\N^1q_0+N^0q_1\\N^2q_0+N^1q_1+N^0q_2\\\vdots$  
+```C
+for(j=0;j<m;j++){
+    v=(v*N+q[j])%D;
+    u=(u*N+a[j])%D;
+}
+```
+슬라이딩 윈도우 기준값: $\mathrm{h}=N^{m-1}$  
+$N\times((N^2q_0+N^1q_1+N^0q_2)-\mathrm{h}q_0)+q_3=(N^2q_1+N^1q_2+N^0q_3)$  
+```C
+if(j<n-m){
+    u=(N*(u-a[j]*h)+a[j+m])%D;
+    if(u<0){u+=D;}
+}
+```
+#### 라빈-카프
+```C
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+#define N 256 // 8바이트 문자 환경
+#define L 10002
+#define D 1000000007 // hash divisor
+
+void rabinkarp(char* a,char* q);
+
+int main(void){
+    char* a=(char*)malloc(sizeof(char)*L);
+    char* q=(char*)malloc(sizeof(char)*L);
+    fgets(a,L,stdin); a[strlen(a)-1]='\0';
+    fgets(q,L,stdin); q[strlen(q)-1]='\0';
+    rabinkarp(a,q);
+    free(a);
+    free(q);
+}
+
+void rabinkarp(char* a,char* q){
+    int j;
+    int k;
+    int n=strlen(a);
+    int m=strlen(q);
+    int c=0; // 정답열 인덱스
+    int* r=(int*)calloc(n,sizeof(int)); // 정답열(등장 위치)
+    int f; // 매칭 플래그
+    long long int h=1; // 슬라이딩 윈도우 해시 기준값: n^(m-1)
+    long long int u=0; // 원본 부분문자열 해시값
+    long long int v=0; // 쿼리 문자열 해시값)
+    
+    // 해시값 확보
+    for(j=0;j<m-1;j++){
+        h*=N;
+        h%=D;
+    }
+    for(j=0;j<m;j++){
+        v=(v*N+q[j])%D;
+        u=(u*N+a[j])%D;
+    }
+
+    // 슬라이딩 윈도우
+    for(j=0;j<=n-m;j++){
+        if(u==v){
+            f=1;
+            for(k=0;k<m;k++){if(a[j+k]!=q[k]){f=0; break;}} // collision
+            if(f==1){r[c++]=j+1;}
+        }
+        if(j<n-m){
+            u=(N*(u-a[j]*h)+a[j+m])%D;
+            if(u<0){u+=D;}
+        }
+    }
+
+    // 결과 출력
+    printf("%d\n",c);
+    for(j=0;j<c;j++){printf("%d ",r[j]);}
+    free(r);
+}
+```
+```
+$ ./test
+The Rabin-Karp algorithm is a string-searching algorithm that uses hashing to find an exact match of a pattern string int a text. It uses a rolling hash to quickly filter out positions of the text that cannot match the pattern.
+hash
+2
+68 149 
+```
