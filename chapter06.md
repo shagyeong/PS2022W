@@ -569,7 +569,56 @@ $ ./test
 ### 6.3.1 선분 교차
 #### CCW
 CCW: counter-clockwise  
-선분 - 점의 위치 판별
+평면 위 세 점의 위치 관계 판별  
+$x_Ay_B-x_By_A+x_By_C-x_Cy_B+x_Ay_C-x_Cy_A$  
+$\equiv(x_B-x_A)\times(y_C-y_A)-(x_c-x_A)\times(y_B-y_A )$  
+#### CCW 입력 예제
+```
+# ccw(1)      # collinear(0)# cw(-1)
+5             5             5            
+4             4             4            
+3     *       3       *     3            
+2     *       2     *       2     * *    
+1   *         1   *         1   *        
+0             0             0            
+  0 1 2 3 4 5   0 1 2 3 4 5   0 1 2 3 4 5
+```
+#### CCW
+좌표값 $10^5$ 이상 문제 공간에서 long long int 캐스팅 필요  
+```C
+struct dot{
+    int x;
+    int y;
+}
+// 벡터 외적
+int ccw(struct dot A,struct dot B,struct dot C){
+    int r=0;
+    r+=A.x*B.y-A.y*B.x;
+    r+=B.x*C.y-B.y*C.x;
+    r+=C.x*A.y-C.y*A.x;
+    if(r> 0){return  1;} // ccw
+    if(r==0){return  0;} // collinear
+    if(r< 0){return -1;} // cw
+}
+// 삼각형 면적
+int ccw(struct dot A,struct dot B,struct dot C){
+    int r=(B.x-A.x)*(C.y-A.y)-(C.x-A.x)*(B.y-A.y);
+    if(r> 0){return  1;} // ccw
+    if(r==0){return  0;} // collinear
+    if(r< 0){return -1;} // cw
+}
+```
+```
+$ ./test
+1 1 2 2 2 3
+1
+$ ./test
+1 1 2 2 3 3
+0
+$ ./test
+1 1 2 2 3 2
+-1 
+```
 #### 선분 교차 판정
 ```C
 #include <stdio.h>
