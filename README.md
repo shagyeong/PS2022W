@@ -421,3 +421,6 @@
 |[1676 ](./OJ2026W/1676.c) |<span style="background-color:#435f7a">S5</span>|C|2026-04-03|팩토리얼 0의 개수||
 |[4949 ](./OJ2026W/4949.c) |<span style="background-color:#435f7a">S4</span>|C|2026-04-03|균형잡힌 세상|스택|
 |[1654 ](./OJ2026W/1654.c) |<span style="background-color:#435f7a">S2</span>|C|2026-04-03|랜선 자르기|이분탐색,매개변수탐색|
+|[3303 ](./OJ2026W/3303.c) |<span style="background-color:#27e2a4">P3</span>|C|2026-04-04|가장 긴 문자열|해시,라빈-카프,매개변수탐색|
+|[1605 ](./OJ2026W/1605.c) |<span style="background-color:#27e2a4">P3</span>|C|2026-04-04|반복 부분문자열|해시,라빈-카프,매개변수탐색|
+|[17228](./OJ2026W/17228.c)|<span style="background-color:#27e2a4">P2</span>|C|2026-04-04|아름다운 만영로|DFS,KMP|
