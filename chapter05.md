@@ -165,7 +165,7 @@ abcd ab efgh e x
 
 
 ## 5.3 접미사 조작
-### 5.3.1 접미사 배열
+### 5.3.1 접미사 배열과 LCP 배열
 #### 이차로그시간 접미사 배열: 정렬
 ```C
 #include<stdio.h>
@@ -197,16 +197,116 @@ int main(void){
 ```
 ```
 $ ./test
-shagyeong
-agyeong
-eong
-g
-gyeong
-hagyeong
-ng
-ong
-shagyeong
-yeong
+banana
+a
+ana
+anana
+banana
+na
+nana
+```
+#### 접미사 배열과 LCP 배열: 멘버-마이어스, 카사이
+|sa[j]|0|1|2|3|4|5||접미사|인접 접미사|공통 접두사|공통 접두사 길이(lcp[j])|
+|---|---|---|---|---|---|---|---|---|---|---|---|
+|char* s|b|a|n|a|n|a||
+|sa[0]=5| | | | | |a||a |*없음*|-|lcp[0]=-1|
+|sa[1]=3| | | |a|n|a||ana   |a     |a  |lcp[1]=1|
+|sa[2]=1| |a|n|a|n|a||anana |ana   |ana|lcp[2]=3|
+|sa[3]=0|b|a|n|a|n|a||banana|anana |   |lcp[3]=0|
+|sa[4]=4| | | | |n|a||na    |banana|   |lcp[4]=0|
+|sa[5]=2| | |n|a|n|a||nana  |na    |na |lcp[5]=2|
+
+```
+$ ./test
+banana
+5 3 1 0 4 2 # suffix array
+-1 1 3 0 0 2 # lcp array
+```
+```C
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+#define N 256 // 8비트 문자 환경
+#define L 101
+
+char* s;
+int* a; // SA
+int* b; // lcp
+int* i; // indexes of s
+int* r; // character ranks
+int* t; // temp of r
+int* c; // count: 계수정렬
+int l; // length of s
+int m; // leng of c
+int o;
+int p;
+
+void manbermyers(void);
+void kasai(void);
+
+int main(void){
+    s=(char*)malloc(sizeof(char)*(L)); scanf("%s",s);
+    l=(int)strlen(s);
+    m=(l>N)?l:N;
+    a=(int*)calloc(l,    sizeof(int));
+    b=(int*)calloc(l,    sizeof(int));
+    i=(int*)calloc(l,    sizeof(int));
+    r=(int*)calloc(2*l+1,sizeof(int));
+    t=(int*)calloc(2*l+1,sizeof(int));
+    c=(int*)calloc(m+1,  sizeof(int));
+    manbermyers(); printf("\n");
+    kasai();       printf("\n");
+    free(s);
+    free(a);
+    free(b);
+    free(i);
+    free(r);
+    free(t);
+    free(c);
+}
+
+void manbermyers(void){
+    int j;
+    for(j=0;j<l;j++){
+        a[j]=j;
+        r[j]=s[j];
+    }
+    for(j=0;  j< m;j++){c[j]=0;}
+    for(j=0;  j< l;j++){c[r[j]]++;}
+    for(j=1;  j< m;j++){c[j]+=c[j-1];}
+    for(j=l-1;j>=0;j--){a[--c[r[j]]]=j;}
+    for(o=1;o<l;o<<=1){
+        p=0;
+        for(j=l-o;j< l;j++){i[p++]=j;}
+        for(j=0;  j< l;j++){if(a[j]>=o){i[p++]=a[j]-o;}}
+        for(j=0;  j< m;j++){c[j]=0;}
+        for(j=0;  j< l;j++){c[r[i[j]]]++;}
+        for(j=1;  j< m;j++){c[j]+=c[j-1];}
+        for(j=l-1;j>=0;j--){a[--c[r[i[j]]]]=i[j];}
+        t[a[0]]=1;
+        for(j=1;j<l;j++){t[a[j]]=t[a[j-1]]+(((r[a[j-1]]==r[a[j]])&&(r[a[j-1]+o]==r[a[j]+o]))?0:1);}
+        for(j=0;j<l;j++){r[j]=t[j];}
+        if(r[a[l-1]]==l){break;}
+        m=l+1;
+    }
+    for(j=0;j<l;j++){printf("%d ",a[j]);}
+}
+void kasai(void){
+    int j;
+    int k;
+    int h=0;
+    b[0]=-1;
+    for(j=0;j<l;j++){
+        k=r[j]-1;
+        if(k>0){
+            while((j+h<l)&&(a[k-1]+h<L)&&(s[j+h]==s[a[k-1]+h])){h++;}
+            b[k]=h;
+            if(h>0){h--;}
+        }
+    }
+    for(j=0;j<l;j++){printf("%d ",b[j]);}
+}
 ```
 
 
