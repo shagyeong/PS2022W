@@ -424,3 +424,8 @@
 |[3303 ](./OJ2026W/3303.c) |<span style="background-color:#27e2a4">P3</span>|C|2026-04-04|가장 긴 문자열|해시,라빈-카프,매개변수탐색|
 |[1605 ](./OJ2026W/1605.c) |<span style="background-color:#27e2a4">P3</span>|C|2026-04-04|반복 부분문자열|해시,라빈-카프,매개변수탐색|
 |[17228](./OJ2026W/17228.c)|<span style="background-color:#27e2a4">P2</span>|C|2026-04-04|아름다운 만영로|DFS,KMP|
+|[25008](./OJ2026W/25008.c)|<span style="background-color:#27e2a4">P2</span>|C|2026-04-06|문자열 찾기|KMP|
+|[13235](./OJ2026W/13235.c)|<span style="background-color:#ad5600">B2</span>|C|2026-04-06|팰린드롬|문자열,팰린드롬|
+|[10174](./OJ2026W/10174.c)|<span style="background-color:#ad5600">B2</span>|C|2026-04-06|팰린드롬|문자열,팰린드롬|
+|[17844](./OJ2026W/17844.c)|<span style="background-color:#27e2a4">P2</span>|C|2026-04-07|복붙하기|해시,라빈-카프,매개변수탐색|
+|[9248 ](./OJ2026W/9248.c) |<span style="background-color:#27e2a4">P3</span>|C|2026-04-07|Suffix Array|접미사배열,LCP|

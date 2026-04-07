@@ -1,14 +1,14 @@
-// P3 13264: 접미사 배열 2(접미사배열,맨버-마이어스)
-// 계수정렬 재채점
+// P3 9248: Suffix Array(접미사배열,LCP)
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 
 #define N 256 // 8비트 문자 환경
-#define L 100001
+#define L 500001
 
 char* s;
 int* a; // SA
+int* b; // lcp
 int* i; // indexes of s
 int* r; // character ranks
 int* t; // temp of r
@@ -19,19 +19,23 @@ int o;
 int p;
 
 void manbermyers(void);
+void kasai(void);
 
 int main(void){
     s=(char*)malloc(sizeof(char)*(L)); scanf("%s",s);
     l=(int)strlen(s);
     m=(l>N)?l:N;
     a=(int*)calloc(l,    sizeof(int));
+    b=(int*)calloc(l,    sizeof(int));
     i=(int*)calloc(l,    sizeof(int));
     r=(int*)calloc(2*l+1,sizeof(int));
     t=(int*)calloc(2*l+1,sizeof(int));
     c=(int*)calloc(m+1,  sizeof(int));
-    manbermyers();
+    manbermyers(); printf("\n");
+    kasai();       printf("\n");
     free(s);
     free(a);
+    free(b);
     free(i);
     free(r);
     free(t);
@@ -62,5 +66,21 @@ void manbermyers(void){
         if(r[a[l-1]]==l){break;}
         m=l+1;
     }
-    for(j=0;j<l;j++){printf("%d\n",a[j]);}
+    for(j=0;j<l;j++){printf("%d ",a[j]+1);} // 1-based
+}
+void kasai(void){
+    int j;
+    int k;
+    int h=0;
+    b[0]=-1;
+    for(j=0;j<l;j++){
+        k=r[j]-1;
+        if(k>0){
+            while((j+h<l)&&(a[k-1]+h<L)&&(s[j+h]==s[a[k-1]+h])){h++;}
+            b[k]=h;
+            if(h>0){h--;}
+        }
+    }
+    printf("x ");
+    for(j=1;j<l;j++){printf("%d ",b[j]);}
 }
