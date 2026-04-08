@@ -130,14 +130,15 @@ void   init(struct trie* t){
     for(j=0;j<N;j++){t->r->c[j]=NULL;}
 }
 void insert(struct trie* t,char* s){
-    int j; // loop variable
+    int j;
+    int k;
     int i; // index
     struct node* d=t->r;
     for(j=0;s[j]!='\0';j++){
         i=s[j]-'a';
         if(d->c[i]==NULL){
             d->c[i]=(struct node*)malloc(sizeof(struct node));
-            for(int x=0;x<N;x++){d->c[i]->c[x]=NULL;}
+            for(k=0;k<N;k++){d->c[i]->c[k]=NULL;}
         }
         d=d->c[i];
     }
@@ -165,8 +166,8 @@ abcd ab efgh e x
 
 
 ## 5.3 접미사 조작
-### 5.3.1 접미사 배열과 LCP 배열
-#### 이차로그시간 접미사 배열: 정렬
+### 5.3.1 SA/LCP
+#### 사전순 정렬 SA
 ```C
 #include<stdio.h>
 #include<stdlib.h>
@@ -205,11 +206,11 @@ banana
 na
 nana
 ```
-#### 접미사 배열과 LCP 배열: 멘버-마이어스, 카사이
+#### SA/LCP: 멘버-마이어스, 카사이
 |sa[j]|0|1|2|3|4|5||접미사|인접 접미사|공통 접두사|공통 접두사 길이(lcp[j])|
 |---|---|---|---|---|---|---|---|---|---|---|---|
 |char* s|b|a|n|a|n|a||
-|sa[0]=5| | | | | |a||a |*없음*|-|lcp[0]=-1|
+|sa[0]=5| | | | | |a||a |*없음*|-|lcp[0]=0|
 |sa[1]=3| | | |a|n|a||ana   |a     |a  |lcp[1]=1|
 |sa[2]=1| |a|n|a|n|a||anana |ana   |ana|lcp[2]=3|
 |sa[3]=0|b|a|n|a|n|a||banana|anana |   |lcp[3]=0|
@@ -220,7 +221,7 @@ nana
 $ ./test
 banana
 5 3 1 0 4 2 # suffix array
--1 1 3 0 0 2 # lcp array
+0 1 3 0 0 2 # lcp array
 ```
 ```C
 #include<stdio.h>
@@ -296,7 +297,7 @@ void kasai(void){
     int j;
     int k;
     int h=0;
-    b[0]=-1;
+    b[0]=0;
     for(j=0;j<l;j++){
         k=r[j]-1;
         if(k>0){
@@ -307,6 +308,54 @@ void kasai(void){
     }
     for(j=0;j<l;j++){printf("%d ",b[j]);}
 }
+```
+### 5.3.2 SA/LCP 응용
+#### 고유한 부분문자열 개수
+```C
+manbermyers();
+kasai();
+
+w=0;
+for(j=0;j<l;j++){
+    w+=(l-SA[j]); // 접두사 길이
+    w-=LCP[j];    // 중복 부분문자열 차감
+}
+printf("%d",w);
+```
+```
+$ ./test
+banana
+15
+```
+```
+a b n
+ba an na
+ban ana nan
+bana anan nana
+banan anana
+banana
+```
+#### LRS
+LRS: longest repeated substring  
+```C
+manbermyers();
+kasai();
+
+m=0; // max of LCP
+p=-1; // starting point
+for(j=0;j<l;j++){if(LCP[j]>m){
+    m=LCP[j];
+    p=SA[j];
+}}
+
+printf("%d\n",m);
+for(j=0;j<m;j++){printf("%c",s[p+j]);}
+```
+```
+$ ./test
+banana
+3
+ana
 ```
 
 
