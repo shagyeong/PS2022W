@@ -313,16 +313,18 @@ $ ./test
 #include<stdlib.h>
 #include<string.h>
 
-# define N 50003
+#define D 50009 // divisor
+#define L 101 // 문자열 최대 길이
 
 struct node{
-    char* s;
-    int v;
-    struct node* next;
+    char s[L];
+    int next;
 };
 struct hash{
-    int n; // hash size
-    struct node** t;
+    int n; // number of words
+    int p; // pool pointer
+    int* adjs;
+    struct node* pool;
 };
 
 int    hash(char* s);
@@ -334,15 +336,12 @@ int   query(struct hash* h,char* s);
 int main(void){
     int j;
     int n; int m; scanf("%d %d",&n,&m);
-    char*  q=(char*) malloc(sizeof(char) *20);
+    char q[L];
     struct hash h;
-    init(&h,N);
-
+    init(&h,n);
     for(j=0;j<n;j++){scanf("%s",q);insert(&h,q);}
-    for(j=0;j<m;j++){scanf("%s",q);printf("%d\n",query(&h,q));}
-
+    for(j=0;j<m;j++){scanf("%s",q);printf("%d ",query(&h,q));}
     clean(&h);
-    free(q);
 }
 
 int    hash(char* s){
@@ -352,50 +351,37 @@ int    hash(char* s){
 }
 void   init(struct hash* h,int n){
     h->n=n;
-    h->t=(struct node**)calloc(n,sizeof(struct node*));
+    h->p=0;
+    h->adjs=(int*)malloc(sizeof(int)*D);
+    h->pool=(struct node*)malloc(sizeof(struct node)*n);
+    memset(h->adjs,-1,sizeof(int)*D);
 }
 void  clean(struct hash* h){
-    int j;
-    struct node* d;
-    struct node* f;
-    for(j=0;j<h->n;j++){
-        d=h->t[j];
-        while(d!=NULL){
-            f=d;
-            d=d->next;
-            free(f);
-        }
-    }
-    free(h->t);
+    free(h->adjs);
+    free(h->pool);
 }
 void insert(struct hash* h,char* s){
-    int v=hash(s);
-    int i=v%h->n;
-    struct node* n=(struct node*)malloc(sizeof(struct node));
-    n->s=s;
-    n->v=v;
-    n->next=h->t[i]; // chaining
-    h->t[i]=n;
+    int i=hash(s)%D;
+    strcpy(h->pool[h->p].s,s);
+    h->pool[h->p].next=h->adjs[i]; // chaining
+    h->adjs[i]=h->p++;
 }
 int   query(struct hash* h,char* s){
-    int v=hash(s);
-    int i=v%h->n;
-    struct node* d=h->t[i];
-    while(d!=NULL){
-        if((d->v==v)&&strcmp(d->s,s)==0){return d->v;}
-        d=d->next;
+    int i=hash(s)%D;
+    int d=h->adjs[i];
+    while(d!=-1){
+        if(strcmp(h->pool[d].s,s)==0){return 1;}
+        d=h->pool[d].next;
     }
     return -1;
 }
 ```
 ```
 $ ./test
-3 3 # number of node, query
+3 3 # number of nodes, queries
 abc def ghi
-abc def ghi
-193485963
-193489332
-193492701
+abc def xxx
+1 1 -1 
 ```
 
 
