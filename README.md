@@ -206,8 +206,8 @@
 |[1865 ](./OJ2026W/1865.c) |<span style="background-color:#ec9a00">G3</span>|C|2026-01-15|웜홀|벨만-포드|
 |[11266](./OJ2026W/11266.c)|<span style="background-color:#27e2a4">P4</span>|C|2026-01-15|단절점|단절점,BFS|
 |[11400](./OJ2026W/11400.c)|<span style="background-color:#27e2a4">P5</span>|C|2026-01-15|단절선|단절선,BFS|
-|[11656](./OJ2026W/11656.c)|<span style="background-color:#435f7a">S4</span>|C|2026-01-15|접미사 배열|문자열,접미사배열|
-|[13264](./OJ2026W/13264.c)|<span style="background-color:#27e2a4">P3</span>|C|2026-01-15|접미사 배열 2|접미사배열,맨버-마이어스|
+|[11656](./OJ2026W/11656.c)|<span style="background-color:#435f7a">S4</span>|C|2026-01-15|접미사 배열|문자열,SA|
+|[13264](./OJ2026W/13264.c)|<span style="background-color:#27e2a4">P3</span>|C|2026-01-15|접미사 배열 2|SA,맨버-마이어스|
 |[2252 ](./OJ2026W/2252.c) |<span style="background-color:#ec9a00">G3</span>|C|2026-01-16|줄 세우기|DAG,위상정렬|
 |[1311 ](./OJ2026W/1311.c) |<span style="background-color:#ec9a00">G1</span>|C|2026-01-16|할 일 정하기 1|재귀,비트필드DP|
 |[15681](./OJ2026W/15681.c)|<span style="background-color:#ec9a00">G5</span>|C|2026-01-16|트리와 쿼리|재귀,트리DP,DFS|
@@ -428,4 +428,10 @@
 |[13235](./OJ2026W/13235.c)|<span style="background-color:#ad5600">B2</span>|C|2026-04-06|팰린드롬|문자열,팰린드롬|
 |[10174](./OJ2026W/10174.c)|<span style="background-color:#ad5600">B2</span>|C|2026-04-06|팰린드롬|문자열,팰린드롬|
 |[17844](./OJ2026W/17844.c)|<span style="background-color:#27e2a4">P2</span>|C|2026-04-07|복붙하기|해시,라빈-카프,매개변수탐색|
-|[9248 ](./OJ2026W/9248.c) |<span style="background-color:#27e2a4">P3</span>|C|2026-04-07|Suffix Array|접미사배열,LCP|
+|[9248 ](./OJ2026W/9248.c) |<span style="background-color:#27e2a4">P3</span>|C|2026-04-07|Suffix Array|SA,LCP|
+|[11479](./OJ2026W/11479.c)|<span style="background-color:#27e2a4">P2</span>|C|2026-04-07|서로 다른 부분 문자열의 개수 2|SA,LCP|
+|[9249 ](./OJ2026W/9249.c) |<span style="background-color:#27e2a4">P3</span>|C|2026-04-08|최장 공통 부분 문자열|SA,LCP,LRS|
+|[9935 ](./OJ2026W/9935.c) |<span style="background-color:#ec9a00">G4</span>|C|2026-04-09|문자열 폭발|문자열,스택|
+|[1427 ](./OJ2026W/1427.c) |<span style="background-color:#435f7a">S5</span>|C|2026-04-09|소트인사이드|문자열,정렬|
+|[14425](./OJ2026W/14425.c)|<span style="background-color:#435f7a">S4</span>|C|2026-04-09|문자열 집합|해시|
+|[1764 ](./OJ2026W/1764.c) |<span style="background-color:#435f7a">S4</span>|C|2026-04-09|듣보잡|해시,정렬|
