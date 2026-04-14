@@ -435,3 +435,6 @@
 |[1427 ](./OJ2026W/1427.c) |<span style="background-color:#435f7a">S5</span>|C|2026-04-09|소트인사이드|문자열,정렬|
 |[14425](./OJ2026W/14425.c)|<span style="background-color:#435f7a">S4</span>|C|2026-04-09|문자열 집합|해시|
 |[1764 ](./OJ2026W/1764.c) |<span style="background-color:#435f7a">S4</span>|C|2026-04-09|듣보잡|해시,정렬|
+|[34704](./OJ2026W/34704.c)|<span style="background-color:#435f7a">S5</span>|C|2026-04-13|크기가 4인 박스|그리디|
+|[31563](./OJ2026W/31563.c)|<span style="background-color:#435f7a">S2</span>|C|2026-04-13|수열 회전과 쿼리|누적합|
+|[32334](./OJ2026W/32334.c)|<span style="background-color:#435f7a">S1</span>|C|2026-04-14|자석 체스|브루트포스,누적합|
